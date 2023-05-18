@@ -4,7 +4,10 @@ package ent
 
 import (
 	"context"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
+	"entdemo/ent/shippingaddress"
 	"entdemo/ent/user"
 	"errors"
 	"fmt"
@@ -20,39 +23,140 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetAge sets the "age" field.
-func (uc *UserCreate) SetAge(i int) *UserCreate {
-	uc.mutation.SetAge(i)
-	return uc
-}
-
 // SetName sets the "name" field.
 func (uc *UserCreate) SetName(s string) *UserCreate {
 	uc.mutation.SetName(s)
 	return uc
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (uc *UserCreate) SetNillableName(s *string) *UserCreate {
+// SetEmail sets the "email" field.
+func (uc *UserCreate) SetEmail(s string) *UserCreate {
+	uc.mutation.SetEmail(s)
+	return uc
+}
+
+// SetPhone sets the "phone" field.
+func (uc *UserCreate) SetPhone(s string) *UserCreate {
+	uc.mutation.SetPhone(s)
+	return uc
+}
+
+// SetAddress sets the "address" field.
+func (uc *UserCreate) SetAddress(s string) *UserCreate {
+	uc.mutation.SetAddress(s)
+	return uc
+}
+
+// SetCity sets the "city" field.
+func (uc *UserCreate) SetCity(s string) *UserCreate {
+	uc.mutation.SetCity(s)
+	return uc
+}
+
+// SetState sets the "state" field.
+func (uc *UserCreate) SetState(s string) *UserCreate {
+	uc.mutation.SetState(s)
+	return uc
+}
+
+// SetZip sets the "zip" field.
+func (uc *UserCreate) SetZip(s string) *UserCreate {
+	uc.mutation.SetZip(s)
+	return uc
+}
+
+// SetCountry sets the "country" field.
+func (uc *UserCreate) SetCountry(s string) *UserCreate {
+	uc.mutation.SetCountry(s)
+	return uc
+}
+
+// SetDateCreated sets the "dateCreated" field.
+func (uc *UserCreate) SetDateCreated(s string) *UserCreate {
+	uc.mutation.SetDateCreated(s)
+	return uc
+}
+
+// SetNillableDateCreated sets the "dateCreated" field if the given value is not nil.
+func (uc *UserCreate) SetNillableDateCreated(s *string) *UserCreate {
 	if s != nil {
-		uc.SetName(*s)
+		uc.SetDateCreated(*s)
 	}
 	return uc
 }
 
-// AddCarIDs adds the "cars" edge to the Car entity by IDs.
-func (uc *UserCreate) AddCarIDs(ids ...int) *UserCreate {
-	uc.mutation.AddCarIDs(ids...)
+// SetDateUpdated sets the "dateUpdated" field.
+func (uc *UserCreate) SetDateUpdated(s string) *UserCreate {
+	uc.mutation.SetDateUpdated(s)
 	return uc
 }
 
-// AddCars adds the "cars" edges to the Car entity.
-func (uc *UserCreate) AddCars(c ...*Car) *UserCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// SetNillableDateUpdated sets the "dateUpdated" field if the given value is not nil.
+func (uc *UserCreate) SetNillableDateUpdated(s *string) *UserCreate {
+	if s != nil {
+		uc.SetDateUpdated(*s)
 	}
-	return uc.AddCarIDs(ids...)
+	return uc
+}
+
+// AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
+func (uc *UserCreate) AddNotificationIDs(ids ...int) *UserCreate {
+	uc.mutation.AddNotificationIDs(ids...)
+	return uc
+}
+
+// AddNotifications adds the "notifications" edges to the Notification entity.
+func (uc *UserCreate) AddNotifications(n ...*Notification) *UserCreate {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uc.AddNotificationIDs(ids...)
+}
+
+// AddBankAccountIDs adds the "bankAccounts" edge to the BankAccount entity by IDs.
+func (uc *UserCreate) AddBankAccountIDs(ids ...int) *UserCreate {
+	uc.mutation.AddBankAccountIDs(ids...)
+	return uc
+}
+
+// AddBankAccounts adds the "bankAccounts" edges to the BankAccount entity.
+func (uc *UserCreate) AddBankAccounts(b ...*BankAccount) *UserCreate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return uc.AddBankAccountIDs(ids...)
+}
+
+// AddShippingAddressIDs adds the "shippingAddresses" edge to the ShippingAddress entity by IDs.
+func (uc *UserCreate) AddShippingAddressIDs(ids ...int) *UserCreate {
+	uc.mutation.AddShippingAddressIDs(ids...)
+	return uc
+}
+
+// AddShippingAddresses adds the "shippingAddresses" edges to the ShippingAddress entity.
+func (uc *UserCreate) AddShippingAddresses(s ...*ShippingAddress) *UserCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uc.AddShippingAddressIDs(ids...)
+}
+
+// AddPaymentMethodIDs adds the "paymentMethods" edge to the PaymentMethod entity by IDs.
+func (uc *UserCreate) AddPaymentMethodIDs(ids ...int) *UserCreate {
+	uc.mutation.AddPaymentMethodIDs(ids...)
+	return uc
+}
+
+// AddPaymentMethods adds the "paymentMethods" edges to the PaymentMethod entity.
+func (uc *UserCreate) AddPaymentMethods(p ...*PaymentMethod) *UserCreate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uc.AddPaymentMethodIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -90,24 +194,47 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (uc *UserCreate) defaults() {
-	if _, ok := uc.mutation.Name(); !ok {
-		v := user.DefaultName
-		uc.mutation.SetName(v)
+	if _, ok := uc.mutation.DateCreated(); !ok {
+		v := user.DefaultDateCreated
+		uc.mutation.SetDateCreated(v)
+	}
+	if _, ok := uc.mutation.DateUpdated(); !ok {
+		v := user.DefaultDateUpdated
+		uc.mutation.SetDateUpdated(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Age(); !ok {
-		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "User.age"`)}
-	}
-	if v, ok := uc.mutation.Age(); ok {
-		if err := user.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
-		}
-	}
 	if _, ok := uc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
+	}
+	if _, ok := uc.mutation.Email(); !ok {
+		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "User.email"`)}
+	}
+	if _, ok := uc.mutation.Phone(); !ok {
+		return &ValidationError{Name: "phone", err: errors.New(`ent: missing required field "User.phone"`)}
+	}
+	if _, ok := uc.mutation.Address(); !ok {
+		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "User.address"`)}
+	}
+	if _, ok := uc.mutation.City(); !ok {
+		return &ValidationError{Name: "city", err: errors.New(`ent: missing required field "User.city"`)}
+	}
+	if _, ok := uc.mutation.State(); !ok {
+		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "User.state"`)}
+	}
+	if _, ok := uc.mutation.Zip(); !ok {
+		return &ValidationError{Name: "zip", err: errors.New(`ent: missing required field "User.zip"`)}
+	}
+	if _, ok := uc.mutation.Country(); !ok {
+		return &ValidationError{Name: "country", err: errors.New(`ent: missing required field "User.country"`)}
+	}
+	if _, ok := uc.mutation.DateCreated(); !ok {
+		return &ValidationError{Name: "dateCreated", err: errors.New(`ent: missing required field "User.dateCreated"`)}
+	}
+	if _, ok := uc.mutation.DateUpdated(); !ok {
+		return &ValidationError{Name: "dateUpdated", err: errors.New(`ent: missing required field "User.dateUpdated"`)}
 	}
 	return nil
 }
@@ -135,23 +262,103 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_node = &User{config: uc.config}
 		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
 	)
-	if value, ok := uc.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-		_node.Age = value
-	}
 	if value, ok := uc.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if nodes := uc.mutation.CarsIDs(); len(nodes) > 0 {
+	if value, ok := uc.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+		_node.Email = value
+	}
+	if value, ok := uc.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+		_node.Phone = value
+	}
+	if value, ok := uc.mutation.Address(); ok {
+		_spec.SetField(user.FieldAddress, field.TypeString, value)
+		_node.Address = value
+	}
+	if value, ok := uc.mutation.City(); ok {
+		_spec.SetField(user.FieldCity, field.TypeString, value)
+		_node.City = value
+	}
+	if value, ok := uc.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+		_node.State = value
+	}
+	if value, ok := uc.mutation.Zip(); ok {
+		_spec.SetField(user.FieldZip, field.TypeString, value)
+		_node.Zip = value
+	}
+	if value, ok := uc.mutation.Country(); ok {
+		_spec.SetField(user.FieldCountry, field.TypeString, value)
+		_node.Country = value
+	}
+	if value, ok := uc.mutation.DateCreated(); ok {
+		_spec.SetField(user.FieldDateCreated, field.TypeString, value)
+		_node.DateCreated = value
+	}
+	if value, ok := uc.mutation.DateUpdated(); ok {
+		_spec.SetField(user.FieldDateUpdated, field.TypeString, value)
+		_node.DateUpdated = value
+	}
+	if nodes := uc.mutation.NotificationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.BankAccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.ShippingAddressesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.PaymentMethodsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

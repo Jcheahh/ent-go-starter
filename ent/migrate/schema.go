@@ -8,23 +8,157 @@ import (
 )
 
 var (
-	// CarsColumns holds the columns for the "cars" table.
-	CarsColumns = []*schema.Column{
+	// BankAccountsColumns holds the columns for the "bank_accounts" table.
+	BankAccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "model", Type: field.TypeString},
-		{Name: "registered_at", Type: field.TypeTime},
-		{Name: "user_cars", Type: field.TypeInt, Nullable: true},
+		{Name: "xid", Type: field.TypeInt},
+		{Name: "shop_bank_accounts", Type: field.TypeInt, Nullable: true},
+		{Name: "user_bank_accounts", Type: field.TypeInt, Nullable: true},
 	}
-	// CarsTable holds the schema information for the "cars" table.
-	CarsTable = &schema.Table{
-		Name:       "cars",
-		Columns:    CarsColumns,
-		PrimaryKey: []*schema.Column{CarsColumns[0]},
+	// BankAccountsTable holds the schema information for the "bank_accounts" table.
+	BankAccountsTable = &schema.Table{
+		Name:       "bank_accounts",
+		Columns:    BankAccountsColumns,
+		PrimaryKey: []*schema.Column{BankAccountsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "cars_users_cars",
-				Columns:    []*schema.Column{CarsColumns[3]},
+				Symbol:     "bank_accounts_shops_bankAccounts",
+				Columns:    []*schema.Column{BankAccountsColumns[2]},
+				RefColumns: []*schema.Column{ShopsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "bank_accounts_users_bankAccounts",
+				Columns:    []*schema.Column{BankAccountsColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// BlogPostsColumns holds the columns for the "blog_posts" table.
+	BlogPostsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "date_updated", Type: field.TypeString},
+		{Name: "product_blog_posts", Type: field.TypeInt, Nullable: true},
+	}
+	// BlogPostsTable holds the schema information for the "blog_posts" table.
+	BlogPostsTable = &schema.Table{
+		Name:       "blog_posts",
+		Columns:    BlogPostsColumns,
+		PrimaryKey: []*schema.Column{BlogPostsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "blog_posts_products_blogPosts",
+				Columns:    []*schema.Column{BlogPostsColumns[5]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// CategoriesColumns holds the columns for the "categories" table.
+	CategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "product_categories", Type: field.TypeInt, Nullable: true},
+	}
+	// CategoriesTable holds the schema information for the "categories" table.
+	CategoriesTable = &schema.Table{
+		Name:       "categories",
+		Columns:    CategoriesColumns,
+		PrimaryKey: []*schema.Column{CategoriesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "categories_products_categories",
+				Columns:    []*schema.Column{CategoriesColumns[3]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ChatsColumns holds the columns for the "chats" table.
+	ChatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "xid", Type: field.TypeInt},
+		{Name: "product_chats", Type: field.TypeInt, Nullable: true},
+	}
+	// ChatsTable holds the schema information for the "chats" table.
+	ChatsTable = &schema.Table{
+		Name:       "chats",
+		Columns:    ChatsColumns,
+		PrimaryKey: []*schema.Column{ChatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "chats_products_chats",
+				Columns:    []*schema.Column{ChatsColumns[2]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// CommissionStructuresColumns holds the columns for the "commission_structures" table.
+	CommissionStructuresColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "commission_value", Type: field.TypeString},
+		{Name: "commission_percentage", Type: field.TypeString},
+		{Name: "product_commission_structure", Type: field.TypeInt, Nullable: true},
+	}
+	// CommissionStructuresTable holds the schema information for the "commission_structures" table.
+	CommissionStructuresTable = &schema.Table{
+		Name:       "commission_structures",
+		Columns:    CommissionStructuresColumns,
+		PrimaryKey: []*schema.Column{CommissionStructuresColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "commission_structures_products_commissionStructure",
+				Columns:    []*schema.Column{CommissionStructuresColumns[5]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ContentBlocksColumns holds the columns for the "content_blocks" table.
+	ContentBlocksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "primary_message", Type: field.TypeString},
+		{Name: "secondary_message", Type: field.TypeString},
+		{Name: "primary_content_content_block", Type: field.TypeInt, Nullable: true},
+	}
+	// ContentBlocksTable holds the schema information for the "content_blocks" table.
+	ContentBlocksTable = &schema.Table{
+		Name:       "content_blocks",
+		Columns:    ContentBlocksColumns,
+		PrimaryKey: []*schema.Column{ContentBlocksColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "content_blocks_primary_contents_contentBlock",
+				Columns:    []*schema.Column{ContentBlocksColumns[3]},
+				RefColumns: []*schema.Column{PrimaryContentsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// EmailCampaignsColumns holds the columns for the "email_campaigns" table.
+	EmailCampaignsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "xid", Type: field.TypeInt},
+		{Name: "product_email_campaign", Type: field.TypeInt, Nullable: true},
+	}
+	// EmailCampaignsTable holds the schema information for the "email_campaigns" table.
+	EmailCampaignsTable = &schema.Table{
+		Name:       "email_campaigns",
+		Columns:    EmailCampaignsColumns,
+		PrimaryKey: []*schema.Column{EmailCampaignsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "email_campaigns_products_emailCampaign",
+				Columns:    []*schema.Column{EmailCampaignsColumns[2]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -40,37 +174,859 @@ var (
 		Columns:    GroupsColumns,
 		PrimaryKey: []*schema.Column{GroupsColumns[0]},
 	}
-	// TodosColumns holds the columns for the "todos" table.
-	TodosColumns = []*schema.Column{
+	// GroupBuysColumns holds the columns for the "group_buys" table.
+	GroupBuysColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "product_price", Type: field.TypeInt},
+		{Name: "moq", Type: field.TypeInt},
+		{Name: "start_date", Type: field.TypeString},
+		{Name: "end_date", Type: field.TypeString},
+		{Name: "product_group_buys", Type: field.TypeInt, Nullable: true},
 	}
-	// TodosTable holds the schema information for the "todos" table.
-	TodosTable = &schema.Table{
-		Name:       "todos",
-		Columns:    TodosColumns,
-		PrimaryKey: []*schema.Column{TodosColumns[0]},
+	// GroupBuysTable holds the schema information for the "group_buys" table.
+	GroupBuysTable = &schema.Table{
+		Name:       "group_buys",
+		Columns:    GroupBuysColumns,
+		PrimaryKey: []*schema.Column{GroupBuysColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "group_buys_products_groupBuys",
+				Columns:    []*schema.Column{GroupBuysColumns[6]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// HeroContentsColumns holds the columns for the "hero_contents" table.
+	HeroContentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "primary_message", Type: field.TypeString},
+		{Name: "secondary_message", Type: field.TypeString},
+		{Name: "product_page_view_hero_content", Type: field.TypeInt, Nullable: true},
+	}
+	// HeroContentsTable holds the schema information for the "hero_contents" table.
+	HeroContentsTable = &schema.Table{
+		Name:       "hero_contents",
+		Columns:    HeroContentsColumns,
+		PrimaryKey: []*schema.Column{HeroContentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "hero_contents_product_page_views_heroContent",
+				Columns:    []*schema.Column{HeroContentsColumns[3]},
+				RefColumns: []*schema.Column{ProductPageViewsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ImagesColumns holds the columns for the "images" table.
+	ImagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "url", Type: field.TypeString},
+		{Name: "content_block_image", Type: field.TypeInt, Nullable: true},
+		{Name: "hero_content_image", Type: field.TypeInt, Nullable: true},
+		{Name: "product_images", Type: field.TypeInt, Nullable: true},
+	}
+	// ImagesTable holds the schema information for the "images" table.
+	ImagesTable = &schema.Table{
+		Name:       "images",
+		Columns:    ImagesColumns,
+		PrimaryKey: []*schema.Column{ImagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "images_content_blocks_image",
+				Columns:    []*schema.Column{ImagesColumns[4]},
+				RefColumns: []*schema.Column{ContentBlocksColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "images_hero_contents_image",
+				Columns:    []*schema.Column{ImagesColumns[5]},
+				RefColumns: []*schema.Column{HeroContentsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "images_products_images",
+				Columns:    []*schema.Column{ImagesColumns[6]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// LinkVisitsColumns holds the columns for the "link_visits" table.
+	LinkVisitsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "ip_address", Type: field.TypeString},
+		{Name: "sale_value", Type: field.TypeInt},
+		{Name: "commission_earned", Type: field.TypeInt},
+		{Name: "referral_link_visits", Type: field.TypeInt, Nullable: true},
+		{Name: "transaction_origin_link", Type: field.TypeInt, Nullable: true},
+		{Name: "user_buyer_links_clicked", Type: field.TypeInt, Nullable: true},
+	}
+	// LinkVisitsTable holds the schema information for the "link_visits" table.
+	LinkVisitsTable = &schema.Table{
+		Name:       "link_visits",
+		Columns:    LinkVisitsColumns,
+		PrimaryKey: []*schema.Column{LinkVisitsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "link_visits_referral_links_visits",
+				Columns:    []*schema.Column{LinkVisitsColumns[5]},
+				RefColumns: []*schema.Column{ReferralLinksColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "link_visits_transactions_originLink",
+				Columns:    []*schema.Column{LinkVisitsColumns[6]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "link_visits_user_buyers_linksClicked",
+				Columns:    []*schema.Column{LinkVisitsColumns[7]},
+				RefColumns: []*schema.Column{UserBuyersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// MarketingCampaignsColumns holds the columns for the "marketing_campaigns" table.
+	MarketingCampaignsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "consumer_purchase_value", Type: field.TypeString},
+		{Name: "customer_application_logic", Type: field.TypeString},
+		{Name: "initialisation_logic", Type: field.TypeString},
+		{Name: "start_date", Type: field.TypeString},
+		{Name: "end_date", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "date_updated", Type: field.TypeString},
+		{Name: "product_marketing_campaigns", Type: field.TypeInt, Nullable: true},
+	}
+	// MarketingCampaignsTable holds the schema information for the "marketing_campaigns" table.
+	MarketingCampaignsTable = &schema.Table{
+		Name:       "marketing_campaigns",
+		Columns:    MarketingCampaignsColumns,
+		PrimaryKey: []*schema.Column{MarketingCampaignsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "marketing_campaigns_products_marketingCampaigns",
+				Columns:    []*schema.Column{MarketingCampaignsColumns[10]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// NotificationsColumns holds the columns for the "notifications" table.
+	NotificationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "read", Type: field.TypeBool},
+		{Name: "user_notifications", Type: field.TypeInt, Nullable: true},
+	}
+	// NotificationsTable holds the schema information for the "notifications" table.
+	NotificationsTable = &schema.Table{
+		Name:       "notifications",
+		Columns:    NotificationsColumns,
+		PrimaryKey: []*schema.Column{NotificationsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "notifications_users_notifications",
+				Columns:    []*schema.Column{NotificationsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// PaymentMethodsColumns holds the columns for the "payment_methods" table.
+	PaymentMethodsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "xid", Type: field.TypeInt},
+		{Name: "user_payment_methods", Type: field.TypeInt, Nullable: true},
+	}
+	// PaymentMethodsTable holds the schema information for the "payment_methods" table.
+	PaymentMethodsTable = &schema.Table{
+		Name:       "payment_methods",
+		Columns:    PaymentMethodsColumns,
+		PrimaryKey: []*schema.Column{PaymentMethodsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "payment_methods_users_paymentMethods",
+				Columns:    []*schema.Column{PaymentMethodsColumns[2]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// PrimaryContentsColumns holds the columns for the "primary_contents" table.
+	PrimaryContentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "placeholder", Type: field.TypeInt, Nullable: true},
+		{Name: "product_page_view_primary_content", Type: field.TypeInt, Nullable: true},
+	}
+	// PrimaryContentsTable holds the schema information for the "primary_contents" table.
+	PrimaryContentsTable = &schema.Table{
+		Name:       "primary_contents",
+		Columns:    PrimaryContentsColumns,
+		PrimaryKey: []*schema.Column{PrimaryContentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "primary_contents_product_page_views_primaryContent",
+				Columns:    []*schema.Column{PrimaryContentsColumns[2]},
+				RefColumns: []*schema.Column{ProductPageViewsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ProductsColumns holds the columns for the "products" table.
+	ProductsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "price", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "date_updated", Type: field.TypeString},
+		{Name: "category_products", Type: field.TypeInt, Nullable: true},
+		{Name: "group_buy_product", Type: field.TypeInt, Nullable: true},
+		{Name: "marketing_campaign_product", Type: field.TypeInt, Nullable: true},
+		{Name: "review_product", Type: field.TypeInt, Nullable: true},
+		{Name: "shop_products", Type: field.TypeInt, Nullable: true},
+		{Name: "transaction_product", Type: field.TypeInt, Nullable: true},
+		{Name: "user_influencer_products", Type: field.TypeInt, Nullable: true},
+		{Name: "view_analytics_product", Type: field.TypeInt, Nullable: true},
+	}
+	// ProductsTable holds the schema information for the "products" table.
+	ProductsTable = &schema.Table{
+		Name:       "products",
+		Columns:    ProductsColumns,
+		PrimaryKey: []*schema.Column{ProductsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "products_categories_products",
+				Columns:    []*schema.Column{ProductsColumns[6]},
+				RefColumns: []*schema.Column{CategoriesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_group_buys_product",
+				Columns:    []*schema.Column{ProductsColumns[7]},
+				RefColumns: []*schema.Column{GroupBuysColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_marketing_campaigns_product",
+				Columns:    []*schema.Column{ProductsColumns[8]},
+				RefColumns: []*schema.Column{MarketingCampaignsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_reviews_product",
+				Columns:    []*schema.Column{ProductsColumns[9]},
+				RefColumns: []*schema.Column{ReviewsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_shops_products",
+				Columns:    []*schema.Column{ProductsColumns[10]},
+				RefColumns: []*schema.Column{ShopsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_transactions_product",
+				Columns:    []*schema.Column{ProductsColumns[11]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_user_influencers_products",
+				Columns:    []*schema.Column{ProductsColumns[12]},
+				RefColumns: []*schema.Column{UserInfluencersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "products_view_analytics_product",
+				Columns:    []*schema.Column{ProductsColumns[13]},
+				RefColumns: []*schema.Column{ViewAnalyticsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ProductAttributesColumns holds the columns for the "product_attributes" table.
+	ProductAttributesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeInt},
+		{Name: "description", Type: field.TypeInt},
+		{Name: "value", Type: field.TypeInt},
+		{Name: "product_product_attributes", Type: field.TypeInt, Nullable: true},
+		{Name: "product_variation_product_attributes", Type: field.TypeInt, Nullable: true},
+	}
+	// ProductAttributesTable holds the schema information for the "product_attributes" table.
+	ProductAttributesTable = &schema.Table{
+		Name:       "product_attributes",
+		Columns:    ProductAttributesColumns,
+		PrimaryKey: []*schema.Column{ProductAttributesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "product_attributes_products_productAttributes",
+				Columns:    []*schema.Column{ProductAttributesColumns[4]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "product_attributes_product_variations_productAttributes",
+				Columns:    []*schema.Column{ProductAttributesColumns[5]},
+				RefColumns: []*schema.Column{ProductVariationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ProductPageViewsColumns holds the columns for the "product_page_views" table.
+	ProductPageViewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "version", Type: field.TypeInt},
+		{Name: "product_product_page_views", Type: field.TypeInt, Nullable: true},
+	}
+	// ProductPageViewsTable holds the schema information for the "product_page_views" table.
+	ProductPageViewsTable = &schema.Table{
+		Name:       "product_page_views",
+		Columns:    ProductPageViewsColumns,
+		PrimaryKey: []*schema.Column{ProductPageViewsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "product_page_views_products_productPageViews",
+				Columns:    []*schema.Column{ProductPageViewsColumns[2]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ProductVariationsColumns holds the columns for the "product_variations" table.
+	ProductVariationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "price", Type: field.TypeString},
+		{Name: "product_variations", Type: field.TypeInt, Nullable: true},
+	}
+	// ProductVariationsTable holds the schema information for the "product_variations" table.
+	ProductVariationsTable = &schema.Table{
+		Name:       "product_variations",
+		Columns:    ProductVariationsColumns,
+		PrimaryKey: []*schema.Column{ProductVariationsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "product_variations_products_variations",
+				Columns:    []*schema.Column{ProductVariationsColumns[4]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ReferralLinksColumns holds the columns for the "referral_links" table.
+	ReferralLinksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "xid", Type: field.TypeInt},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "link", Type: field.TypeString},
+		{Name: "user_influencer_referral_links", Type: field.TypeInt, Nullable: true},
+	}
+	// ReferralLinksTable holds the schema information for the "referral_links" table.
+	ReferralLinksTable = &schema.Table{
+		Name:       "referral_links",
+		Columns:    ReferralLinksColumns,
+		PrimaryKey: []*schema.Column{ReferralLinksColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "referral_links_user_influencers_referralLinks",
+				Columns:    []*schema.Column{ReferralLinksColumns[5]},
+				RefColumns: []*schema.Column{UserInfluencersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// RefundTransactionsColumns holds the columns for the "refund_transactions" table.
+	RefundTransactionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "refund_amount", Type: field.TypeString},
+		{Name: "refund_currency", Type: field.TypeString},
+		{Name: "refund_reason", Type: field.TypeString},
+		{Name: "refund_status", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "date_updated", Type: field.TypeString},
+	}
+	// RefundTransactionsTable holds the schema information for the "refund_transactions" table.
+	RefundTransactionsTable = &schema.Table{
+		Name:       "refund_transactions",
+		Columns:    RefundTransactionsColumns,
+		PrimaryKey: []*schema.Column{RefundTransactionsColumns[0]},
+	}
+	// ReviewsColumns holds the columns for the "reviews" table.
+	ReviewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "type", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "rating", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "product_reviews", Type: field.TypeInt, Nullable: true},
+		{Name: "user_buyer_reviews", Type: field.TypeInt, Nullable: true},
+		{Name: "user_influencer_reviews", Type: field.TypeInt, Nullable: true},
+	}
+	// ReviewsTable holds the schema information for the "reviews" table.
+	ReviewsTable = &schema.Table{
+		Name:       "reviews",
+		Columns:    ReviewsColumns,
+		PrimaryKey: []*schema.Column{ReviewsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "reviews_products_reviews",
+				Columns:    []*schema.Column{ReviewsColumns[5]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "reviews_user_buyers_reviews",
+				Columns:    []*schema.Column{ReviewsColumns[6]},
+				RefColumns: []*schema.Column{UserBuyersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "reviews_user_influencers_reviews",
+				Columns:    []*schema.Column{ReviewsColumns[7]},
+				RefColumns: []*schema.Column{UserInfluencersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// RewardTypesColumns holds the columns for the "reward_types" table.
+	RewardTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"DISCOUNT", "FREE_PRODUCT", "SHIPPING_DISCOUNT"}},
+		{Name: "val", Type: field.TypeInt},
+		{Name: "marketing_campaign_consumer_reward", Type: field.TypeInt, Nullable: true},
+	}
+	// RewardTypesTable holds the schema information for the "reward_types" table.
+	RewardTypesTable = &schema.Table{
+		Name:       "reward_types",
+		Columns:    RewardTypesColumns,
+		PrimaryKey: []*schema.Column{RewardTypesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "reward_types_marketing_campaigns_consumerReward",
+				Columns:    []*schema.Column{RewardTypesColumns[3]},
+				RefColumns: []*schema.Column{MarketingCampaignsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ShippingAddressesColumns holds the columns for the "shipping_addresses" table.
+	ShippingAddressesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "address", Type: field.TypeString},
+		{Name: "city", Type: field.TypeString},
+		{Name: "state", Type: field.TypeString},
+		{Name: "zip", Type: field.TypeString},
+		{Name: "country", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "user_shipping_addresses", Type: field.TypeInt, Nullable: true},
+	}
+	// ShippingAddressesTable holds the schema information for the "shipping_addresses" table.
+	ShippingAddressesTable = &schema.Table{
+		Name:       "shipping_addresses",
+		Columns:    ShippingAddressesColumns,
+		PrimaryKey: []*schema.Column{ShippingAddressesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "shipping_addresses_users_shippingAddresses",
+				Columns:    []*schema.Column{ShippingAddressesColumns[9]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ShopsColumns holds the columns for the "shops" table.
+	ShopsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "product_shop", Type: field.TypeInt, Nullable: true},
+		{Name: "transaction_shop", Type: field.TypeInt, Nullable: true},
+		{Name: "user_seller_shops", Type: field.TypeInt, Nullable: true},
+	}
+	// ShopsTable holds the schema information for the "shops" table.
+	ShopsTable = &schema.Table{
+		Name:       "shops",
+		Columns:    ShopsColumns,
+		PrimaryKey: []*schema.Column{ShopsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "shops_products_shop",
+				Columns:    []*schema.Column{ShopsColumns[3]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "shops_transactions_shop",
+				Columns:    []*schema.Column{ShopsColumns[4]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "shops_user_sellers_shops",
+				Columns:    []*schema.Column{ShopsColumns[5]},
+				RefColumns: []*schema.Column{UserSellersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// TagsColumns holds the columns for the "tags" table.
+	TagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "product_tags", Type: field.TypeInt, Nullable: true},
+		{Name: "user_influencer_tags", Type: field.TypeInt, Nullable: true},
+	}
+	// TagsTable holds the schema information for the "tags" table.
+	TagsTable = &schema.Table{
+		Name:       "tags",
+		Columns:    TagsColumns,
+		PrimaryKey: []*schema.Column{TagsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "tags_products_tags",
+				Columns:    []*schema.Column{TagsColumns[3]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "tags_user_influencers_tags",
+				Columns:    []*schema.Column{TagsColumns[4]},
+				RefColumns: []*schema.Column{UserInfluencersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// TransactionsColumns holds the columns for the "transactions" table.
+	TransactionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "date_updated", Type: field.TypeString},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"PENDING", "COMPLETED", "CANCELLED", "REFUNDED", "DENIED", "FAILED", "EXPIRED", "VOIDED", "REVERSED", "PROCESSED", "PARTIALLY_REFUNDED", "PARTIALLY_REVERSED", "PARTIALLY_VOIDED", "PARTIALLY_PROCESSED", "PARTIALLY_COMPLETED", "PARTIALLY_CANCELLED", "PARTIALLY_DENIED", "PARTIALLY_FAILED", "PARTIALLY_EXPIRED"}, Default: "PENDING"},
+		{Name: "payment_method", Type: field.TypeString},
+		{Name: "payment_status", Type: field.TypeString},
+		{Name: "payment_id", Type: field.TypeString},
+		{Name: "payment_amount", Type: field.TypeString},
+		{Name: "payment_currency", Type: field.TypeString},
+		{Name: "payment_date", Type: field.TypeString},
+		{Name: "payment_fee", Type: field.TypeString},
+		{Name: "payment_net", Type: field.TypeString},
+		{Name: "payment_payer_email", Type: field.TypeString},
+		{Name: "payment_payer_first_name", Type: field.TypeString},
+		{Name: "payment_payer_last_name", Type: field.TypeString},
+		{Name: "payment_payer_id", Type: field.TypeString},
+		{Name: "payment_payer_status", Type: field.TypeString},
+		{Name: "payment_receiver_email", Type: field.TypeString},
+		{Name: "payment_receiver_id", Type: field.TypeString},
+		{Name: "payment_tax", Type: field.TypeString},
+		{Name: "payment_transaction_id", Type: field.TypeString},
+		{Name: "payment_transaction_type", Type: field.TypeString},
+		{Name: "payment_pending_reason", Type: field.TypeString},
+		{Name: "payment_reason_code", Type: field.TypeString},
+		{Name: "group_buy_transaction", Type: field.TypeInt, Nullable: true},
+		{Name: "refund_transactions_transaction", Type: field.TypeInt, Nullable: true},
+		{Name: "shop_transactions", Type: field.TypeInt, Nullable: true},
+		{Name: "user_buyer_transactions", Type: field.TypeInt, Nullable: true},
+	}
+	// TransactionsTable holds the schema information for the "transactions" table.
+	TransactionsTable = &schema.Table{
+		Name:       "transactions",
+		Columns:    TransactionsColumns,
+		PrimaryKey: []*schema.Column{TransactionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "transactions_group_buys_transaction",
+				Columns:    []*schema.Column{TransactionsColumns[24]},
+				RefColumns: []*schema.Column{GroupBuysColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "transactions_refund_transactions_transaction",
+				Columns:    []*schema.Column{TransactionsColumns[25]},
+				RefColumns: []*schema.Column{RefundTransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "transactions_shops_transactions",
+				Columns:    []*schema.Column{TransactionsColumns[26]},
+				RefColumns: []*schema.Column{ShopsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "transactions_user_buyers_transactions",
+				Columns:    []*schema.Column{TransactionsColumns[27]},
+				RefColumns: []*schema.Column{UserBuyersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "age", Type: field.TypeInt},
-		{Name: "name", Type: field.TypeString, Default: "unknown"},
+		{Name: "name", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString},
+		{Name: "phone", Type: field.TypeString},
+		{Name: "address", Type: field.TypeString},
+		{Name: "city", Type: field.TypeString},
+		{Name: "state", Type: field.TypeString},
+		{Name: "zip", Type: field.TypeString},
+		{Name: "country", Type: field.TypeString},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "notification_recipient", Type: field.TypeInt, Nullable: true},
+		{Name: "user_buyer_user_profile", Type: field.TypeInt, Nullable: true},
+		{Name: "user_influencer_user_profile", Type: field.TypeInt, Nullable: true},
+		{Name: "user_seller_user_profile", Type: field.TypeInt, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
 		Name:       "users",
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "users_notifications_recipient",
+				Columns:    []*schema.Column{UsersColumns[11]},
+				RefColumns: []*schema.Column{NotificationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "users_user_buyers_userProfile",
+				Columns:    []*schema.Column{UsersColumns[12]},
+				RefColumns: []*schema.Column{UserBuyersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "users_user_influencers_userProfile",
+				Columns:    []*schema.Column{UsersColumns[13]},
+				RefColumns: []*schema.Column{UserInfluencersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "users_user_sellers_userProfile",
+				Columns:    []*schema.Column{UsersColumns[14]},
+				RefColumns: []*schema.Column{UserSellersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// UserBuyersColumns holds the columns for the "user_buyers" table.
+	UserBuyersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "placeholder", Type: field.TypeInt, Nullable: true},
+		{Name: "review_product_customer", Type: field.TypeInt, Nullable: true},
+		{Name: "transaction_product_customer", Type: field.TypeInt, Nullable: true},
+	}
+	// UserBuyersTable holds the schema information for the "user_buyers" table.
+	UserBuyersTable = &schema.Table{
+		Name:       "user_buyers",
+		Columns:    UserBuyersColumns,
+		PrimaryKey: []*schema.Column{UserBuyersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_buyers_reviews_productCustomer",
+				Columns:    []*schema.Column{UserBuyersColumns[2]},
+				RefColumns: []*schema.Column{ReviewsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "user_buyers_transactions_productCustomer",
+				Columns:    []*schema.Column{UserBuyersColumns[3]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// UserInfluencersColumns holds the columns for the "user_influencers" table.
+	UserInfluencersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "placeholder", Type: field.TypeInt, Nullable: true},
+		{Name: "transaction_product_influencer", Type: field.TypeInt, Nullable: true},
+	}
+	// UserInfluencersTable holds the schema information for the "user_influencers" table.
+	UserInfluencersTable = &schema.Table{
+		Name:       "user_influencers",
+		Columns:    UserInfluencersColumns,
+		PrimaryKey: []*schema.Column{UserInfluencersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_influencers_transactions_productInfluencer",
+				Columns:    []*schema.Column{UserInfluencersColumns[2]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// UserSellersColumns holds the columns for the "user_sellers" table.
+	UserSellersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "brand_name", Type: field.TypeString},
+		{Name: "blog_post_author", Type: field.TypeInt, Nullable: true},
+		{Name: "commission_structure_product_seller", Type: field.TypeInt, Nullable: true},
+		{Name: "product_product_seller", Type: field.TypeInt, Nullable: true},
+	}
+	// UserSellersTable holds the schema information for the "user_sellers" table.
+	UserSellersTable = &schema.Table{
+		Name:       "user_sellers",
+		Columns:    UserSellersColumns,
+		PrimaryKey: []*schema.Column{UserSellersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_sellers_blog_posts_author",
+				Columns:    []*schema.Column{UserSellersColumns[2]},
+				RefColumns: []*schema.Column{BlogPostsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "user_sellers_commission_structures_productSeller",
+				Columns:    []*schema.Column{UserSellersColumns[3]},
+				RefColumns: []*schema.Column{CommissionStructuresColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "user_sellers_products_productSeller",
+				Columns:    []*schema.Column{UserSellersColumns[4]},
+				RefColumns: []*schema.Column{ProductsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ViewAnalyticsColumns holds the columns for the "view_analytics" table.
+	ViewAnalyticsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "views", Type: field.TypeInt},
+		{Name: "scrolls", Type: field.TypeInt},
+		{Name: "exits", Type: field.TypeInt},
+		{Name: "date_created", Type: field.TypeString},
+		{Name: "product_page_view_view_analytics", Type: field.TypeInt, Nullable: true},
+	}
+	// ViewAnalyticsTable holds the schema information for the "view_analytics" table.
+	ViewAnalyticsTable = &schema.Table{
+		Name:       "view_analytics",
+		Columns:    ViewAnalyticsColumns,
+		PrimaryKey: []*schema.Column{ViewAnalyticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "view_analytics_product_page_views_viewAnalytics",
+				Columns:    []*schema.Column{ViewAnalyticsColumns[5]},
+				RefColumns: []*schema.Column{ProductPageViewsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		CarsTable,
+		BankAccountsTable,
+		BlogPostsTable,
+		CategoriesTable,
+		ChatsTable,
+		CommissionStructuresTable,
+		ContentBlocksTable,
+		EmailCampaignsTable,
 		GroupsTable,
-		TodosTable,
+		GroupBuysTable,
+		HeroContentsTable,
+		ImagesTable,
+		LinkVisitsTable,
+		MarketingCampaignsTable,
+		NotificationsTable,
+		PaymentMethodsTable,
+		PrimaryContentsTable,
+		ProductsTable,
+		ProductAttributesTable,
+		ProductPageViewsTable,
+		ProductVariationsTable,
+		ReferralLinksTable,
+		RefundTransactionsTable,
+		ReviewsTable,
+		RewardTypesTable,
+		ShippingAddressesTable,
+		ShopsTable,
+		TagsTable,
+		TransactionsTable,
 		UsersTable,
+		UserBuyersTable,
+		UserInfluencersTable,
+		UserSellersTable,
+		ViewAnalyticsTable,
 	}
 )
 
 func init() {
-	CarsTable.ForeignKeys[0].RefTable = UsersTable
+	BankAccountsTable.ForeignKeys[0].RefTable = ShopsTable
+	BankAccountsTable.ForeignKeys[1].RefTable = UsersTable
+	BlogPostsTable.ForeignKeys[0].RefTable = ProductsTable
+	CategoriesTable.ForeignKeys[0].RefTable = ProductsTable
+	ChatsTable.ForeignKeys[0].RefTable = ProductsTable
+	CommissionStructuresTable.ForeignKeys[0].RefTable = ProductsTable
+	ContentBlocksTable.ForeignKeys[0].RefTable = PrimaryContentsTable
+	EmailCampaignsTable.ForeignKeys[0].RefTable = ProductsTable
+	GroupBuysTable.ForeignKeys[0].RefTable = ProductsTable
+	HeroContentsTable.ForeignKeys[0].RefTable = ProductPageViewsTable
+	ImagesTable.ForeignKeys[0].RefTable = ContentBlocksTable
+	ImagesTable.ForeignKeys[1].RefTable = HeroContentsTable
+	ImagesTable.ForeignKeys[2].RefTable = ProductsTable
+	LinkVisitsTable.ForeignKeys[0].RefTable = ReferralLinksTable
+	LinkVisitsTable.ForeignKeys[1].RefTable = TransactionsTable
+	LinkVisitsTable.ForeignKeys[2].RefTable = UserBuyersTable
+	MarketingCampaignsTable.ForeignKeys[0].RefTable = ProductsTable
+	NotificationsTable.ForeignKeys[0].RefTable = UsersTable
+	PaymentMethodsTable.ForeignKeys[0].RefTable = UsersTable
+	PrimaryContentsTable.ForeignKeys[0].RefTable = ProductPageViewsTable
+	ProductsTable.ForeignKeys[0].RefTable = CategoriesTable
+	ProductsTable.ForeignKeys[1].RefTable = GroupBuysTable
+	ProductsTable.ForeignKeys[2].RefTable = MarketingCampaignsTable
+	ProductsTable.ForeignKeys[3].RefTable = ReviewsTable
+	ProductsTable.ForeignKeys[4].RefTable = ShopsTable
+	ProductsTable.ForeignKeys[5].RefTable = TransactionsTable
+	ProductsTable.ForeignKeys[6].RefTable = UserInfluencersTable
+	ProductsTable.ForeignKeys[7].RefTable = ViewAnalyticsTable
+	ProductAttributesTable.ForeignKeys[0].RefTable = ProductsTable
+	ProductAttributesTable.ForeignKeys[1].RefTable = ProductVariationsTable
+	ProductPageViewsTable.ForeignKeys[0].RefTable = ProductsTable
+	ProductVariationsTable.ForeignKeys[0].RefTable = ProductsTable
+	ReferralLinksTable.ForeignKeys[0].RefTable = UserInfluencersTable
+	ReviewsTable.ForeignKeys[0].RefTable = ProductsTable
+	ReviewsTable.ForeignKeys[1].RefTable = UserBuyersTable
+	ReviewsTable.ForeignKeys[2].RefTable = UserInfluencersTable
+	RewardTypesTable.ForeignKeys[0].RefTable = MarketingCampaignsTable
+	ShippingAddressesTable.ForeignKeys[0].RefTable = UsersTable
+	ShopsTable.ForeignKeys[0].RefTable = ProductsTable
+	ShopsTable.ForeignKeys[1].RefTable = TransactionsTable
+	ShopsTable.ForeignKeys[2].RefTable = UserSellersTable
+	TagsTable.ForeignKeys[0].RefTable = ProductsTable
+	TagsTable.ForeignKeys[1].RefTable = UserInfluencersTable
+	TransactionsTable.ForeignKeys[0].RefTable = GroupBuysTable
+	TransactionsTable.ForeignKeys[1].RefTable = RefundTransactionsTable
+	TransactionsTable.ForeignKeys[2].RefTable = ShopsTable
+	TransactionsTable.ForeignKeys[3].RefTable = UserBuyersTable
+	UsersTable.ForeignKeys[0].RefTable = NotificationsTable
+	UsersTable.ForeignKeys[1].RefTable = UserBuyersTable
+	UsersTable.ForeignKeys[2].RefTable = UserInfluencersTable
+	UsersTable.ForeignKeys[3].RefTable = UserSellersTable
+	UserBuyersTable.ForeignKeys[0].RefTable = ReviewsTable
+	UserBuyersTable.ForeignKeys[1].RefTable = TransactionsTable
+	UserInfluencersTable.ForeignKeys[0].RefTable = TransactionsTable
+	UserSellersTable.ForeignKeys[0].RefTable = BlogPostsTable
+	UserSellersTable.ForeignKeys[1].RefTable = CommissionStructuresTable
+	UserSellersTable.ForeignKeys[2].RefTable = ProductsTable
+	ViewAnalyticsTable.ForeignKeys[0].RefTable = ProductPageViewsTable
 }

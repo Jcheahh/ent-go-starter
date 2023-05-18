@@ -16,36 +16,92 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Age holds the value of the "age" field.
-	Age int `json:"age,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Email holds the value of the "email" field.
+	Email string `json:"email,omitempty"`
+	// Phone holds the value of the "phone" field.
+	Phone string `json:"phone,omitempty"`
+	// Address holds the value of the "address" field.
+	Address string `json:"address,omitempty"`
+	// City holds the value of the "city" field.
+	City string `json:"city,omitempty"`
+	// State holds the value of the "state" field.
+	State string `json:"state,omitempty"`
+	// Zip holds the value of the "zip" field.
+	Zip string `json:"zip,omitempty"`
+	// Country holds the value of the "country" field.
+	Country string `json:"country,omitempty"`
+	// DateCreated holds the value of the "dateCreated" field.
+	DateCreated string `json:"dateCreated,omitempty"`
+	// DateUpdated holds the value of the "dateUpdated" field.
+	DateUpdated string `json:"dateUpdated,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges        UserEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                        UserEdges `json:"edges"`
+	notification_recipient       *int
+	user_buyer_user_profile      *int
+	user_influencer_user_profile *int
+	user_seller_user_profile     *int
+	selectValues                 sql.SelectValues
 }
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// Cars holds the value of the cars edge.
-	Cars []*Car `json:"cars,omitempty"`
+	// Notifications holds the value of the notifications edge.
+	Notifications []*Notification `json:"notifications,omitempty"`
+	// BankAccounts holds the value of the bankAccounts edge.
+	BankAccounts []*BankAccount `json:"bankAccounts,omitempty"`
+	// ShippingAddresses holds the value of the shippingAddresses edge.
+	ShippingAddresses []*ShippingAddress `json:"shippingAddresses,omitempty"`
+	// PaymentMethods holds the value of the paymentMethods edge.
+	PaymentMethods []*PaymentMethod `json:"paymentMethods,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [4]map[string]int
 
-	namedCars map[string][]*Car
+	namedNotifications     map[string][]*Notification
+	namedBankAccounts      map[string][]*BankAccount
+	namedShippingAddresses map[string][]*ShippingAddress
+	namedPaymentMethods    map[string][]*PaymentMethod
 }
 
-// CarsOrErr returns the Cars value or an error if the edge
+// NotificationsOrErr returns the Notifications value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) CarsOrErr() ([]*Car, error) {
+func (e UserEdges) NotificationsOrErr() ([]*Notification, error) {
 	if e.loadedTypes[0] {
-		return e.Cars, nil
+		return e.Notifications, nil
 	}
-	return nil, &NotLoadedError{edge: "cars"}
+	return nil, &NotLoadedError{edge: "notifications"}
+}
+
+// BankAccountsOrErr returns the BankAccounts value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) BankAccountsOrErr() ([]*BankAccount, error) {
+	if e.loadedTypes[1] {
+		return e.BankAccounts, nil
+	}
+	return nil, &NotLoadedError{edge: "bankAccounts"}
+}
+
+// ShippingAddressesOrErr returns the ShippingAddresses value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) ShippingAddressesOrErr() ([]*ShippingAddress, error) {
+	if e.loadedTypes[2] {
+		return e.ShippingAddresses, nil
+	}
+	return nil, &NotLoadedError{edge: "shippingAddresses"}
+}
+
+// PaymentMethodsOrErr returns the PaymentMethods value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PaymentMethodsOrErr() ([]*PaymentMethod, error) {
+	if e.loadedTypes[3] {
+		return e.PaymentMethods, nil
+	}
+	return nil, &NotLoadedError{edge: "paymentMethods"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -53,10 +109,18 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldAge:
+		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldName:
+		case user.FieldName, user.FieldEmail, user.FieldPhone, user.FieldAddress, user.FieldCity, user.FieldState, user.FieldZip, user.FieldCountry, user.FieldDateCreated, user.FieldDateUpdated:
 			values[i] = new(sql.NullString)
+		case user.ForeignKeys[0]: // notification_recipient
+			values[i] = new(sql.NullInt64)
+		case user.ForeignKeys[1]: // user_buyer_user_profile
+			values[i] = new(sql.NullInt64)
+		case user.ForeignKeys[2]: // user_influencer_user_profile
+			values[i] = new(sql.NullInt64)
+		case user.ForeignKeys[3]: // user_seller_user_profile
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -78,17 +142,93 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			u.ID = int(value.Int64)
-		case user.FieldAge:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field age", values[i])
-			} else if value.Valid {
-				u.Age = int(value.Int64)
-			}
 		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				u.Name = value.String
+			}
+		case user.FieldEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field email", values[i])
+			} else if value.Valid {
+				u.Email = value.String
+			}
+		case user.FieldPhone:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field phone", values[i])
+			} else if value.Valid {
+				u.Phone = value.String
+			}
+		case user.FieldAddress:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field address", values[i])
+			} else if value.Valid {
+				u.Address = value.String
+			}
+		case user.FieldCity:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field city", values[i])
+			} else if value.Valid {
+				u.City = value.String
+			}
+		case user.FieldState:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				u.State = value.String
+			}
+		case user.FieldZip:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field zip", values[i])
+			} else if value.Valid {
+				u.Zip = value.String
+			}
+		case user.FieldCountry:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field country", values[i])
+			} else if value.Valid {
+				u.Country = value.String
+			}
+		case user.FieldDateCreated:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field dateCreated", values[i])
+			} else if value.Valid {
+				u.DateCreated = value.String
+			}
+		case user.FieldDateUpdated:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field dateUpdated", values[i])
+			} else if value.Valid {
+				u.DateUpdated = value.String
+			}
+		case user.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field notification_recipient", value)
+			} else if value.Valid {
+				u.notification_recipient = new(int)
+				*u.notification_recipient = int(value.Int64)
+			}
+		case user.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_buyer_user_profile", value)
+			} else if value.Valid {
+				u.user_buyer_user_profile = new(int)
+				*u.user_buyer_user_profile = int(value.Int64)
+			}
+		case user.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_influencer_user_profile", value)
+			} else if value.Valid {
+				u.user_influencer_user_profile = new(int)
+				*u.user_influencer_user_profile = int(value.Int64)
+			}
+		case user.ForeignKeys[3]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_seller_user_profile", value)
+			} else if value.Valid {
+				u.user_seller_user_profile = new(int)
+				*u.user_seller_user_profile = int(value.Int64)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -103,9 +243,24 @@ func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
 }
 
-// QueryCars queries the "cars" edge of the User entity.
-func (u *User) QueryCars() *CarQuery {
-	return NewUserClient(u.config).QueryCars(u)
+// QueryNotifications queries the "notifications" edge of the User entity.
+func (u *User) QueryNotifications() *NotificationQuery {
+	return NewUserClient(u.config).QueryNotifications(u)
+}
+
+// QueryBankAccounts queries the "bankAccounts" edge of the User entity.
+func (u *User) QueryBankAccounts() *BankAccountQuery {
+	return NewUserClient(u.config).QueryBankAccounts(u)
+}
+
+// QueryShippingAddresses queries the "shippingAddresses" edge of the User entity.
+func (u *User) QueryShippingAddresses() *ShippingAddressQuery {
+	return NewUserClient(u.config).QueryShippingAddresses(u)
+}
+
+// QueryPaymentMethods queries the "paymentMethods" edge of the User entity.
+func (u *User) QueryPaymentMethods() *PaymentMethodQuery {
+	return NewUserClient(u.config).QueryPaymentMethods(u)
 }
 
 // Update returns a builder for updating this User.
@@ -131,36 +286,132 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
-	builder.WriteString("age=")
-	builder.WriteString(fmt.Sprintf("%v", u.Age))
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(u.Name)
+	builder.WriteString(", ")
+	builder.WriteString("email=")
+	builder.WriteString(u.Email)
+	builder.WriteString(", ")
+	builder.WriteString("phone=")
+	builder.WriteString(u.Phone)
+	builder.WriteString(", ")
+	builder.WriteString("address=")
+	builder.WriteString(u.Address)
+	builder.WriteString(", ")
+	builder.WriteString("city=")
+	builder.WriteString(u.City)
+	builder.WriteString(", ")
+	builder.WriteString("state=")
+	builder.WriteString(u.State)
+	builder.WriteString(", ")
+	builder.WriteString("zip=")
+	builder.WriteString(u.Zip)
+	builder.WriteString(", ")
+	builder.WriteString("country=")
+	builder.WriteString(u.Country)
+	builder.WriteString(", ")
+	builder.WriteString("dateCreated=")
+	builder.WriteString(u.DateCreated)
+	builder.WriteString(", ")
+	builder.WriteString("dateUpdated=")
+	builder.WriteString(u.DateUpdated)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// NamedCars returns the Cars named value or an error if the edge was not
+// NamedNotifications returns the Notifications named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedCars(name string) ([]*Car, error) {
-	if u.Edges.namedCars == nil {
+func (u *User) NamedNotifications(name string) ([]*Notification, error) {
+	if u.Edges.namedNotifications == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedCars[name]
+	nodes, ok := u.Edges.namedNotifications[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedCars(name string, edges ...*Car) {
-	if u.Edges.namedCars == nil {
-		u.Edges.namedCars = make(map[string][]*Car)
+func (u *User) appendNamedNotifications(name string, edges ...*Notification) {
+	if u.Edges.namedNotifications == nil {
+		u.Edges.namedNotifications = make(map[string][]*Notification)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedCars[name] = []*Car{}
+		u.Edges.namedNotifications[name] = []*Notification{}
 	} else {
-		u.Edges.namedCars[name] = append(u.Edges.namedCars[name], edges...)
+		u.Edges.namedNotifications[name] = append(u.Edges.namedNotifications[name], edges...)
+	}
+}
+
+// NamedBankAccounts returns the BankAccounts named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedBankAccounts(name string) ([]*BankAccount, error) {
+	if u.Edges.namedBankAccounts == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedBankAccounts[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedBankAccounts(name string, edges ...*BankAccount) {
+	if u.Edges.namedBankAccounts == nil {
+		u.Edges.namedBankAccounts = make(map[string][]*BankAccount)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedBankAccounts[name] = []*BankAccount{}
+	} else {
+		u.Edges.namedBankAccounts[name] = append(u.Edges.namedBankAccounts[name], edges...)
+	}
+}
+
+// NamedShippingAddresses returns the ShippingAddresses named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedShippingAddresses(name string) ([]*ShippingAddress, error) {
+	if u.Edges.namedShippingAddresses == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedShippingAddresses[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedShippingAddresses(name string, edges ...*ShippingAddress) {
+	if u.Edges.namedShippingAddresses == nil {
+		u.Edges.namedShippingAddresses = make(map[string][]*ShippingAddress)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedShippingAddresses[name] = []*ShippingAddress{}
+	} else {
+		u.Edges.namedShippingAddresses[name] = append(u.Edges.namedShippingAddresses[name], edges...)
+	}
+}
+
+// NamedPaymentMethods returns the PaymentMethods named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedPaymentMethods(name string) ([]*PaymentMethod, error) {
+	if u.Edges.namedPaymentMethods == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedPaymentMethods[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedPaymentMethods(name string, edges ...*PaymentMethod) {
+	if u.Edges.namedPaymentMethods == nil {
+		u.Edges.namedPaymentMethods = make(map[string][]*PaymentMethod)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedPaymentMethods[name] = []*PaymentMethod{}
+	} else {
+		u.Edges.namedPaymentMethods[name] = append(u.Edges.namedPaymentMethods[name], edges...)
 	}
 }
 

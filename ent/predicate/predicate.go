@@ -6,14 +6,101 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Car is the predicate function for car builders.
-type Car func(*sql.Selector)
+// BankAccount is the predicate function for bankaccount builders.
+type BankAccount func(*sql.Selector)
+
+// BlogPost is the predicate function for blogpost builders.
+type BlogPost func(*sql.Selector)
+
+// Category is the predicate function for category builders.
+type Category func(*sql.Selector)
+
+// Chat is the predicate function for chat builders.
+type Chat func(*sql.Selector)
+
+// CommissionStructure is the predicate function for commissionstructure builders.
+type CommissionStructure func(*sql.Selector)
+
+// ContentBlock is the predicate function for contentblock builders.
+type ContentBlock func(*sql.Selector)
+
+// EmailCampaign is the predicate function for emailcampaign builders.
+type EmailCampaign func(*sql.Selector)
 
 // Group is the predicate function for group builders.
 type Group func(*sql.Selector)
 
-// Todo is the predicate function for todo builders.
-type Todo func(*sql.Selector)
+// GroupBuy is the predicate function for groupbuy builders.
+type GroupBuy func(*sql.Selector)
+
+// HeroContent is the predicate function for herocontent builders.
+type HeroContent func(*sql.Selector)
+
+// Image is the predicate function for image builders.
+type Image func(*sql.Selector)
+
+// LinkVisit is the predicate function for linkvisit builders.
+type LinkVisit func(*sql.Selector)
+
+// MarketingCampaign is the predicate function for marketingcampaign builders.
+type MarketingCampaign func(*sql.Selector)
+
+// Notification is the predicate function for notification builders.
+type Notification func(*sql.Selector)
+
+// PaymentMethod is the predicate function for paymentmethod builders.
+type PaymentMethod func(*sql.Selector)
+
+// PrimaryContent is the predicate function for primarycontent builders.
+type PrimaryContent func(*sql.Selector)
+
+// Product is the predicate function for product builders.
+type Product func(*sql.Selector)
+
+// ProductAttribute is the predicate function for productattribute builders.
+type ProductAttribute func(*sql.Selector)
+
+// ProductPageView is the predicate function for productpageview builders.
+type ProductPageView func(*sql.Selector)
+
+// ProductVariation is the predicate function for productvariation builders.
+type ProductVariation func(*sql.Selector)
+
+// ReferralLink is the predicate function for referrallink builders.
+type ReferralLink func(*sql.Selector)
+
+// RefundTransactions is the predicate function for refundtransactions builders.
+type RefundTransactions func(*sql.Selector)
+
+// Review is the predicate function for review builders.
+type Review func(*sql.Selector)
+
+// RewardType is the predicate function for rewardtype builders.
+type RewardType func(*sql.Selector)
+
+// ShippingAddress is the predicate function for shippingaddress builders.
+type ShippingAddress func(*sql.Selector)
+
+// Shop is the predicate function for shop builders.
+type Shop func(*sql.Selector)
+
+// Tag is the predicate function for tag builders.
+type Tag func(*sql.Selector)
+
+// Transaction is the predicate function for transaction builders.
+type Transaction func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserBuyer is the predicate function for userbuyer builders.
+type UserBuyer func(*sql.Selector)
+
+// UserInfluencer is the predicate function for userinfluencer builders.
+type UserInfluencer func(*sql.Selector)
+
+// UserSeller is the predicate function for userseller builders.
+type UserSeller func(*sql.Selector)
+
+// ViewAnalytics is the predicate function for viewanalytics builders.
+type ViewAnalytics func(*sql.Selector)

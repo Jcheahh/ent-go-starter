@@ -3,7 +3,9 @@ package schema
 import (
 	"regexp"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 )
 
@@ -22,4 +24,12 @@ func (Group) Fields() []ent.Field {
 // Edges of the Group.
 func (Group) Edges() []ent.Edge {
 	return nil
+}
+
+func (Group) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
+	}
 }

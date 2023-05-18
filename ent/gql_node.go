@@ -4,10 +4,39 @@ package ent
 
 import (
 	"context"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/blogpost"
+	"entdemo/ent/category"
+	"entdemo/ent/chat"
+	"entdemo/ent/commissionstructure"
+	"entdemo/ent/contentblock"
+	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
-	"entdemo/ent/todo"
+	"entdemo/ent/groupbuy"
+	"entdemo/ent/herocontent"
+	"entdemo/ent/image"
+	"entdemo/ent/linkvisit"
+	"entdemo/ent/marketingcampaign"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
+	"entdemo/ent/primarycontent"
+	"entdemo/ent/product"
+	"entdemo/ent/productattribute"
+	"entdemo/ent/productpageview"
+	"entdemo/ent/productvariation"
+	"entdemo/ent/referrallink"
+	"entdemo/ent/refundtransactions"
+	"entdemo/ent/review"
+	"entdemo/ent/rewardtype"
+	"entdemo/ent/shippingaddress"
+	"entdemo/ent/shop"
+	"entdemo/ent/tag"
+	"entdemo/ent/transaction"
 	"entdemo/ent/user"
+	"entdemo/ent/userbuyer"
+	"entdemo/ent/userinfluencer"
+	"entdemo/ent/userseller"
+	"entdemo/ent/viewanalytics"
 	"fmt"
 	"sync"
 	"sync/atomic"
@@ -27,16 +56,103 @@ type Noder interface {
 }
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Car) IsNode() {}
+func (n *BankAccount) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *BlogPost) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Category) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Chat) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *CommissionStructure) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ContentBlock) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *EmailCampaign) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Group) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Todo) IsNode() {}
+func (n *GroupBuy) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *HeroContent) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Image) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *LinkVisit) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *MarketingCampaign) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Notification) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *PaymentMethod) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *PrimaryContent) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Product) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ProductAttribute) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ProductPageView) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ProductVariation) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ReferralLink) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *RefundTransactions) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Review) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *RewardType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ShippingAddress) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Shop) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Tag) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Transaction) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *User) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *UserBuyer) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *UserInfluencer) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *UserSeller) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ViewAnalytics) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -96,10 +212,82 @@ func (c *Client) Noder(ctx context.Context, id int, opts ...NodeOption) (_ Noder
 
 func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error) {
 	switch table {
-	case car.Table:
-		query := c.Car.Query().
-			Where(car.ID(id))
-		query, err := query.CollectFields(ctx, "Car")
+	case bankaccount.Table:
+		query := c.BankAccount.Query().
+			Where(bankaccount.ID(id))
+		query, err := query.CollectFields(ctx, "BankAccount")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case blogpost.Table:
+		query := c.BlogPost.Query().
+			Where(blogpost.ID(id))
+		query, err := query.CollectFields(ctx, "BlogPost")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case category.Table:
+		query := c.Category.Query().
+			Where(category.ID(id))
+		query, err := query.CollectFields(ctx, "Category")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case chat.Table:
+		query := c.Chat.Query().
+			Where(chat.ID(id))
+		query, err := query.CollectFields(ctx, "Chat")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case commissionstructure.Table:
+		query := c.CommissionStructure.Query().
+			Where(commissionstructure.ID(id))
+		query, err := query.CollectFields(ctx, "CommissionStructure")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case contentblock.Table:
+		query := c.ContentBlock.Query().
+			Where(contentblock.ID(id))
+		query, err := query.CollectFields(ctx, "ContentBlock")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case emailcampaign.Table:
+		query := c.EmailCampaign.Query().
+			Where(emailcampaign.ID(id))
+		query, err := query.CollectFields(ctx, "EmailCampaign")
 		if err != nil {
 			return nil, err
 		}
@@ -120,10 +308,238 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case todo.Table:
-		query := c.Todo.Query().
-			Where(todo.ID(id))
-		query, err := query.CollectFields(ctx, "Todo")
+	case groupbuy.Table:
+		query := c.GroupBuy.Query().
+			Where(groupbuy.ID(id))
+		query, err := query.CollectFields(ctx, "GroupBuy")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case herocontent.Table:
+		query := c.HeroContent.Query().
+			Where(herocontent.ID(id))
+		query, err := query.CollectFields(ctx, "HeroContent")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case image.Table:
+		query := c.Image.Query().
+			Where(image.ID(id))
+		query, err := query.CollectFields(ctx, "Image")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case linkvisit.Table:
+		query := c.LinkVisit.Query().
+			Where(linkvisit.ID(id))
+		query, err := query.CollectFields(ctx, "LinkVisit")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case marketingcampaign.Table:
+		query := c.MarketingCampaign.Query().
+			Where(marketingcampaign.ID(id))
+		query, err := query.CollectFields(ctx, "MarketingCampaign")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case notification.Table:
+		query := c.Notification.Query().
+			Where(notification.ID(id))
+		query, err := query.CollectFields(ctx, "Notification")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case paymentmethod.Table:
+		query := c.PaymentMethod.Query().
+			Where(paymentmethod.ID(id))
+		query, err := query.CollectFields(ctx, "PaymentMethod")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case primarycontent.Table:
+		query := c.PrimaryContent.Query().
+			Where(primarycontent.ID(id))
+		query, err := query.CollectFields(ctx, "PrimaryContent")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case product.Table:
+		query := c.Product.Query().
+			Where(product.ID(id))
+		query, err := query.CollectFields(ctx, "Product")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case productattribute.Table:
+		query := c.ProductAttribute.Query().
+			Where(productattribute.ID(id))
+		query, err := query.CollectFields(ctx, "ProductAttribute")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case productpageview.Table:
+		query := c.ProductPageView.Query().
+			Where(productpageview.ID(id))
+		query, err := query.CollectFields(ctx, "ProductPageView")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case productvariation.Table:
+		query := c.ProductVariation.Query().
+			Where(productvariation.ID(id))
+		query, err := query.CollectFields(ctx, "ProductVariation")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case referrallink.Table:
+		query := c.ReferralLink.Query().
+			Where(referrallink.ID(id))
+		query, err := query.CollectFields(ctx, "ReferralLink")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case refundtransactions.Table:
+		query := c.RefundTransactions.Query().
+			Where(refundtransactions.ID(id))
+		query, err := query.CollectFields(ctx, "RefundTransactions")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case review.Table:
+		query := c.Review.Query().
+			Where(review.ID(id))
+		query, err := query.CollectFields(ctx, "Review")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case rewardtype.Table:
+		query := c.RewardType.Query().
+			Where(rewardtype.ID(id))
+		query, err := query.CollectFields(ctx, "RewardType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case shippingaddress.Table:
+		query := c.ShippingAddress.Query().
+			Where(shippingaddress.ID(id))
+		query, err := query.CollectFields(ctx, "ShippingAddress")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case shop.Table:
+		query := c.Shop.Query().
+			Where(shop.ID(id))
+		query, err := query.CollectFields(ctx, "Shop")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case tag.Table:
+		query := c.Tag.Query().
+			Where(tag.ID(id))
+		query, err := query.CollectFields(ctx, "Tag")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case transaction.Table:
+		query := c.Transaction.Query().
+			Where(transaction.ID(id))
+		query, err := query.CollectFields(ctx, "Transaction")
 		if err != nil {
 			return nil, err
 		}
@@ -136,6 +552,54 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		query := c.User.Query().
 			Where(user.ID(id))
 		query, err := query.CollectFields(ctx, "User")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case userbuyer.Table:
+		query := c.UserBuyer.Query().
+			Where(userbuyer.ID(id))
+		query, err := query.CollectFields(ctx, "UserBuyer")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case userinfluencer.Table:
+		query := c.UserInfluencer.Query().
+			Where(userinfluencer.ID(id))
+		query, err := query.CollectFields(ctx, "UserInfluencer")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case userseller.Table:
+		query := c.UserSeller.Query().
+			Where(userseller.ID(id))
+		query, err := query.CollectFields(ctx, "UserSeller")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case viewanalytics.Table:
+		query := c.ViewAnalytics.Query().
+			Where(viewanalytics.ID(id))
+		query, err := query.CollectFields(ctx, "ViewAnalytics")
 		if err != nil {
 			return nil, err
 		}
@@ -217,10 +681,106 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
-	case car.Table:
-		query := c.Car.Query().
-			Where(car.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Car")
+	case bankaccount.Table:
+		query := c.BankAccount.Query().
+			Where(bankaccount.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "BankAccount")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case blogpost.Table:
+		query := c.BlogPost.Query().
+			Where(blogpost.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "BlogPost")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case category.Table:
+		query := c.Category.Query().
+			Where(category.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Category")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case chat.Table:
+		query := c.Chat.Query().
+			Where(chat.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Chat")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case commissionstructure.Table:
+		query := c.CommissionStructure.Query().
+			Where(commissionstructure.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "CommissionStructure")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case contentblock.Table:
+		query := c.ContentBlock.Query().
+			Where(contentblock.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ContentBlock")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case emailcampaign.Table:
+		query := c.EmailCampaign.Query().
+			Where(emailcampaign.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "EmailCampaign")
 		if err != nil {
 			return nil, err
 		}
@@ -249,10 +809,314 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case todo.Table:
-		query := c.Todo.Query().
-			Where(todo.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Todo")
+	case groupbuy.Table:
+		query := c.GroupBuy.Query().
+			Where(groupbuy.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "GroupBuy")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case herocontent.Table:
+		query := c.HeroContent.Query().
+			Where(herocontent.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "HeroContent")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case image.Table:
+		query := c.Image.Query().
+			Where(image.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Image")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case linkvisit.Table:
+		query := c.LinkVisit.Query().
+			Where(linkvisit.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "LinkVisit")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case marketingcampaign.Table:
+		query := c.MarketingCampaign.Query().
+			Where(marketingcampaign.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "MarketingCampaign")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case notification.Table:
+		query := c.Notification.Query().
+			Where(notification.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Notification")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case paymentmethod.Table:
+		query := c.PaymentMethod.Query().
+			Where(paymentmethod.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "PaymentMethod")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case primarycontent.Table:
+		query := c.PrimaryContent.Query().
+			Where(primarycontent.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "PrimaryContent")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case product.Table:
+		query := c.Product.Query().
+			Where(product.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Product")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case productattribute.Table:
+		query := c.ProductAttribute.Query().
+			Where(productattribute.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ProductAttribute")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case productpageview.Table:
+		query := c.ProductPageView.Query().
+			Where(productpageview.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ProductPageView")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case productvariation.Table:
+		query := c.ProductVariation.Query().
+			Where(productvariation.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ProductVariation")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case referrallink.Table:
+		query := c.ReferralLink.Query().
+			Where(referrallink.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ReferralLink")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case refundtransactions.Table:
+		query := c.RefundTransactions.Query().
+			Where(refundtransactions.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "RefundTransactions")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case review.Table:
+		query := c.Review.Query().
+			Where(review.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Review")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case rewardtype.Table:
+		query := c.RewardType.Query().
+			Where(rewardtype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "RewardType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case shippingaddress.Table:
+		query := c.ShippingAddress.Query().
+			Where(shippingaddress.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ShippingAddress")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case shop.Table:
+		query := c.Shop.Query().
+			Where(shop.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Shop")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case tag.Table:
+		query := c.Tag.Query().
+			Where(tag.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Tag")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case transaction.Table:
+		query := c.Transaction.Query().
+			Where(transaction.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Transaction")
 		if err != nil {
 			return nil, err
 		}
@@ -269,6 +1133,70 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.User.Query().
 			Where(user.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "User")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case userbuyer.Table:
+		query := c.UserBuyer.Query().
+			Where(userbuyer.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "UserBuyer")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case userinfluencer.Table:
+		query := c.UserInfluencer.Query().
+			Where(userinfluencer.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "UserInfluencer")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case userseller.Table:
+		query := c.UserSeller.Query().
+			Where(userseller.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "UserSeller")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case viewanalytics.Table:
+		query := c.ViewAnalytics.Query().
+			Where(viewanalytics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ViewAnalytics")
 		if err != nil {
 			return nil, err
 		}

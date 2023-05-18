@@ -4,16 +4,197 @@ package ent
 
 import (
 	"context"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/blogpost"
+	"entdemo/ent/category"
+	"entdemo/ent/chat"
+	"entdemo/ent/commissionstructure"
+	"entdemo/ent/contentblock"
+	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
+	"entdemo/ent/groupbuy"
+	"entdemo/ent/herocontent"
+	"entdemo/ent/image"
+	"entdemo/ent/linkvisit"
+	"entdemo/ent/marketingcampaign"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
+	"entdemo/ent/primarycontent"
+	"entdemo/ent/product"
+	"entdemo/ent/productattribute"
+	"entdemo/ent/productpageview"
+	"entdemo/ent/productvariation"
+	"entdemo/ent/referrallink"
+	"entdemo/ent/refundtransactions"
+	"entdemo/ent/review"
+	"entdemo/ent/rewardtype"
+	"entdemo/ent/shippingaddress"
+	"entdemo/ent/shop"
+	"entdemo/ent/tag"
+	"entdemo/ent/transaction"
 	"entdemo/ent/user"
+	"entdemo/ent/userbuyer"
+	"entdemo/ent/userinfluencer"
+	"entdemo/ent/userseller"
+	"entdemo/ent/viewanalytics"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (c *CarQuery) CollectFields(ctx context.Context, satisfies ...string) (*CarQuery, error) {
+func (ba *BankAccountQuery) CollectFields(ctx context.Context, satisfies ...string) (*BankAccountQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ba, nil
+	}
+	if err := ba.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ba, nil
+}
+
+func (ba *BankAccountQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(bankaccount.Columns))
+		selectedFields = []string{bankaccount.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "xid":
+			if _, ok := fieldSeen[bankaccount.FieldXid]; !ok {
+				selectedFields = append(selectedFields, bankaccount.FieldXid)
+				fieldSeen[bankaccount.FieldXid] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ba.Select(selectedFields...)
+	}
+	return nil
+}
+
+type bankaccountPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []BankAccountPaginateOption
+}
+
+func newBankAccountPaginateArgs(rv map[string]interface{}) *bankaccountPaginateArgs {
+	args := &bankaccountPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (bp *BlogPostQuery) CollectFields(ctx context.Context, satisfies ...string) (*BlogPostQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return bp, nil
+	}
+	if err := bp.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return bp, nil
+}
+
+func (bp *BlogPostQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(blogpost.Columns))
+		selectedFields = []string{blogpost.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "author":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserSellerClient{config: bp.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			bp.WithNamedAuthor(alias, func(wq *UserSellerQuery) {
+				*wq = *query
+			})
+		case "title":
+			if _, ok := fieldSeen[blogpost.FieldTitle]; !ok {
+				selectedFields = append(selectedFields, blogpost.FieldTitle)
+				fieldSeen[blogpost.FieldTitle] = struct{}{}
+			}
+		case "content":
+			if _, ok := fieldSeen[blogpost.FieldContent]; !ok {
+				selectedFields = append(selectedFields, blogpost.FieldContent)
+				fieldSeen[blogpost.FieldContent] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[blogpost.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, blogpost.FieldDateCreated)
+				fieldSeen[blogpost.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[blogpost.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, blogpost.FieldDateUpdated)
+				fieldSeen[blogpost.FieldDateUpdated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		bp.Select(selectedFields...)
+	}
+	return nil
+}
+
+type blogpostPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []BlogPostPaginateOption
+}
+
+func newBlogPostPaginateArgs(rv map[string]interface{}) *blogpostPaginateArgs {
+	args := &blogpostPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (c *CategoryQuery) CollectFields(ctx context.Context, satisfies ...string) (*CategoryQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
 		return c, nil
@@ -24,34 +205,36 @@ func (c *CarQuery) CollectFields(ctx context.Context, satisfies ...string) (*Car
 	return c, nil
 }
 
-func (c *CarQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (c *CategoryQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(car.Columns))
-		selectedFields = []string{car.FieldID}
+		fieldSeen      = make(map[string]struct{}, len(category.Columns))
+		selectedFields = []string{category.FieldID}
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "owner":
+		case "products":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&UserClient{config: c.config}).Query()
+				query = (&ProductClient{config: c.config}).Query()
 			)
 			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
 				return err
 			}
-			c.withOwner = query
-		case "model":
-			if _, ok := fieldSeen[car.FieldModel]; !ok {
-				selectedFields = append(selectedFields, car.FieldModel)
-				fieldSeen[car.FieldModel] = struct{}{}
+			c.WithNamedProducts(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[category.FieldName]; !ok {
+				selectedFields = append(selectedFields, category.FieldName)
+				fieldSeen[category.FieldName] = struct{}{}
 			}
-		case "registeredAt":
-			if _, ok := fieldSeen[car.FieldRegisteredAt]; !ok {
-				selectedFields = append(selectedFields, car.FieldRegisteredAt)
-				fieldSeen[car.FieldRegisteredAt] = struct{}{}
+		case "description":
+			if _, ok := fieldSeen[category.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, category.FieldDescription)
+				fieldSeen[category.FieldDescription] = struct{}{}
 			}
 		default:
 			unknownSeen = true
@@ -63,14 +246,306 @@ func (c *CarQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 	return nil
 }
 
-type carPaginateArgs struct {
+type categoryPaginateArgs struct {
 	first, last   *int
 	after, before *Cursor
-	opts          []CarPaginateOption
+	opts          []CategoryPaginateOption
 }
 
-func newCarPaginateArgs(rv map[string]interface{}) *carPaginateArgs {
-	args := &carPaginateArgs{}
+func newCategoryPaginateArgs(rv map[string]interface{}) *categoryPaginateArgs {
+	args := &categoryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (c *ChatQuery) CollectFields(ctx context.Context, satisfies ...string) (*ChatQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return c, nil
+	}
+	if err := c.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *ChatQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(chat.Columns))
+		selectedFields = []string{chat.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "xid":
+			if _, ok := fieldSeen[chat.FieldXid]; !ok {
+				selectedFields = append(selectedFields, chat.FieldXid)
+				fieldSeen[chat.FieldXid] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		c.Select(selectedFields...)
+	}
+	return nil
+}
+
+type chatPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ChatPaginateOption
+}
+
+func newChatPaginateArgs(rv map[string]interface{}) *chatPaginateArgs {
+	args := &chatPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (cs *CommissionStructureQuery) CollectFields(ctx context.Context, satisfies ...string) (*CommissionStructureQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return cs, nil
+	}
+	if err := cs.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return cs, nil
+}
+
+func (cs *CommissionStructureQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(commissionstructure.Columns))
+		selectedFields = []string{commissionstructure.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "productseller":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserSellerClient{config: cs.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			cs.WithNamedProductSeller(alias, func(wq *UserSellerQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[commissionstructure.FieldName]; !ok {
+				selectedFields = append(selectedFields, commissionstructure.FieldName)
+				fieldSeen[commissionstructure.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[commissionstructure.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, commissionstructure.FieldDescription)
+				fieldSeen[commissionstructure.FieldDescription] = struct{}{}
+			}
+		case "commissionvalue":
+			if _, ok := fieldSeen[commissionstructure.FieldCommissionValue]; !ok {
+				selectedFields = append(selectedFields, commissionstructure.FieldCommissionValue)
+				fieldSeen[commissionstructure.FieldCommissionValue] = struct{}{}
+			}
+		case "commissionpercentage":
+			if _, ok := fieldSeen[commissionstructure.FieldCommissionPercentage]; !ok {
+				selectedFields = append(selectedFields, commissionstructure.FieldCommissionPercentage)
+				fieldSeen[commissionstructure.FieldCommissionPercentage] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		cs.Select(selectedFields...)
+	}
+	return nil
+}
+
+type commissionstructurePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []CommissionStructurePaginateOption
+}
+
+func newCommissionStructurePaginateArgs(rv map[string]interface{}) *commissionstructurePaginateArgs {
+	args := &commissionstructurePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (cb *ContentBlockQuery) CollectFields(ctx context.Context, satisfies ...string) (*ContentBlockQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return cb, nil
+	}
+	if err := cb.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return cb, nil
+}
+
+func (cb *ContentBlockQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(contentblock.Columns))
+		selectedFields = []string{contentblock.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "image":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ImageClient{config: cb.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			cb.WithNamedImage(alias, func(wq *ImageQuery) {
+				*wq = *query
+			})
+		case "primarymessage":
+			if _, ok := fieldSeen[contentblock.FieldPrimaryMessage]; !ok {
+				selectedFields = append(selectedFields, contentblock.FieldPrimaryMessage)
+				fieldSeen[contentblock.FieldPrimaryMessage] = struct{}{}
+			}
+		case "secondarymessage":
+			if _, ok := fieldSeen[contentblock.FieldSecondaryMessage]; !ok {
+				selectedFields = append(selectedFields, contentblock.FieldSecondaryMessage)
+				fieldSeen[contentblock.FieldSecondaryMessage] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		cb.Select(selectedFields...)
+	}
+	return nil
+}
+
+type contentblockPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ContentBlockPaginateOption
+}
+
+func newContentBlockPaginateArgs(rv map[string]interface{}) *contentblockPaginateArgs {
+	args := &contentblockPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ec *EmailCampaignQuery) CollectFields(ctx context.Context, satisfies ...string) (*EmailCampaignQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ec, nil
+	}
+	if err := ec.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ec, nil
+}
+
+func (ec *EmailCampaignQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(emailcampaign.Columns))
+		selectedFields = []string{emailcampaign.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "xid":
+			if _, ok := fieldSeen[emailcampaign.FieldXid]; !ok {
+				selectedFields = append(selectedFields, emailcampaign.FieldXid)
+				fieldSeen[emailcampaign.FieldXid] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ec.Select(selectedFields...)
+	}
+	return nil
+}
+
+type emailcampaignPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []EmailCampaignPaginateOption
+}
+
+func newEmailCampaignPaginateArgs(rv map[string]interface{}) *emailcampaignPaginateArgs {
+	args := &emailcampaignPaginateArgs{}
 	if rv == nil {
 		return args
 	}
@@ -152,7 +627,1769 @@ func newGroupPaginateArgs(rv map[string]interface{}) *groupPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (t *TodoQuery) CollectFields(ctx context.Context, satisfies ...string) (*TodoQuery, error) {
+func (gb *GroupBuyQuery) CollectFields(ctx context.Context, satisfies ...string) (*GroupBuyQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return gb, nil
+	}
+	if err := gb.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return gb, nil
+}
+
+func (gb *GroupBuyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(groupbuy.Columns))
+		selectedFields = []string{groupbuy.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "product":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: gb.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			gb.WithNamedProduct(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "transaction":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TransactionClient{config: gb.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			gb.WithNamedTransaction(alias, func(wq *TransactionQuery) {
+				*wq = *query
+			})
+		case "datecreated":
+			if _, ok := fieldSeen[groupbuy.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, groupbuy.FieldDateCreated)
+				fieldSeen[groupbuy.FieldDateCreated] = struct{}{}
+			}
+		case "productprice":
+			if _, ok := fieldSeen[groupbuy.FieldProductPrice]; !ok {
+				selectedFields = append(selectedFields, groupbuy.FieldProductPrice)
+				fieldSeen[groupbuy.FieldProductPrice] = struct{}{}
+			}
+		case "moq":
+			if _, ok := fieldSeen[groupbuy.FieldMoq]; !ok {
+				selectedFields = append(selectedFields, groupbuy.FieldMoq)
+				fieldSeen[groupbuy.FieldMoq] = struct{}{}
+			}
+		case "startdate":
+			if _, ok := fieldSeen[groupbuy.FieldStartDate]; !ok {
+				selectedFields = append(selectedFields, groupbuy.FieldStartDate)
+				fieldSeen[groupbuy.FieldStartDate] = struct{}{}
+			}
+		case "enddate":
+			if _, ok := fieldSeen[groupbuy.FieldEndDate]; !ok {
+				selectedFields = append(selectedFields, groupbuy.FieldEndDate)
+				fieldSeen[groupbuy.FieldEndDate] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		gb.Select(selectedFields...)
+	}
+	return nil
+}
+
+type groupbuyPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []GroupBuyPaginateOption
+}
+
+func newGroupBuyPaginateArgs(rv map[string]interface{}) *groupbuyPaginateArgs {
+	args := &groupbuyPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (hc *HeroContentQuery) CollectFields(ctx context.Context, satisfies ...string) (*HeroContentQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return hc, nil
+	}
+	if err := hc.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return hc, nil
+}
+
+func (hc *HeroContentQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(herocontent.Columns))
+		selectedFields = []string{herocontent.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "image":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ImageClient{config: hc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			hc.WithNamedImage(alias, func(wq *ImageQuery) {
+				*wq = *query
+			})
+		case "primarymessage":
+			if _, ok := fieldSeen[herocontent.FieldPrimaryMessage]; !ok {
+				selectedFields = append(selectedFields, herocontent.FieldPrimaryMessage)
+				fieldSeen[herocontent.FieldPrimaryMessage] = struct{}{}
+			}
+		case "secondarymessage":
+			if _, ok := fieldSeen[herocontent.FieldSecondaryMessage]; !ok {
+				selectedFields = append(selectedFields, herocontent.FieldSecondaryMessage)
+				fieldSeen[herocontent.FieldSecondaryMessage] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		hc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type herocontentPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []HeroContentPaginateOption
+}
+
+func newHeroContentPaginateArgs(rv map[string]interface{}) *herocontentPaginateArgs {
+	args := &herocontentPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (i *ImageQuery) CollectFields(ctx context.Context, satisfies ...string) (*ImageQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return i, nil
+	}
+	if err := i.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return i, nil
+}
+
+func (i *ImageQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(image.Columns))
+		selectedFields = []string{image.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "name":
+			if _, ok := fieldSeen[image.FieldName]; !ok {
+				selectedFields = append(selectedFields, image.FieldName)
+				fieldSeen[image.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[image.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, image.FieldDescription)
+				fieldSeen[image.FieldDescription] = struct{}{}
+			}
+		case "url":
+			if _, ok := fieldSeen[image.FieldURL]; !ok {
+				selectedFields = append(selectedFields, image.FieldURL)
+				fieldSeen[image.FieldURL] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		i.Select(selectedFields...)
+	}
+	return nil
+}
+
+type imagePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ImagePaginateOption
+}
+
+func newImagePaginateArgs(rv map[string]interface{}) *imagePaginateArgs {
+	args := &imagePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (lv *LinkVisitQuery) CollectFields(ctx context.Context, satisfies ...string) (*LinkVisitQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return lv, nil
+	}
+	if err := lv.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return lv, nil
+}
+
+func (lv *LinkVisitQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(linkvisit.Columns))
+		selectedFields = []string{linkvisit.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "datecreated":
+			if _, ok := fieldSeen[linkvisit.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, linkvisit.FieldDateCreated)
+				fieldSeen[linkvisit.FieldDateCreated] = struct{}{}
+			}
+		case "ipaddress":
+			if _, ok := fieldSeen[linkvisit.FieldIpAddress]; !ok {
+				selectedFields = append(selectedFields, linkvisit.FieldIpAddress)
+				fieldSeen[linkvisit.FieldIpAddress] = struct{}{}
+			}
+		case "salevalue":
+			if _, ok := fieldSeen[linkvisit.FieldSaleValue]; !ok {
+				selectedFields = append(selectedFields, linkvisit.FieldSaleValue)
+				fieldSeen[linkvisit.FieldSaleValue] = struct{}{}
+			}
+		case "commissionearned":
+			if _, ok := fieldSeen[linkvisit.FieldCommissionEarned]; !ok {
+				selectedFields = append(selectedFields, linkvisit.FieldCommissionEarned)
+				fieldSeen[linkvisit.FieldCommissionEarned] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		lv.Select(selectedFields...)
+	}
+	return nil
+}
+
+type linkvisitPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []LinkVisitPaginateOption
+}
+
+func newLinkVisitPaginateArgs(rv map[string]interface{}) *linkvisitPaginateArgs {
+	args := &linkvisitPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (mc *MarketingCampaignQuery) CollectFields(ctx context.Context, satisfies ...string) (*MarketingCampaignQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return mc, nil
+	}
+	if err := mc.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return mc, nil
+}
+
+func (mc *MarketingCampaignQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(marketingcampaign.Columns))
+		selectedFields = []string{marketingcampaign.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "product":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: mc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			mc.WithNamedProduct(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "consumerreward":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RewardTypeClient{config: mc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			mc.WithNamedConsumerReward(alias, func(wq *RewardTypeQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[marketingcampaign.FieldName]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldName)
+				fieldSeen[marketingcampaign.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[marketingcampaign.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldDescription)
+				fieldSeen[marketingcampaign.FieldDescription] = struct{}{}
+			}
+		case "consumerpurchasevalue":
+			if _, ok := fieldSeen[marketingcampaign.FieldConsumerPurchaseValue]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldConsumerPurchaseValue)
+				fieldSeen[marketingcampaign.FieldConsumerPurchaseValue] = struct{}{}
+			}
+		case "customerapplicationlogic":
+			if _, ok := fieldSeen[marketingcampaign.FieldCustomerApplicationLogic]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldCustomerApplicationLogic)
+				fieldSeen[marketingcampaign.FieldCustomerApplicationLogic] = struct{}{}
+			}
+		case "initialisationlogic":
+			if _, ok := fieldSeen[marketingcampaign.FieldInitialisationLogic]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldInitialisationLogic)
+				fieldSeen[marketingcampaign.FieldInitialisationLogic] = struct{}{}
+			}
+		case "startdate":
+			if _, ok := fieldSeen[marketingcampaign.FieldStartDate]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldStartDate)
+				fieldSeen[marketingcampaign.FieldStartDate] = struct{}{}
+			}
+		case "enddate":
+			if _, ok := fieldSeen[marketingcampaign.FieldEndDate]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldEndDate)
+				fieldSeen[marketingcampaign.FieldEndDate] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[marketingcampaign.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldDateCreated)
+				fieldSeen[marketingcampaign.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[marketingcampaign.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, marketingcampaign.FieldDateUpdated)
+				fieldSeen[marketingcampaign.FieldDateUpdated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		mc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type marketingcampaignPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []MarketingCampaignPaginateOption
+}
+
+func newMarketingCampaignPaginateArgs(rv map[string]interface{}) *marketingcampaignPaginateArgs {
+	args := &marketingcampaignPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (n *NotificationQuery) CollectFields(ctx context.Context, satisfies ...string) (*NotificationQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return n, nil
+	}
+	if err := n.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return n, nil
+}
+
+func (n *NotificationQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(notification.Columns))
+		selectedFields = []string{notification.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "recipient":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: n.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			n.WithNamedRecipient(alias, func(wq *UserQuery) {
+				*wq = *query
+			})
+		case "title":
+			if _, ok := fieldSeen[notification.FieldTitle]; !ok {
+				selectedFields = append(selectedFields, notification.FieldTitle)
+				fieldSeen[notification.FieldTitle] = struct{}{}
+			}
+		case "content":
+			if _, ok := fieldSeen[notification.FieldContent]; !ok {
+				selectedFields = append(selectedFields, notification.FieldContent)
+				fieldSeen[notification.FieldContent] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[notification.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, notification.FieldDateCreated)
+				fieldSeen[notification.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[notification.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, notification.FieldDateUpdated)
+				fieldSeen[notification.FieldDateUpdated] = struct{}{}
+			}
+		case "read":
+			if _, ok := fieldSeen[notification.FieldRead]; !ok {
+				selectedFields = append(selectedFields, notification.FieldRead)
+				fieldSeen[notification.FieldRead] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		n.Select(selectedFields...)
+	}
+	return nil
+}
+
+type notificationPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []NotificationPaginateOption
+}
+
+func newNotificationPaginateArgs(rv map[string]interface{}) *notificationPaginateArgs {
+	args := &notificationPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pm *PaymentMethodQuery) CollectFields(ctx context.Context, satisfies ...string) (*PaymentMethodQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pm, nil
+	}
+	if err := pm.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pm, nil
+}
+
+func (pm *PaymentMethodQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(paymentmethod.Columns))
+		selectedFields = []string{paymentmethod.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "xid":
+			if _, ok := fieldSeen[paymentmethod.FieldXid]; !ok {
+				selectedFields = append(selectedFields, paymentmethod.FieldXid)
+				fieldSeen[paymentmethod.FieldXid] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type paymentmethodPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []PaymentMethodPaginateOption
+}
+
+func newPaymentMethodPaginateArgs(rv map[string]interface{}) *paymentmethodPaginateArgs {
+	args := &paymentmethodPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pc *PrimaryContentQuery) CollectFields(ctx context.Context, satisfies ...string) (*PrimaryContentQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pc, nil
+	}
+	if err := pc.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pc, nil
+}
+
+func (pc *PrimaryContentQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(primarycontent.Columns))
+		selectedFields = []string{primarycontent.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "contentblock":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ContentBlockClient{config: pc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pc.WithNamedContentBlock(alias, func(wq *ContentBlockQuery) {
+				*wq = *query
+			})
+		case "placeholder":
+			if _, ok := fieldSeen[primarycontent.FieldPlaceholder]; !ok {
+				selectedFields = append(selectedFields, primarycontent.FieldPlaceholder)
+				fieldSeen[primarycontent.FieldPlaceholder] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type primarycontentPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []PrimaryContentPaginateOption
+}
+
+func newPrimaryContentPaginateArgs(rv map[string]interface{}) *primarycontentPaginateArgs {
+	args := &primarycontentPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pr *ProductQuery) CollectFields(ctx context.Context, satisfies ...string) (*ProductQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pr, nil
+	}
+	if err := pr.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pr, nil
+}
+
+func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(product.Columns))
+		selectedFields = []string{product.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "productseller":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserSellerClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedProductSeller(alias, func(wq *UserSellerQuery) {
+				*wq = *query
+			})
+		case "reviews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ReviewClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedReviews(alias, func(wq *ReviewQuery) {
+				*wq = *query
+			})
+		case "images":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ImageClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedImages(alias, func(wq *ImageQuery) {
+				*wq = *query
+			})
+		case "categories":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CategoryClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedCategories(alias, func(wq *CategoryQuery) {
+				*wq = *query
+			})
+		case "tags":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TagClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedTags(alias, func(wq *TagQuery) {
+				*wq = *query
+			})
+		case "productattributes":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductAttributeClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedProductAttributes(alias, func(wq *ProductAttributeQuery) {
+				*wq = *query
+			})
+		case "variations":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductVariationClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedVariations(alias, func(wq *ProductVariationQuery) {
+				*wq = *query
+			})
+		case "commissionstructure":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CommissionStructureClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedCommissionStructure(alias, func(wq *CommissionStructureQuery) {
+				*wq = *query
+			})
+		case "shop":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ShopClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedShop(alias, func(wq *ShopQuery) {
+				*wq = *query
+			})
+		case "groupbuys":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&GroupBuyClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedGroupBuys(alias, func(wq *GroupBuyQuery) {
+				*wq = *query
+			})
+		case "productpageviews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductPageViewClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedProductPageViews(alias, func(wq *ProductPageViewQuery) {
+				*wq = *query
+			})
+		case "blogposts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BlogPostClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedBlogPosts(alias, func(wq *BlogPostQuery) {
+				*wq = *query
+			})
+		case "marketingcampaigns":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MarketingCampaignClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedMarketingCampaigns(alias, func(wq *MarketingCampaignQuery) {
+				*wq = *query
+			})
+		case "chats":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ChatClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedChats(alias, func(wq *ChatQuery) {
+				*wq = *query
+			})
+		case "emailcampaign":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EmailCampaignClient{config: pr.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pr.WithNamedEmailCampaign(alias, func(wq *EmailCampaignQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[product.FieldName]; !ok {
+				selectedFields = append(selectedFields, product.FieldName)
+				fieldSeen[product.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[product.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, product.FieldDescription)
+				fieldSeen[product.FieldDescription] = struct{}{}
+			}
+		case "price":
+			if _, ok := fieldSeen[product.FieldPrice]; !ok {
+				selectedFields = append(selectedFields, product.FieldPrice)
+				fieldSeen[product.FieldPrice] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[product.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, product.FieldDateCreated)
+				fieldSeen[product.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[product.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, product.FieldDateUpdated)
+				fieldSeen[product.FieldDateUpdated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pr.Select(selectedFields...)
+	}
+	return nil
+}
+
+type productPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ProductPaginateOption
+}
+
+func newProductPaginateArgs(rv map[string]interface{}) *productPaginateArgs {
+	args := &productPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pa *ProductAttributeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ProductAttributeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pa, nil
+	}
+	if err := pa.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pa, nil
+}
+
+func (pa *ProductAttributeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(productattribute.Columns))
+		selectedFields = []string{productattribute.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "name":
+			if _, ok := fieldSeen[productattribute.FieldName]; !ok {
+				selectedFields = append(selectedFields, productattribute.FieldName)
+				fieldSeen[productattribute.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[productattribute.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, productattribute.FieldDescription)
+				fieldSeen[productattribute.FieldDescription] = struct{}{}
+			}
+		case "value":
+			if _, ok := fieldSeen[productattribute.FieldValue]; !ok {
+				selectedFields = append(selectedFields, productattribute.FieldValue)
+				fieldSeen[productattribute.FieldValue] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pa.Select(selectedFields...)
+	}
+	return nil
+}
+
+type productattributePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ProductAttributePaginateOption
+}
+
+func newProductAttributePaginateArgs(rv map[string]interface{}) *productattributePaginateArgs {
+	args := &productattributePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ppv *ProductPageViewQuery) CollectFields(ctx context.Context, satisfies ...string) (*ProductPageViewQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ppv, nil
+	}
+	if err := ppv.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ppv, nil
+}
+
+func (ppv *ProductPageViewQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(productpageview.Columns))
+		selectedFields = []string{productpageview.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "herocontent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&HeroContentClient{config: ppv.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ppv.WithNamedHeroContent(alias, func(wq *HeroContentQuery) {
+				*wq = *query
+			})
+		case "primarycontent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PrimaryContentClient{config: ppv.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ppv.WithNamedPrimaryContent(alias, func(wq *PrimaryContentQuery) {
+				*wq = *query
+			})
+		case "viewanalytics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ViewAnalyticsClient{config: ppv.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ppv.WithNamedViewAnalytics(alias, func(wq *ViewAnalyticsQuery) {
+				*wq = *query
+			})
+		case "version":
+			if _, ok := fieldSeen[productpageview.FieldVersion]; !ok {
+				selectedFields = append(selectedFields, productpageview.FieldVersion)
+				fieldSeen[productpageview.FieldVersion] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ppv.Select(selectedFields...)
+	}
+	return nil
+}
+
+type productpageviewPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ProductPageViewPaginateOption
+}
+
+func newProductPageViewPaginateArgs(rv map[string]interface{}) *productpageviewPaginateArgs {
+	args := &productpageviewPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pv *ProductVariationQuery) CollectFields(ctx context.Context, satisfies ...string) (*ProductVariationQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pv, nil
+	}
+	if err := pv.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pv, nil
+}
+
+func (pv *ProductVariationQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(productvariation.Columns))
+		selectedFields = []string{productvariation.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "productattributes":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductAttributeClient{config: pv.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pv.WithNamedProductAttributes(alias, func(wq *ProductAttributeQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[productvariation.FieldName]; !ok {
+				selectedFields = append(selectedFields, productvariation.FieldName)
+				fieldSeen[productvariation.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[productvariation.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, productvariation.FieldDescription)
+				fieldSeen[productvariation.FieldDescription] = struct{}{}
+			}
+		case "price":
+			if _, ok := fieldSeen[productvariation.FieldPrice]; !ok {
+				selectedFields = append(selectedFields, productvariation.FieldPrice)
+				fieldSeen[productvariation.FieldPrice] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pv.Select(selectedFields...)
+	}
+	return nil
+}
+
+type productvariationPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ProductVariationPaginateOption
+}
+
+func newProductVariationPaginateArgs(rv map[string]interface{}) *productvariationPaginateArgs {
+	args := &productvariationPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (rl *ReferralLinkQuery) CollectFields(ctx context.Context, satisfies ...string) (*ReferralLinkQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return rl, nil
+	}
+	if err := rl.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return rl, nil
+}
+
+func (rl *ReferralLinkQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(referrallink.Columns))
+		selectedFields = []string{referrallink.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "visits":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&LinkVisitClient{config: rl.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			rl.WithNamedVisits(alias, func(wq *LinkVisitQuery) {
+				*wq = *query
+			})
+		case "xid":
+			if _, ok := fieldSeen[referrallink.FieldXid]; !ok {
+				selectedFields = append(selectedFields, referrallink.FieldXid)
+				fieldSeen[referrallink.FieldXid] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[referrallink.FieldName]; !ok {
+				selectedFields = append(selectedFields, referrallink.FieldName)
+				fieldSeen[referrallink.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[referrallink.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, referrallink.FieldDescription)
+				fieldSeen[referrallink.FieldDescription] = struct{}{}
+			}
+		case "link":
+			if _, ok := fieldSeen[referrallink.FieldLink]; !ok {
+				selectedFields = append(selectedFields, referrallink.FieldLink)
+				fieldSeen[referrallink.FieldLink] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		rl.Select(selectedFields...)
+	}
+	return nil
+}
+
+type referrallinkPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ReferralLinkPaginateOption
+}
+
+func newReferralLinkPaginateArgs(rv map[string]interface{}) *referrallinkPaginateArgs {
+	args := &referrallinkPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (rt *RefundTransactionsQuery) CollectFields(ctx context.Context, satisfies ...string) (*RefundTransactionsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return rt, nil
+	}
+	if err := rt.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return rt, nil
+}
+
+func (rt *RefundTransactionsQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(refundtransactions.Columns))
+		selectedFields = []string{refundtransactions.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "transaction":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TransactionClient{config: rt.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			rt.WithNamedTransaction(alias, func(wq *TransactionQuery) {
+				*wq = *query
+			})
+		case "refundamount":
+			if _, ok := fieldSeen[refundtransactions.FieldRefundAmount]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldRefundAmount)
+				fieldSeen[refundtransactions.FieldRefundAmount] = struct{}{}
+			}
+		case "refundcurrency":
+			if _, ok := fieldSeen[refundtransactions.FieldRefundCurrency]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldRefundCurrency)
+				fieldSeen[refundtransactions.FieldRefundCurrency] = struct{}{}
+			}
+		case "refundreason":
+			if _, ok := fieldSeen[refundtransactions.FieldRefundReason]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldRefundReason)
+				fieldSeen[refundtransactions.FieldRefundReason] = struct{}{}
+			}
+		case "refundstatus":
+			if _, ok := fieldSeen[refundtransactions.FieldRefundStatus]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldRefundStatus)
+				fieldSeen[refundtransactions.FieldRefundStatus] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[refundtransactions.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldDateCreated)
+				fieldSeen[refundtransactions.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[refundtransactions.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, refundtransactions.FieldDateUpdated)
+				fieldSeen[refundtransactions.FieldDateUpdated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		rt.Select(selectedFields...)
+	}
+	return nil
+}
+
+type refundtransactionsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []RefundTransactionsPaginateOption
+}
+
+func newRefundTransactionsPaginateArgs(rv map[string]interface{}) *refundtransactionsPaginateArgs {
+	args := &refundtransactionsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (r *ReviewQuery) CollectFields(ctx context.Context, satisfies ...string) (*ReviewQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return r, nil
+	}
+	if err := r.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+func (r *ReviewQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(review.Columns))
+		selectedFields = []string{review.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "product":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: r.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			r.WithNamedProduct(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "productcustomer":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserBuyerClient{config: r.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			r.WithNamedProductCustomer(alias, func(wq *UserBuyerQuery) {
+				*wq = *query
+			})
+		case "type":
+			if _, ok := fieldSeen[review.FieldType]; !ok {
+				selectedFields = append(selectedFields, review.FieldType)
+				fieldSeen[review.FieldType] = struct{}{}
+			}
+		case "content":
+			if _, ok := fieldSeen[review.FieldContent]; !ok {
+				selectedFields = append(selectedFields, review.FieldContent)
+				fieldSeen[review.FieldContent] = struct{}{}
+			}
+		case "rating":
+			if _, ok := fieldSeen[review.FieldRating]; !ok {
+				selectedFields = append(selectedFields, review.FieldRating)
+				fieldSeen[review.FieldRating] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[review.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, review.FieldDateCreated)
+				fieldSeen[review.FieldDateCreated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		r.Select(selectedFields...)
+	}
+	return nil
+}
+
+type reviewPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ReviewPaginateOption
+}
+
+func newReviewPaginateArgs(rv map[string]interface{}) *reviewPaginateArgs {
+	args := &reviewPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (rt *RewardTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*RewardTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return rt, nil
+	}
+	if err := rt.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return rt, nil
+}
+
+func (rt *RewardTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(rewardtype.Columns))
+		selectedFields = []string{rewardtype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "type":
+			if _, ok := fieldSeen[rewardtype.FieldType]; !ok {
+				selectedFields = append(selectedFields, rewardtype.FieldType)
+				fieldSeen[rewardtype.FieldType] = struct{}{}
+			}
+		case "val":
+			if _, ok := fieldSeen[rewardtype.FieldVal]; !ok {
+				selectedFields = append(selectedFields, rewardtype.FieldVal)
+				fieldSeen[rewardtype.FieldVal] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		rt.Select(selectedFields...)
+	}
+	return nil
+}
+
+type rewardtypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []RewardTypePaginateOption
+}
+
+func newRewardTypePaginateArgs(rv map[string]interface{}) *rewardtypePaginateArgs {
+	args := &rewardtypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sa *ShippingAddressQuery) CollectFields(ctx context.Context, satisfies ...string) (*ShippingAddressQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sa, nil
+	}
+	if err := sa.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sa, nil
+}
+
+func (sa *ShippingAddressQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(shippingaddress.Columns))
+		selectedFields = []string{shippingaddress.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "name":
+			if _, ok := fieldSeen[shippingaddress.FieldName]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldName)
+				fieldSeen[shippingaddress.FieldName] = struct{}{}
+			}
+		case "address":
+			if _, ok := fieldSeen[shippingaddress.FieldAddress]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldAddress)
+				fieldSeen[shippingaddress.FieldAddress] = struct{}{}
+			}
+		case "city":
+			if _, ok := fieldSeen[shippingaddress.FieldCity]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldCity)
+				fieldSeen[shippingaddress.FieldCity] = struct{}{}
+			}
+		case "state":
+			if _, ok := fieldSeen[shippingaddress.FieldState]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldState)
+				fieldSeen[shippingaddress.FieldState] = struct{}{}
+			}
+		case "zip":
+			if _, ok := fieldSeen[shippingaddress.FieldZip]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldZip)
+				fieldSeen[shippingaddress.FieldZip] = struct{}{}
+			}
+		case "country":
+			if _, ok := fieldSeen[shippingaddress.FieldCountry]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldCountry)
+				fieldSeen[shippingaddress.FieldCountry] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[shippingaddress.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldDateCreated)
+				fieldSeen[shippingaddress.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[shippingaddress.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, shippingaddress.FieldDateUpdated)
+				fieldSeen[shippingaddress.FieldDateUpdated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sa.Select(selectedFields...)
+	}
+	return nil
+}
+
+type shippingaddressPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ShippingAddressPaginateOption
+}
+
+func newShippingAddressPaginateArgs(rv map[string]interface{}) *shippingaddressPaginateArgs {
+	args := &shippingaddressPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (s *ShopQuery) CollectFields(ctx context.Context, satisfies ...string) (*ShopQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return s, nil
+	}
+	if err := s.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
+func (s *ShopQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(shop.Columns))
+		selectedFields = []string{shop.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "products":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: s.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			s.WithNamedProducts(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "transactions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TransactionClient{config: s.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			s.WithNamedTransactions(alias, func(wq *TransactionQuery) {
+				*wq = *query
+			})
+		case "bankaccounts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BankAccountClient{config: s.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			s.WithNamedBankAccounts(alias, func(wq *BankAccountQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[shop.FieldName]; !ok {
+				selectedFields = append(selectedFields, shop.FieldName)
+				fieldSeen[shop.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[shop.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, shop.FieldDescription)
+				fieldSeen[shop.FieldDescription] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		s.Select(selectedFields...)
+	}
+	return nil
+}
+
+type shopPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ShopPaginateOption
+}
+
+func newShopPaginateArgs(rv map[string]interface{}) *shopPaginateArgs {
+	args := &shopPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (t *TagQuery) CollectFields(ctx context.Context, satisfies ...string) (*TagQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
 		return t, nil
@@ -163,19 +2400,275 @@ func (t *TodoQuery) CollectFields(ctx context.Context, satisfies ...string) (*To
 	return t, nil
 }
 
-func (t *TodoQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (t *TagQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(tag.Columns))
+		selectedFields = []string{tag.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "name":
+			if _, ok := fieldSeen[tag.FieldName]; !ok {
+				selectedFields = append(selectedFields, tag.FieldName)
+				fieldSeen[tag.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[tag.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, tag.FieldDescription)
+				fieldSeen[tag.FieldDescription] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		t.Select(selectedFields...)
+	}
 	return nil
 }
 
-type todoPaginateArgs struct {
+type tagPaginateArgs struct {
 	first, last   *int
 	after, before *Cursor
-	opts          []TodoPaginateOption
+	opts          []TagPaginateOption
 }
 
-func newTodoPaginateArgs(rv map[string]interface{}) *todoPaginateArgs {
-	args := &todoPaginateArgs{}
+func newTagPaginateArgs(rv map[string]interface{}) *tagPaginateArgs {
+	args := &tagPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (t *TransactionQuery) CollectFields(ctx context.Context, satisfies ...string) (*TransactionQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return t, nil
+	}
+	if err := t.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(transaction.Columns))
+		selectedFields = []string{transaction.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "product":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			t.WithNamedProduct(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "originlink":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&LinkVisitClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			t.WithNamedOriginLink(alias, func(wq *LinkVisitQuery) {
+				*wq = *query
+			})
+		case "productcustomer":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserBuyerClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			t.WithNamedProductCustomer(alias, func(wq *UserBuyerQuery) {
+				*wq = *query
+			})
+		case "shop":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ShopClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			t.WithNamedShop(alias, func(wq *ShopQuery) {
+				*wq = *query
+			})
+		case "productinfluencer":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserInfluencerClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			t.WithNamedProductInfluencer(alias, func(wq *UserInfluencerQuery) {
+				*wq = *query
+			})
+		case "datecreated":
+			if _, ok := fieldSeen[transaction.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldDateCreated)
+				fieldSeen[transaction.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[transaction.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldDateUpdated)
+				fieldSeen[transaction.FieldDateUpdated] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[transaction.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldStatus)
+				fieldSeen[transaction.FieldStatus] = struct{}{}
+			}
+		case "paymentmethod":
+			if _, ok := fieldSeen[transaction.FieldPaymentMethod]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentMethod)
+				fieldSeen[transaction.FieldPaymentMethod] = struct{}{}
+			}
+		case "paymentstatus":
+			if _, ok := fieldSeen[transaction.FieldPaymentStatus]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentStatus)
+				fieldSeen[transaction.FieldPaymentStatus] = struct{}{}
+			}
+		case "paymentid":
+			if _, ok := fieldSeen[transaction.FieldPaymentId]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentId)
+				fieldSeen[transaction.FieldPaymentId] = struct{}{}
+			}
+		case "paymentamount":
+			if _, ok := fieldSeen[transaction.FieldPaymentAmount]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentAmount)
+				fieldSeen[transaction.FieldPaymentAmount] = struct{}{}
+			}
+		case "paymentcurrency":
+			if _, ok := fieldSeen[transaction.FieldPaymentCurrency]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentCurrency)
+				fieldSeen[transaction.FieldPaymentCurrency] = struct{}{}
+			}
+		case "paymentdate":
+			if _, ok := fieldSeen[transaction.FieldPaymentDate]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentDate)
+				fieldSeen[transaction.FieldPaymentDate] = struct{}{}
+			}
+		case "paymentfee":
+			if _, ok := fieldSeen[transaction.FieldPaymentFee]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentFee)
+				fieldSeen[transaction.FieldPaymentFee] = struct{}{}
+			}
+		case "paymentnet":
+			if _, ok := fieldSeen[transaction.FieldPaymentNet]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentNet)
+				fieldSeen[transaction.FieldPaymentNet] = struct{}{}
+			}
+		case "paymentpayeremail":
+			if _, ok := fieldSeen[transaction.FieldPaymentPayerEmail]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPayerEmail)
+				fieldSeen[transaction.FieldPaymentPayerEmail] = struct{}{}
+			}
+		case "paymentpayerfirstname":
+			if _, ok := fieldSeen[transaction.FieldPaymentPayerFirstName]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPayerFirstName)
+				fieldSeen[transaction.FieldPaymentPayerFirstName] = struct{}{}
+			}
+		case "paymentpayerlastname":
+			if _, ok := fieldSeen[transaction.FieldPaymentPayerLastName]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPayerLastName)
+				fieldSeen[transaction.FieldPaymentPayerLastName] = struct{}{}
+			}
+		case "paymentpayerid":
+			if _, ok := fieldSeen[transaction.FieldPaymentPayerId]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPayerId)
+				fieldSeen[transaction.FieldPaymentPayerId] = struct{}{}
+			}
+		case "paymentpayerstatus":
+			if _, ok := fieldSeen[transaction.FieldPaymentPayerStatus]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPayerStatus)
+				fieldSeen[transaction.FieldPaymentPayerStatus] = struct{}{}
+			}
+		case "paymentreceiveremail":
+			if _, ok := fieldSeen[transaction.FieldPaymentReceiverEmail]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentReceiverEmail)
+				fieldSeen[transaction.FieldPaymentReceiverEmail] = struct{}{}
+			}
+		case "paymentreceiverid":
+			if _, ok := fieldSeen[transaction.FieldPaymentReceiverId]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentReceiverId)
+				fieldSeen[transaction.FieldPaymentReceiverId] = struct{}{}
+			}
+		case "paymenttax":
+			if _, ok := fieldSeen[transaction.FieldPaymentTax]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentTax)
+				fieldSeen[transaction.FieldPaymentTax] = struct{}{}
+			}
+		case "paymenttransactionid":
+			if _, ok := fieldSeen[transaction.FieldPaymentTransactionId]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentTransactionId)
+				fieldSeen[transaction.FieldPaymentTransactionId] = struct{}{}
+			}
+		case "paymenttransactiontype":
+			if _, ok := fieldSeen[transaction.FieldPaymentTransactionType]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentTransactionType)
+				fieldSeen[transaction.FieldPaymentTransactionType] = struct{}{}
+			}
+		case "paymentpendingreason":
+			if _, ok := fieldSeen[transaction.FieldPaymentPendingReason]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentPendingReason)
+				fieldSeen[transaction.FieldPaymentPendingReason] = struct{}{}
+			}
+		case "paymentreasoncode":
+			if _, ok := fieldSeen[transaction.FieldPaymentReasonCode]; !ok {
+				selectedFields = append(selectedFields, transaction.FieldPaymentReasonCode)
+				fieldSeen[transaction.FieldPaymentReasonCode] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		t.Select(selectedFields...)
+	}
+	return nil
+}
+
+type transactionPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TransactionPaginateOption
+}
+
+func newTransactionPaginateArgs(rv map[string]interface{}) *transactionPaginateArgs {
+	args := &transactionPaginateArgs{}
 	if rv == nil {
 		return args
 	}
@@ -215,27 +2708,103 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "cars":
+		case "notifications":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&CarClient{config: u.config}).Query()
+				query = (&NotificationClient{config: u.config}).Query()
 			)
 			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
 				return err
 			}
-			u.WithNamedCars(alias, func(wq *CarQuery) {
+			u.WithNamedNotifications(alias, func(wq *NotificationQuery) {
 				*wq = *query
 			})
-		case "age":
-			if _, ok := fieldSeen[user.FieldAge]; !ok {
-				selectedFields = append(selectedFields, user.FieldAge)
-				fieldSeen[user.FieldAge] = struct{}{}
+		case "bankaccounts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BankAccountClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
 			}
+			u.WithNamedBankAccounts(alias, func(wq *BankAccountQuery) {
+				*wq = *query
+			})
+		case "shippingaddresses":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ShippingAddressClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			u.WithNamedShippingAddresses(alias, func(wq *ShippingAddressQuery) {
+				*wq = *query
+			})
+		case "paymentmethods":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PaymentMethodClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			u.WithNamedPaymentMethods(alias, func(wq *PaymentMethodQuery) {
+				*wq = *query
+			})
 		case "name":
 			if _, ok := fieldSeen[user.FieldName]; !ok {
 				selectedFields = append(selectedFields, user.FieldName)
 				fieldSeen[user.FieldName] = struct{}{}
+			}
+		case "email":
+			if _, ok := fieldSeen[user.FieldEmail]; !ok {
+				selectedFields = append(selectedFields, user.FieldEmail)
+				fieldSeen[user.FieldEmail] = struct{}{}
+			}
+		case "phone":
+			if _, ok := fieldSeen[user.FieldPhone]; !ok {
+				selectedFields = append(selectedFields, user.FieldPhone)
+				fieldSeen[user.FieldPhone] = struct{}{}
+			}
+		case "address":
+			if _, ok := fieldSeen[user.FieldAddress]; !ok {
+				selectedFields = append(selectedFields, user.FieldAddress)
+				fieldSeen[user.FieldAddress] = struct{}{}
+			}
+		case "city":
+			if _, ok := fieldSeen[user.FieldCity]; !ok {
+				selectedFields = append(selectedFields, user.FieldCity)
+				fieldSeen[user.FieldCity] = struct{}{}
+			}
+		case "state":
+			if _, ok := fieldSeen[user.FieldState]; !ok {
+				selectedFields = append(selectedFields, user.FieldState)
+				fieldSeen[user.FieldState] = struct{}{}
+			}
+		case "zip":
+			if _, ok := fieldSeen[user.FieldZip]; !ok {
+				selectedFields = append(selectedFields, user.FieldZip)
+				fieldSeen[user.FieldZip] = struct{}{}
+			}
+		case "country":
+			if _, ok := fieldSeen[user.FieldCountry]; !ok {
+				selectedFields = append(selectedFields, user.FieldCountry)
+				fieldSeen[user.FieldCountry] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[user.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, user.FieldDateCreated)
+				fieldSeen[user.FieldDateCreated] = struct{}{}
+			}
+		case "dateupdated":
+			if _, ok := fieldSeen[user.FieldDateUpdated]; !ok {
+				selectedFields = append(selectedFields, user.FieldDateUpdated)
+				fieldSeen[user.FieldDateUpdated] = struct{}{}
 			}
 		default:
 			unknownSeen = true
@@ -255,6 +2824,413 @@ type userPaginateArgs struct {
 
 func newUserPaginateArgs(rv map[string]interface{}) *userPaginateArgs {
 	args := &userPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ub *UserBuyerQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserBuyerQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ub, nil
+	}
+	if err := ub.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ub, nil
+}
+
+func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userbuyer.Columns))
+		selectedFields = []string{userbuyer.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "userprofile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: ub.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ub.WithNamedUserProfile(alias, func(wq *UserQuery) {
+				*wq = *query
+			})
+		case "reviews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ReviewClient{config: ub.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ub.WithNamedReviews(alias, func(wq *ReviewQuery) {
+				*wq = *query
+			})
+		case "transactions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TransactionClient{config: ub.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ub.WithNamedTransactions(alias, func(wq *TransactionQuery) {
+				*wq = *query
+			})
+		case "linksclicked":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&LinkVisitClient{config: ub.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ub.WithNamedLinksClicked(alias, func(wq *LinkVisitQuery) {
+				*wq = *query
+			})
+		case "placeholder":
+			if _, ok := fieldSeen[userbuyer.FieldPlaceholder]; !ok {
+				selectedFields = append(selectedFields, userbuyer.FieldPlaceholder)
+				fieldSeen[userbuyer.FieldPlaceholder] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ub.Select(selectedFields...)
+	}
+	return nil
+}
+
+type userbuyerPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []UserBuyerPaginateOption
+}
+
+func newUserBuyerPaginateArgs(rv map[string]interface{}) *userbuyerPaginateArgs {
+	args := &userbuyerPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ui *UserInfluencerQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserInfluencerQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ui, nil
+	}
+	if err := ui.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ui, nil
+}
+
+func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userinfluencer.Columns))
+		selectedFields = []string{userinfluencer.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "userprofile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: ui.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ui.WithNamedUserProfile(alias, func(wq *UserQuery) {
+				*wq = *query
+			})
+		case "referrallinks":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ReferralLinkClient{config: ui.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ui.WithNamedReferralLinks(alias, func(wq *ReferralLinkQuery) {
+				*wq = *query
+			})
+		case "reviews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ReviewClient{config: ui.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ui.WithNamedReviews(alias, func(wq *ReviewQuery) {
+				*wq = *query
+			})
+		case "products":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: ui.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ui.WithNamedProducts(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "tags":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TagClient{config: ui.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			ui.WithNamedTags(alias, func(wq *TagQuery) {
+				*wq = *query
+			})
+		case "placeholder":
+			if _, ok := fieldSeen[userinfluencer.FieldPlaceholder]; !ok {
+				selectedFields = append(selectedFields, userinfluencer.FieldPlaceholder)
+				fieldSeen[userinfluencer.FieldPlaceholder] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ui.Select(selectedFields...)
+	}
+	return nil
+}
+
+type userinfluencerPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []UserInfluencerPaginateOption
+}
+
+func newUserInfluencerPaginateArgs(rv map[string]interface{}) *userinfluencerPaginateArgs {
+	args := &userinfluencerPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (us *UserSellerQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserSellerQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return us, nil
+	}
+	if err := us.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return us, nil
+}
+
+func (us *UserSellerQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userseller.Columns))
+		selectedFields = []string{userseller.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "userprofile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: us.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			us.WithNamedUserProfile(alias, func(wq *UserQuery) {
+				*wq = *query
+			})
+		case "shops":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ShopClient{config: us.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			us.WithNamedShops(alias, func(wq *ShopQuery) {
+				*wq = *query
+			})
+		case "brandname":
+			if _, ok := fieldSeen[userseller.FieldBrandName]; !ok {
+				selectedFields = append(selectedFields, userseller.FieldBrandName)
+				fieldSeen[userseller.FieldBrandName] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		us.Select(selectedFields...)
+	}
+	return nil
+}
+
+type usersellerPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []UserSellerPaginateOption
+}
+
+func newUserSellerPaginateArgs(rv map[string]interface{}) *usersellerPaginateArgs {
+	args := &usersellerPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (va *ViewAnalyticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ViewAnalyticsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return va, nil
+	}
+	if err := va.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return va, nil
+}
+
+func (va *ViewAnalyticsQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(viewanalytics.Columns))
+		selectedFields = []string{viewanalytics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "product":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProductClient{config: va.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			va.WithNamedProduct(alias, func(wq *ProductQuery) {
+				*wq = *query
+			})
+		case "views":
+			if _, ok := fieldSeen[viewanalytics.FieldViews]; !ok {
+				selectedFields = append(selectedFields, viewanalytics.FieldViews)
+				fieldSeen[viewanalytics.FieldViews] = struct{}{}
+			}
+		case "scrolls":
+			if _, ok := fieldSeen[viewanalytics.FieldScrolls]; !ok {
+				selectedFields = append(selectedFields, viewanalytics.FieldScrolls)
+				fieldSeen[viewanalytics.FieldScrolls] = struct{}{}
+			}
+		case "exits":
+			if _, ok := fieldSeen[viewanalytics.FieldExits]; !ok {
+				selectedFields = append(selectedFields, viewanalytics.FieldExits)
+				fieldSeen[viewanalytics.FieldExits] = struct{}{}
+			}
+		case "datecreated":
+			if _, ok := fieldSeen[viewanalytics.FieldDateCreated]; !ok {
+				selectedFields = append(selectedFields, viewanalytics.FieldDateCreated)
+				fieldSeen[viewanalytics.FieldDateCreated] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		va.Select(selectedFields...)
+	}
+	return nil
+}
+
+type viewanalyticsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ViewAnalyticsPaginateOption
+}
+
+func newViewAnalyticsPaginateArgs(rv map[string]interface{}) *viewanalyticsPaginateArgs {
+	args := &viewanalyticsPaginateArgs{}
 	if rv == nil {
 		return args
 	}

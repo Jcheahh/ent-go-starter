@@ -4,8 +4,11 @@ package ent
 
 import (
 	"context"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
 	"entdemo/ent/predicate"
+	"entdemo/ent/shippingaddress"
 	"entdemo/ent/user"
 	"errors"
 	"fmt"
@@ -28,46 +31,126 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetAge sets the "age" field.
-func (uu *UserUpdate) SetAge(i int) *UserUpdate {
-	uu.mutation.ResetAge()
-	uu.mutation.SetAge(i)
-	return uu
-}
-
-// AddAge adds i to the "age" field.
-func (uu *UserUpdate) AddAge(i int) *UserUpdate {
-	uu.mutation.AddAge(i)
-	return uu
-}
-
 // SetName sets the "name" field.
 func (uu *UserUpdate) SetName(s string) *UserUpdate {
 	uu.mutation.SetName(s)
 	return uu
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
+// SetEmail sets the "email" field.
+func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
+	uu.mutation.SetEmail(s)
+	return uu
+}
+
+// SetPhone sets the "phone" field.
+func (uu *UserUpdate) SetPhone(s string) *UserUpdate {
+	uu.mutation.SetPhone(s)
+	return uu
+}
+
+// SetAddress sets the "address" field.
+func (uu *UserUpdate) SetAddress(s string) *UserUpdate {
+	uu.mutation.SetAddress(s)
+	return uu
+}
+
+// SetCity sets the "city" field.
+func (uu *UserUpdate) SetCity(s string) *UserUpdate {
+	uu.mutation.SetCity(s)
+	return uu
+}
+
+// SetState sets the "state" field.
+func (uu *UserUpdate) SetState(s string) *UserUpdate {
+	uu.mutation.SetState(s)
+	return uu
+}
+
+// SetZip sets the "zip" field.
+func (uu *UserUpdate) SetZip(s string) *UserUpdate {
+	uu.mutation.SetZip(s)
+	return uu
+}
+
+// SetCountry sets the "country" field.
+func (uu *UserUpdate) SetCountry(s string) *UserUpdate {
+	uu.mutation.SetCountry(s)
+	return uu
+}
+
+// SetDateUpdated sets the "dateUpdated" field.
+func (uu *UserUpdate) SetDateUpdated(s string) *UserUpdate {
+	uu.mutation.SetDateUpdated(s)
+	return uu
+}
+
+// SetNillableDateUpdated sets the "dateUpdated" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableDateUpdated(s *string) *UserUpdate {
 	if s != nil {
-		uu.SetName(*s)
+		uu.SetDateUpdated(*s)
 	}
 	return uu
 }
 
-// AddCarIDs adds the "cars" edge to the Car entity by IDs.
-func (uu *UserUpdate) AddCarIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddCarIDs(ids...)
+// AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
+func (uu *UserUpdate) AddNotificationIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddNotificationIDs(ids...)
 	return uu
 }
 
-// AddCars adds the "cars" edges to the Car entity.
-func (uu *UserUpdate) AddCars(c ...*Car) *UserUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddNotifications adds the "notifications" edges to the Notification entity.
+func (uu *UserUpdate) AddNotifications(n ...*Notification) *UserUpdate {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
 	}
-	return uu.AddCarIDs(ids...)
+	return uu.AddNotificationIDs(ids...)
+}
+
+// AddBankAccountIDs adds the "bankAccounts" edge to the BankAccount entity by IDs.
+func (uu *UserUpdate) AddBankAccountIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddBankAccountIDs(ids...)
+	return uu
+}
+
+// AddBankAccounts adds the "bankAccounts" edges to the BankAccount entity.
+func (uu *UserUpdate) AddBankAccounts(b ...*BankAccount) *UserUpdate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return uu.AddBankAccountIDs(ids...)
+}
+
+// AddShippingAddressIDs adds the "shippingAddresses" edge to the ShippingAddress entity by IDs.
+func (uu *UserUpdate) AddShippingAddressIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddShippingAddressIDs(ids...)
+	return uu
+}
+
+// AddShippingAddresses adds the "shippingAddresses" edges to the ShippingAddress entity.
+func (uu *UserUpdate) AddShippingAddresses(s ...*ShippingAddress) *UserUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uu.AddShippingAddressIDs(ids...)
+}
+
+// AddPaymentMethodIDs adds the "paymentMethods" edge to the PaymentMethod entity by IDs.
+func (uu *UserUpdate) AddPaymentMethodIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddPaymentMethodIDs(ids...)
+	return uu
+}
+
+// AddPaymentMethods adds the "paymentMethods" edges to the PaymentMethod entity.
+func (uu *UserUpdate) AddPaymentMethods(p ...*PaymentMethod) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.AddPaymentMethodIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -75,25 +158,88 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearCars clears all "cars" edges to the Car entity.
-func (uu *UserUpdate) ClearCars() *UserUpdate {
-	uu.mutation.ClearCars()
+// ClearNotifications clears all "notifications" edges to the Notification entity.
+func (uu *UserUpdate) ClearNotifications() *UserUpdate {
+	uu.mutation.ClearNotifications()
 	return uu
 }
 
-// RemoveCarIDs removes the "cars" edge to Car entities by IDs.
-func (uu *UserUpdate) RemoveCarIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveCarIDs(ids...)
+// RemoveNotificationIDs removes the "notifications" edge to Notification entities by IDs.
+func (uu *UserUpdate) RemoveNotificationIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveNotificationIDs(ids...)
 	return uu
 }
 
-// RemoveCars removes "cars" edges to Car entities.
-func (uu *UserUpdate) RemoveCars(c ...*Car) *UserUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// RemoveNotifications removes "notifications" edges to Notification entities.
+func (uu *UserUpdate) RemoveNotifications(n ...*Notification) *UserUpdate {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
 	}
-	return uu.RemoveCarIDs(ids...)
+	return uu.RemoveNotificationIDs(ids...)
+}
+
+// ClearBankAccounts clears all "bankAccounts" edges to the BankAccount entity.
+func (uu *UserUpdate) ClearBankAccounts() *UserUpdate {
+	uu.mutation.ClearBankAccounts()
+	return uu
+}
+
+// RemoveBankAccountIDs removes the "bankAccounts" edge to BankAccount entities by IDs.
+func (uu *UserUpdate) RemoveBankAccountIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveBankAccountIDs(ids...)
+	return uu
+}
+
+// RemoveBankAccounts removes "bankAccounts" edges to BankAccount entities.
+func (uu *UserUpdate) RemoveBankAccounts(b ...*BankAccount) *UserUpdate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return uu.RemoveBankAccountIDs(ids...)
+}
+
+// ClearShippingAddresses clears all "shippingAddresses" edges to the ShippingAddress entity.
+func (uu *UserUpdate) ClearShippingAddresses() *UserUpdate {
+	uu.mutation.ClearShippingAddresses()
+	return uu
+}
+
+// RemoveShippingAddressIDs removes the "shippingAddresses" edge to ShippingAddress entities by IDs.
+func (uu *UserUpdate) RemoveShippingAddressIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveShippingAddressIDs(ids...)
+	return uu
+}
+
+// RemoveShippingAddresses removes "shippingAddresses" edges to ShippingAddress entities.
+func (uu *UserUpdate) RemoveShippingAddresses(s ...*ShippingAddress) *UserUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uu.RemoveShippingAddressIDs(ids...)
+}
+
+// ClearPaymentMethods clears all "paymentMethods" edges to the PaymentMethod entity.
+func (uu *UserUpdate) ClearPaymentMethods() *UserUpdate {
+	uu.mutation.ClearPaymentMethods()
+	return uu
+}
+
+// RemovePaymentMethodIDs removes the "paymentMethods" edge to PaymentMethod entities by IDs.
+func (uu *UserUpdate) RemovePaymentMethodIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemovePaymentMethodIDs(ids...)
+	return uu
+}
+
+// RemovePaymentMethods removes "paymentMethods" edges to PaymentMethod entities.
+func (uu *UserUpdate) RemovePaymentMethods(p ...*PaymentMethod) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.RemovePaymentMethodIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -123,20 +269,7 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (uu *UserUpdate) check() error {
-	if v, ok := uu.mutation.Age(); ok {
-		if err := user.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := uu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -145,37 +278,55 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-	}
-	if value, ok := uu.mutation.AddedAge(); ok {
-		_spec.AddField(user.FieldAge, field.TypeInt, value)
-	}
 	if value, ok := uu.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
 	}
-	if uu.mutation.CarsCleared() {
+	if value, ok := uu.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Address(); ok {
+		_spec.SetField(user.FieldAddress, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.City(); ok {
+		_spec.SetField(user.FieldCity, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Zip(); ok {
+		_spec.SetField(user.FieldZip, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Country(); ok {
+		_spec.SetField(user.FieldCountry, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.DateUpdated(); ok {
+		_spec.SetField(user.FieldDateUpdated, field.TypeString, value)
+	}
+	if uu.mutation.NotificationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedCarsIDs(); len(nodes) > 0 && !uu.mutation.CarsCleared() {
+	if nodes := uu.mutation.RemovedNotificationsIDs(); len(nodes) > 0 && !uu.mutation.NotificationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -183,15 +334,150 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.CarsIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.NotificationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.BankAccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedBankAccountsIDs(); len(nodes) > 0 && !uu.mutation.BankAccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.BankAccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.ShippingAddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedShippingAddressesIDs(); len(nodes) > 0 && !uu.mutation.ShippingAddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.ShippingAddressesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.PaymentMethodsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedPaymentMethodsIDs(); len(nodes) > 0 && !uu.mutation.PaymentMethodsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.PaymentMethodsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -219,46 +505,126 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetAge sets the "age" field.
-func (uuo *UserUpdateOne) SetAge(i int) *UserUpdateOne {
-	uuo.mutation.ResetAge()
-	uuo.mutation.SetAge(i)
-	return uuo
-}
-
-// AddAge adds i to the "age" field.
-func (uuo *UserUpdateOne) AddAge(i int) *UserUpdateOne {
-	uuo.mutation.AddAge(i)
-	return uuo
-}
-
 // SetName sets the "name" field.
 func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 	uuo.mutation.SetName(s)
 	return uuo
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
+// SetEmail sets the "email" field.
+func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
+	uuo.mutation.SetEmail(s)
+	return uuo
+}
+
+// SetPhone sets the "phone" field.
+func (uuo *UserUpdateOne) SetPhone(s string) *UserUpdateOne {
+	uuo.mutation.SetPhone(s)
+	return uuo
+}
+
+// SetAddress sets the "address" field.
+func (uuo *UserUpdateOne) SetAddress(s string) *UserUpdateOne {
+	uuo.mutation.SetAddress(s)
+	return uuo
+}
+
+// SetCity sets the "city" field.
+func (uuo *UserUpdateOne) SetCity(s string) *UserUpdateOne {
+	uuo.mutation.SetCity(s)
+	return uuo
+}
+
+// SetState sets the "state" field.
+func (uuo *UserUpdateOne) SetState(s string) *UserUpdateOne {
+	uuo.mutation.SetState(s)
+	return uuo
+}
+
+// SetZip sets the "zip" field.
+func (uuo *UserUpdateOne) SetZip(s string) *UserUpdateOne {
+	uuo.mutation.SetZip(s)
+	return uuo
+}
+
+// SetCountry sets the "country" field.
+func (uuo *UserUpdateOne) SetCountry(s string) *UserUpdateOne {
+	uuo.mutation.SetCountry(s)
+	return uuo
+}
+
+// SetDateUpdated sets the "dateUpdated" field.
+func (uuo *UserUpdateOne) SetDateUpdated(s string) *UserUpdateOne {
+	uuo.mutation.SetDateUpdated(s)
+	return uuo
+}
+
+// SetNillableDateUpdated sets the "dateUpdated" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableDateUpdated(s *string) *UserUpdateOne {
 	if s != nil {
-		uuo.SetName(*s)
+		uuo.SetDateUpdated(*s)
 	}
 	return uuo
 }
 
-// AddCarIDs adds the "cars" edge to the Car entity by IDs.
-func (uuo *UserUpdateOne) AddCarIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddCarIDs(ids...)
+// AddNotificationIDs adds the "notifications" edge to the Notification entity by IDs.
+func (uuo *UserUpdateOne) AddNotificationIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddNotificationIDs(ids...)
 	return uuo
 }
 
-// AddCars adds the "cars" edges to the Car entity.
-func (uuo *UserUpdateOne) AddCars(c ...*Car) *UserUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddNotifications adds the "notifications" edges to the Notification entity.
+func (uuo *UserUpdateOne) AddNotifications(n ...*Notification) *UserUpdateOne {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
 	}
-	return uuo.AddCarIDs(ids...)
+	return uuo.AddNotificationIDs(ids...)
+}
+
+// AddBankAccountIDs adds the "bankAccounts" edge to the BankAccount entity by IDs.
+func (uuo *UserUpdateOne) AddBankAccountIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddBankAccountIDs(ids...)
+	return uuo
+}
+
+// AddBankAccounts adds the "bankAccounts" edges to the BankAccount entity.
+func (uuo *UserUpdateOne) AddBankAccounts(b ...*BankAccount) *UserUpdateOne {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return uuo.AddBankAccountIDs(ids...)
+}
+
+// AddShippingAddressIDs adds the "shippingAddresses" edge to the ShippingAddress entity by IDs.
+func (uuo *UserUpdateOne) AddShippingAddressIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddShippingAddressIDs(ids...)
+	return uuo
+}
+
+// AddShippingAddresses adds the "shippingAddresses" edges to the ShippingAddress entity.
+func (uuo *UserUpdateOne) AddShippingAddresses(s ...*ShippingAddress) *UserUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uuo.AddShippingAddressIDs(ids...)
+}
+
+// AddPaymentMethodIDs adds the "paymentMethods" edge to the PaymentMethod entity by IDs.
+func (uuo *UserUpdateOne) AddPaymentMethodIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddPaymentMethodIDs(ids...)
+	return uuo
+}
+
+// AddPaymentMethods adds the "paymentMethods" edges to the PaymentMethod entity.
+func (uuo *UserUpdateOne) AddPaymentMethods(p ...*PaymentMethod) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.AddPaymentMethodIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -266,25 +632,88 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearCars clears all "cars" edges to the Car entity.
-func (uuo *UserUpdateOne) ClearCars() *UserUpdateOne {
-	uuo.mutation.ClearCars()
+// ClearNotifications clears all "notifications" edges to the Notification entity.
+func (uuo *UserUpdateOne) ClearNotifications() *UserUpdateOne {
+	uuo.mutation.ClearNotifications()
 	return uuo
 }
 
-// RemoveCarIDs removes the "cars" edge to Car entities by IDs.
-func (uuo *UserUpdateOne) RemoveCarIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveCarIDs(ids...)
+// RemoveNotificationIDs removes the "notifications" edge to Notification entities by IDs.
+func (uuo *UserUpdateOne) RemoveNotificationIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveNotificationIDs(ids...)
 	return uuo
 }
 
-// RemoveCars removes "cars" edges to Car entities.
-func (uuo *UserUpdateOne) RemoveCars(c ...*Car) *UserUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// RemoveNotifications removes "notifications" edges to Notification entities.
+func (uuo *UserUpdateOne) RemoveNotifications(n ...*Notification) *UserUpdateOne {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
 	}
-	return uuo.RemoveCarIDs(ids...)
+	return uuo.RemoveNotificationIDs(ids...)
+}
+
+// ClearBankAccounts clears all "bankAccounts" edges to the BankAccount entity.
+func (uuo *UserUpdateOne) ClearBankAccounts() *UserUpdateOne {
+	uuo.mutation.ClearBankAccounts()
+	return uuo
+}
+
+// RemoveBankAccountIDs removes the "bankAccounts" edge to BankAccount entities by IDs.
+func (uuo *UserUpdateOne) RemoveBankAccountIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveBankAccountIDs(ids...)
+	return uuo
+}
+
+// RemoveBankAccounts removes "bankAccounts" edges to BankAccount entities.
+func (uuo *UserUpdateOne) RemoveBankAccounts(b ...*BankAccount) *UserUpdateOne {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return uuo.RemoveBankAccountIDs(ids...)
+}
+
+// ClearShippingAddresses clears all "shippingAddresses" edges to the ShippingAddress entity.
+func (uuo *UserUpdateOne) ClearShippingAddresses() *UserUpdateOne {
+	uuo.mutation.ClearShippingAddresses()
+	return uuo
+}
+
+// RemoveShippingAddressIDs removes the "shippingAddresses" edge to ShippingAddress entities by IDs.
+func (uuo *UserUpdateOne) RemoveShippingAddressIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveShippingAddressIDs(ids...)
+	return uuo
+}
+
+// RemoveShippingAddresses removes "shippingAddresses" edges to ShippingAddress entities.
+func (uuo *UserUpdateOne) RemoveShippingAddresses(s ...*ShippingAddress) *UserUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uuo.RemoveShippingAddressIDs(ids...)
+}
+
+// ClearPaymentMethods clears all "paymentMethods" edges to the PaymentMethod entity.
+func (uuo *UserUpdateOne) ClearPaymentMethods() *UserUpdateOne {
+	uuo.mutation.ClearPaymentMethods()
+	return uuo
+}
+
+// RemovePaymentMethodIDs removes the "paymentMethods" edge to PaymentMethod entities by IDs.
+func (uuo *UserUpdateOne) RemovePaymentMethodIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemovePaymentMethodIDs(ids...)
+	return uuo
+}
+
+// RemovePaymentMethods removes "paymentMethods" edges to PaymentMethod entities.
+func (uuo *UserUpdateOne) RemovePaymentMethods(p ...*PaymentMethod) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.RemovePaymentMethodIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -327,20 +756,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (uuo *UserUpdateOne) check() error {
-	if v, ok := uuo.mutation.Age(); ok {
-		if err := user.AgeValidator(v); err != nil {
-			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	if err := uuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
 	id, ok := uuo.mutation.ID()
 	if !ok {
@@ -366,37 +782,55 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			}
 		}
 	}
-	if value, ok := uuo.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-	}
-	if value, ok := uuo.mutation.AddedAge(); ok {
-		_spec.AddField(user.FieldAge, field.TypeInt, value)
-	}
 	if value, ok := uuo.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
 	}
-	if uuo.mutation.CarsCleared() {
+	if value, ok := uuo.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Address(); ok {
+		_spec.SetField(user.FieldAddress, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.City(); ok {
+		_spec.SetField(user.FieldCity, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Zip(); ok {
+		_spec.SetField(user.FieldZip, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Country(); ok {
+		_spec.SetField(user.FieldCountry, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.DateUpdated(); ok {
+		_spec.SetField(user.FieldDateUpdated, field.TypeString, value)
+	}
+	if uuo.mutation.NotificationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedCarsIDs(); len(nodes) > 0 && !uuo.mutation.CarsCleared() {
+	if nodes := uuo.mutation.RemovedNotificationsIDs(); len(nodes) > 0 && !uuo.mutation.NotificationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -404,15 +838,150 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.CarsIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.NotificationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CarsTable,
-			Columns: []string{user.CarsColumn},
+			Table:   user.NotificationsTable,
+			Columns: []string{user.NotificationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notification.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.BankAccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedBankAccountsIDs(); len(nodes) > 0 && !uuo.mutation.BankAccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.BankAccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.BankAccountsTable,
+			Columns: []string{user.BankAccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(bankaccount.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.ShippingAddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedShippingAddressesIDs(); len(nodes) > 0 && !uuo.mutation.ShippingAddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.ShippingAddressesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ShippingAddressesTable,
+			Columns: []string{user.ShippingAddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(shippingaddress.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.PaymentMethodsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedPaymentMethodsIDs(); len(nodes) > 0 && !uuo.mutation.PaymentMethodsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.PaymentMethodsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PaymentMethodsTable,
+			Columns: []string{user.PaymentMethodsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(paymentmethod.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

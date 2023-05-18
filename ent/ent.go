@@ -4,10 +4,39 @@ package ent
 
 import (
 	"context"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/blogpost"
+	"entdemo/ent/category"
+	"entdemo/ent/chat"
+	"entdemo/ent/commissionstructure"
+	"entdemo/ent/contentblock"
+	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
-	"entdemo/ent/todo"
+	"entdemo/ent/groupbuy"
+	"entdemo/ent/herocontent"
+	"entdemo/ent/image"
+	"entdemo/ent/linkvisit"
+	"entdemo/ent/marketingcampaign"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
+	"entdemo/ent/primarycontent"
+	"entdemo/ent/product"
+	"entdemo/ent/productattribute"
+	"entdemo/ent/productpageview"
+	"entdemo/ent/productvariation"
+	"entdemo/ent/referrallink"
+	"entdemo/ent/refundtransactions"
+	"entdemo/ent/review"
+	"entdemo/ent/rewardtype"
+	"entdemo/ent/shippingaddress"
+	"entdemo/ent/shop"
+	"entdemo/ent/tag"
+	"entdemo/ent/transaction"
 	"entdemo/ent/user"
+	"entdemo/ent/userbuyer"
+	"entdemo/ent/userinfluencer"
+	"entdemo/ent/userseller"
+	"entdemo/ent/viewanalytics"
 	"errors"
 	"fmt"
 	"reflect"
@@ -76,10 +105,39 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			car.Table:   car.ValidColumn,
-			group.Table: group.ValidColumn,
-			todo.Table:  todo.ValidColumn,
-			user.Table:  user.ValidColumn,
+			bankaccount.Table:         bankaccount.ValidColumn,
+			blogpost.Table:            blogpost.ValidColumn,
+			category.Table:            category.ValidColumn,
+			chat.Table:                chat.ValidColumn,
+			commissionstructure.Table: commissionstructure.ValidColumn,
+			contentblock.Table:        contentblock.ValidColumn,
+			emailcampaign.Table:       emailcampaign.ValidColumn,
+			group.Table:               group.ValidColumn,
+			groupbuy.Table:            groupbuy.ValidColumn,
+			herocontent.Table:         herocontent.ValidColumn,
+			image.Table:               image.ValidColumn,
+			linkvisit.Table:           linkvisit.ValidColumn,
+			marketingcampaign.Table:   marketingcampaign.ValidColumn,
+			notification.Table:        notification.ValidColumn,
+			paymentmethod.Table:       paymentmethod.ValidColumn,
+			primarycontent.Table:      primarycontent.ValidColumn,
+			product.Table:             product.ValidColumn,
+			productattribute.Table:    productattribute.ValidColumn,
+			productpageview.Table:     productpageview.ValidColumn,
+			productvariation.Table:    productvariation.ValidColumn,
+			referrallink.Table:        referrallink.ValidColumn,
+			refundtransactions.Table:  refundtransactions.ValidColumn,
+			review.Table:              review.ValidColumn,
+			rewardtype.Table:          rewardtype.ValidColumn,
+			shippingaddress.Table:     shippingaddress.ValidColumn,
+			shop.Table:                shop.ValidColumn,
+			tag.Table:                 tag.ValidColumn,
+			transaction.Table:         transaction.ValidColumn,
+			user.Table:                user.ValidColumn,
+			userbuyer.Table:           userbuyer.ValidColumn,
+			userinfluencer.Table:      userinfluencer.ValidColumn,
+			userseller.Table:          userseller.ValidColumn,
+			viewanalytics.Table:       viewanalytics.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

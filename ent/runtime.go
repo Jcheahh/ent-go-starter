@@ -4,7 +4,9 @@ package ent
 
 import (
 	"entdemo/ent/group"
+	"entdemo/ent/notification"
 	"entdemo/ent/schema"
+	"entdemo/ent/shippingaddress"
 	"entdemo/ent/user"
 )
 
@@ -18,14 +20,36 @@ func init() {
 	groupDescName := groupFields[0].Descriptor()
 	// group.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	group.NameValidator = groupDescName.Validators[0].(func(string) error)
+	notificationFields := schema.Notification{}.Fields()
+	_ = notificationFields
+	// notificationDescDateCreated is the schema descriptor for dateCreated field.
+	notificationDescDateCreated := notificationFields[2].Descriptor()
+	// notification.DefaultDateCreated holds the default value on creation for the dateCreated field.
+	notification.DefaultDateCreated = notificationDescDateCreated.Default.(string)
+	// notificationDescDateUpdated is the schema descriptor for dateUpdated field.
+	notificationDescDateUpdated := notificationFields[3].Descriptor()
+	// notification.DefaultDateUpdated holds the default value on creation for the dateUpdated field.
+	notification.DefaultDateUpdated = notificationDescDateUpdated.Default.(string)
+	shippingaddressFields := schema.ShippingAddress{}.Fields()
+	_ = shippingaddressFields
+	// shippingaddressDescDateCreated is the schema descriptor for dateCreated field.
+	shippingaddressDescDateCreated := shippingaddressFields[6].Descriptor()
+	// shippingaddress.DefaultDateCreated holds the default value on creation for the dateCreated field.
+	shippingaddress.DefaultDateCreated = shippingaddressDescDateCreated.Default.(string)
+	// shippingaddressDescDateUpdated is the schema descriptor for dateUpdated field.
+	shippingaddressDescDateUpdated := shippingaddressFields[7].Descriptor()
+	// shippingaddress.DefaultDateUpdated holds the default value on creation for the dateUpdated field.
+	shippingaddress.DefaultDateUpdated = shippingaddressDescDateUpdated.Default.(string)
+	transactionFields := schema.Transaction{}.Fields()
+	_ = transactionFields
 	userFields := schema.User{}.Fields()
 	_ = userFields
-	// userDescAge is the schema descriptor for age field.
-	userDescAge := userFields[0].Descriptor()
-	// user.AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	user.AgeValidator = userDescAge.Validators[0].(func(int) error)
-	// userDescName is the schema descriptor for name field.
-	userDescName := userFields[1].Descriptor()
-	// user.DefaultName holds the default value on creation for the name field.
-	user.DefaultName = userDescName.Default.(string)
+	// userDescDateCreated is the schema descriptor for dateCreated field.
+	userDescDateCreated := userFields[8].Descriptor()
+	// user.DefaultDateCreated holds the default value on creation for the dateCreated field.
+	user.DefaultDateCreated = userDescDateCreated.Default.(string)
+	// userDescDateUpdated is the schema descriptor for dateUpdated field.
+	userDescDateUpdated := userFields[9].Descriptor()
+	// user.DefaultDateUpdated holds the default value on creation for the dateUpdated field.
+	user.DefaultDateUpdated = userDescDateUpdated.Default.(string)
 }

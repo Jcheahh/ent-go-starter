@@ -1,0 +1,52 @@
+change HOST in docker and github
+
+docker run \
+  --volume=/var/lib/drone:/data \
+  --env=DRONE_GITHUB_CLIENT_ID=6a42935122f16f1b89e7 \
+  --env=DRONE_GITHUB_CLIENT_SECRET=756065f72cba8481b2ba40238265690253d2d579 \
+  --env=DRONE_RPC_SECRET=a33948cc81734105898ec419c3d39a3a \
+  --env=DRONE_SERVER_HOST=5b73-2001-e68-5456-24b1-4c2-f9e6-5e-be97.ngrok-free.app \
+  --env=DRONE_SERVER_PROTO=https \
+  --publish=8080:80 \
+  --publish=443:443 \
+  --restart=always \
+  --detach=true \
+  --name=drone \
+  --network=drone-net \
+  drone/drone:2
+
+docker run --detach \
+--volume=/var/run/docker.sock:/var/run/docker.sock \
+--env=DRONE_RPC_PROTO=http \
+--env=DRONE_RPC_HOST=drone \
+--env=DRONE_RPC_SECRET=a33948cc81734105898ec419c3d39a3a \
+--env=DRONE_RUNNER_CAPACITY=2 \
+--env=DRONE_RUNNER_NAME=my-first-runner \
+--network=drone-net \
+--publish=3000:3000 \
+--detach=true \
+--restart=always \
+--name=runner \
+drone/drone-runner-docker:1
+
+atlas migrate diff all_schema \
+--dir "file://ent/migrate/migrations" \
+--to "ent://ent/schema" \
+--dev-url "docker://postgres/12/test?search_path=public"
+
+atlas migrate apply \
+--dir "file://ent/migrate/migrations" \
+--url "postgres://entgo:mysecretpassword@localhost:5432/ent_go_starter?search_path=public&sslmode=disable"
+
+atlas migrate status \
+--dir "file://ent/migrate/migrations" \
+--url "postgres://entgo:mysecretpassword@localhost:5432/ent_go_starter?search_path=public&sslmode=disable"
+
+1. CI / CD with atlas (actually change a schema)
+1.5. Add everything from ent documentation to schema(mutation, pagination)
+2. Explain how the graphql works (include all the Ent go features explaination in the video)
+
+localhost
+ssh -R jack:80:localhost:8080 serveo.net
+database
+ssh -R jack:5432:localhost:5432 serveo.net

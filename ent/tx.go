@@ -12,14 +12,72 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Car is the client for interacting with the Car builders.
-	Car *CarClient
+	// BankAccount is the client for interacting with the BankAccount builders.
+	BankAccount *BankAccountClient
+	// BlogPost is the client for interacting with the BlogPost builders.
+	BlogPost *BlogPostClient
+	// Category is the client for interacting with the Category builders.
+	Category *CategoryClient
+	// Chat is the client for interacting with the Chat builders.
+	Chat *ChatClient
+	// CommissionStructure is the client for interacting with the CommissionStructure builders.
+	CommissionStructure *CommissionStructureClient
+	// ContentBlock is the client for interacting with the ContentBlock builders.
+	ContentBlock *ContentBlockClient
+	// EmailCampaign is the client for interacting with the EmailCampaign builders.
+	EmailCampaign *EmailCampaignClient
 	// Group is the client for interacting with the Group builders.
 	Group *GroupClient
-	// Todo is the client for interacting with the Todo builders.
-	Todo *TodoClient
+	// GroupBuy is the client for interacting with the GroupBuy builders.
+	GroupBuy *GroupBuyClient
+	// HeroContent is the client for interacting with the HeroContent builders.
+	HeroContent *HeroContentClient
+	// Image is the client for interacting with the Image builders.
+	Image *ImageClient
+	// LinkVisit is the client for interacting with the LinkVisit builders.
+	LinkVisit *LinkVisitClient
+	// MarketingCampaign is the client for interacting with the MarketingCampaign builders.
+	MarketingCampaign *MarketingCampaignClient
+	// Notification is the client for interacting with the Notification builders.
+	Notification *NotificationClient
+	// PaymentMethod is the client for interacting with the PaymentMethod builders.
+	PaymentMethod *PaymentMethodClient
+	// PrimaryContent is the client for interacting with the PrimaryContent builders.
+	PrimaryContent *PrimaryContentClient
+	// Product is the client for interacting with the Product builders.
+	Product *ProductClient
+	// ProductAttribute is the client for interacting with the ProductAttribute builders.
+	ProductAttribute *ProductAttributeClient
+	// ProductPageView is the client for interacting with the ProductPageView builders.
+	ProductPageView *ProductPageViewClient
+	// ProductVariation is the client for interacting with the ProductVariation builders.
+	ProductVariation *ProductVariationClient
+	// ReferralLink is the client for interacting with the ReferralLink builders.
+	ReferralLink *ReferralLinkClient
+	// RefundTransactions is the client for interacting with the RefundTransactions builders.
+	RefundTransactions *RefundTransactionsClient
+	// Review is the client for interacting with the Review builders.
+	Review *ReviewClient
+	// RewardType is the client for interacting with the RewardType builders.
+	RewardType *RewardTypeClient
+	// ShippingAddress is the client for interacting with the ShippingAddress builders.
+	ShippingAddress *ShippingAddressClient
+	// Shop is the client for interacting with the Shop builders.
+	Shop *ShopClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
+	// Transaction is the client for interacting with the Transaction builders.
+	Transaction *TransactionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserBuyer is the client for interacting with the UserBuyer builders.
+	UserBuyer *UserBuyerClient
+	// UserInfluencer is the client for interacting with the UserInfluencer builders.
+	UserInfluencer *UserInfluencerClient
+	// UserSeller is the client for interacting with the UserSeller builders.
+	UserSeller *UserSellerClient
+	// ViewAnalytics is the client for interacting with the ViewAnalytics builders.
+	ViewAnalytics *ViewAnalyticsClient
 
 	// lazily loaded.
 	client     *Client
@@ -151,10 +209,39 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Car = NewCarClient(tx.config)
+	tx.BankAccount = NewBankAccountClient(tx.config)
+	tx.BlogPost = NewBlogPostClient(tx.config)
+	tx.Category = NewCategoryClient(tx.config)
+	tx.Chat = NewChatClient(tx.config)
+	tx.CommissionStructure = NewCommissionStructureClient(tx.config)
+	tx.ContentBlock = NewContentBlockClient(tx.config)
+	tx.EmailCampaign = NewEmailCampaignClient(tx.config)
 	tx.Group = NewGroupClient(tx.config)
-	tx.Todo = NewTodoClient(tx.config)
+	tx.GroupBuy = NewGroupBuyClient(tx.config)
+	tx.HeroContent = NewHeroContentClient(tx.config)
+	tx.Image = NewImageClient(tx.config)
+	tx.LinkVisit = NewLinkVisitClient(tx.config)
+	tx.MarketingCampaign = NewMarketingCampaignClient(tx.config)
+	tx.Notification = NewNotificationClient(tx.config)
+	tx.PaymentMethod = NewPaymentMethodClient(tx.config)
+	tx.PrimaryContent = NewPrimaryContentClient(tx.config)
+	tx.Product = NewProductClient(tx.config)
+	tx.ProductAttribute = NewProductAttributeClient(tx.config)
+	tx.ProductPageView = NewProductPageViewClient(tx.config)
+	tx.ProductVariation = NewProductVariationClient(tx.config)
+	tx.ReferralLink = NewReferralLinkClient(tx.config)
+	tx.RefundTransactions = NewRefundTransactionsClient(tx.config)
+	tx.Review = NewReviewClient(tx.config)
+	tx.RewardType = NewRewardTypeClient(tx.config)
+	tx.ShippingAddress = NewShippingAddressClient(tx.config)
+	tx.Shop = NewShopClient(tx.config)
+	tx.Tag = NewTagClient(tx.config)
+	tx.Transaction = NewTransactionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserBuyer = NewUserBuyerClient(tx.config)
+	tx.UserInfluencer = NewUserInfluencerClient(tx.config)
+	tx.UserSeller = NewUserSellerClient(tx.config)
+	tx.ViewAnalytics = NewViewAnalyticsClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -164,7 +251,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Car.QueryXXX(), the query will be executed
+// applies a query, for example: BankAccount.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

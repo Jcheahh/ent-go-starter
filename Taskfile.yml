@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  generate:
+    cmds:
+      - go generate .
+
+  run:
+    cmds:
+      - go run *.go
+
+  tidy:
+    cmds:
+      - go mod tidy

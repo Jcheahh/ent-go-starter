@@ -5,8 +5,11 @@ package ent
 import (
 	"context"
 	"database/sql/driver"
-	"entdemo/ent/car"
+	"entdemo/ent/bankaccount"
+	"entdemo/ent/notification"
+	"entdemo/ent/paymentmethod"
 	"entdemo/ent/predicate"
+	"entdemo/ent/shippingaddress"
 	"entdemo/ent/user"
 	"fmt"
 	"math"
@@ -19,14 +22,21 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx           *QueryContext
-	order         []user.Order
-	inters        []Interceptor
-	predicates    []predicate.User
-	withCars      *CarQuery
-	modifiers     []func(*sql.Selector)
-	loadTotal     []func(context.Context, []*User) error
-	withNamedCars map[string]*CarQuery
+	ctx                        *QueryContext
+	order                      []user.Order
+	inters                     []Interceptor
+	predicates                 []predicate.User
+	withNotifications          *NotificationQuery
+	withBankAccounts           *BankAccountQuery
+	withShippingAddresses      *ShippingAddressQuery
+	withPaymentMethods         *PaymentMethodQuery
+	withFKs                    bool
+	modifiers                  []func(*sql.Selector)
+	loadTotal                  []func(context.Context, []*User) error
+	withNamedNotifications     map[string]*NotificationQuery
+	withNamedBankAccounts      map[string]*BankAccountQuery
+	withNamedShippingAddresses map[string]*ShippingAddressQuery
+	withNamedPaymentMethods    map[string]*PaymentMethodQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +73,9 @@ func (uq *UserQuery) Order(o ...user.Order) *UserQuery {
 	return uq
 }
 
-// QueryCars chains the current query on the "cars" edge.
-func (uq *UserQuery) QueryCars() *CarQuery {
-	query := (&CarClient{config: uq.config}).Query()
+// QueryNotifications chains the current query on the "notifications" edge.
+func (uq *UserQuery) QueryNotifications() *NotificationQuery {
+	query := (&NotificationClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +86,74 @@ func (uq *UserQuery) QueryCars() *CarQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(car.Table, car.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.CarsTable, user.CarsColumn),
+			sqlgraph.To(notification.Table, notification.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotificationsTable, user.NotificationsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryBankAccounts chains the current query on the "bankAccounts" edge.
+func (uq *UserQuery) QueryBankAccounts() *BankAccountQuery {
+	query := (&BankAccountClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(bankaccount.Table, bankaccount.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.BankAccountsTable, user.BankAccountsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryShippingAddresses chains the current query on the "shippingAddresses" edge.
+func (uq *UserQuery) QueryShippingAddresses() *ShippingAddressQuery {
+	query := (&ShippingAddressClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(shippingaddress.Table, shippingaddress.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.ShippingAddressesTable, user.ShippingAddressesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPaymentMethods chains the current query on the "paymentMethods" edge.
+func (uq *UserQuery) QueryPaymentMethods() *PaymentMethodQuery {
+	query := (&PaymentMethodClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(paymentmethod.Table, paymentmethod.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PaymentMethodsTable, user.PaymentMethodsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -272,26 +348,62 @@ func (uq *UserQuery) Clone() *UserQuery {
 		return nil
 	}
 	return &UserQuery{
-		config:     uq.config,
-		ctx:        uq.ctx.Clone(),
-		order:      append([]user.Order{}, uq.order...),
-		inters:     append([]Interceptor{}, uq.inters...),
-		predicates: append([]predicate.User{}, uq.predicates...),
-		withCars:   uq.withCars.Clone(),
+		config:                uq.config,
+		ctx:                   uq.ctx.Clone(),
+		order:                 append([]user.Order{}, uq.order...),
+		inters:                append([]Interceptor{}, uq.inters...),
+		predicates:            append([]predicate.User{}, uq.predicates...),
+		withNotifications:     uq.withNotifications.Clone(),
+		withBankAccounts:      uq.withBankAccounts.Clone(),
+		withShippingAddresses: uq.withShippingAddresses.Clone(),
+		withPaymentMethods:    uq.withPaymentMethods.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
 	}
 }
 
-// WithCars tells the query-builder to eager-load the nodes that are connected to
-// the "cars" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithCars(opts ...func(*CarQuery)) *UserQuery {
-	query := (&CarClient{config: uq.config}).Query()
+// WithNotifications tells the query-builder to eager-load the nodes that are connected to
+// the "notifications" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNotifications(opts ...func(*NotificationQuery)) *UserQuery {
+	query := (&NotificationClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withCars = query
+	uq.withNotifications = query
+	return uq
+}
+
+// WithBankAccounts tells the query-builder to eager-load the nodes that are connected to
+// the "bankAccounts" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithBankAccounts(opts ...func(*BankAccountQuery)) *UserQuery {
+	query := (&BankAccountClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withBankAccounts = query
+	return uq
+}
+
+// WithShippingAddresses tells the query-builder to eager-load the nodes that are connected to
+// the "shippingAddresses" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithShippingAddresses(opts ...func(*ShippingAddressQuery)) *UserQuery {
+	query := (&ShippingAddressClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withShippingAddresses = query
+	return uq
+}
+
+// WithPaymentMethods tells the query-builder to eager-load the nodes that are connected to
+// the "paymentMethods" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithPaymentMethods(opts ...func(*PaymentMethodQuery)) *UserQuery {
+	query := (&PaymentMethodClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withPaymentMethods = query
 	return uq
 }
 
@@ -301,12 +413,12 @@ func (uq *UserQuery) WithCars(opts ...func(*CarQuery)) *UserQuery {
 // Example:
 //
 //	var v []struct {
-//		Age int `json:"age,omitempty"`
+//		Name string `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		GroupBy(user.FieldAge).
+//		GroupBy(user.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
@@ -324,11 +436,11 @@ func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Age int `json:"age,omitempty"`
+//		Name string `json:"name,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		Select(user.FieldAge).
+//		Select(user.FieldName).
 //		Scan(ctx, &v)
 func (uq *UserQuery) Select(fields ...string) *UserSelect {
 	uq.ctx.Fields = append(uq.ctx.Fields, fields...)
@@ -372,11 +484,18 @@ func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, error) {
 	var (
 		nodes       = []*User{}
+		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [1]bool{
-			uq.withCars != nil,
+		loadedTypes = [4]bool{
+			uq.withNotifications != nil,
+			uq.withBankAccounts != nil,
+			uq.withShippingAddresses != nil,
+			uq.withPaymentMethods != nil,
 		}
 	)
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, user.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*User).scanValues(nil, columns)
 	}
@@ -398,17 +517,59 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := uq.withCars; query != nil {
-		if err := uq.loadCars(ctx, query, nodes,
-			func(n *User) { n.Edges.Cars = []*Car{} },
-			func(n *User, e *Car) { n.Edges.Cars = append(n.Edges.Cars, e) }); err != nil {
+	if query := uq.withNotifications; query != nil {
+		if err := uq.loadNotifications(ctx, query, nodes,
+			func(n *User) { n.Edges.Notifications = []*Notification{} },
+			func(n *User, e *Notification) { n.Edges.Notifications = append(n.Edges.Notifications, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range uq.withNamedCars {
-		if err := uq.loadCars(ctx, query, nodes,
-			func(n *User) { n.appendNamedCars(name) },
-			func(n *User, e *Car) { n.appendNamedCars(name, e) }); err != nil {
+	if query := uq.withBankAccounts; query != nil {
+		if err := uq.loadBankAccounts(ctx, query, nodes,
+			func(n *User) { n.Edges.BankAccounts = []*BankAccount{} },
+			func(n *User, e *BankAccount) { n.Edges.BankAccounts = append(n.Edges.BankAccounts, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withShippingAddresses; query != nil {
+		if err := uq.loadShippingAddresses(ctx, query, nodes,
+			func(n *User) { n.Edges.ShippingAddresses = []*ShippingAddress{} },
+			func(n *User, e *ShippingAddress) { n.Edges.ShippingAddresses = append(n.Edges.ShippingAddresses, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withPaymentMethods; query != nil {
+		if err := uq.loadPaymentMethods(ctx, query, nodes,
+			func(n *User) { n.Edges.PaymentMethods = []*PaymentMethod{} },
+			func(n *User, e *PaymentMethod) { n.Edges.PaymentMethods = append(n.Edges.PaymentMethods, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedNotifications {
+		if err := uq.loadNotifications(ctx, query, nodes,
+			func(n *User) { n.appendNamedNotifications(name) },
+			func(n *User, e *Notification) { n.appendNamedNotifications(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedBankAccounts {
+		if err := uq.loadBankAccounts(ctx, query, nodes,
+			func(n *User) { n.appendNamedBankAccounts(name) },
+			func(n *User, e *BankAccount) { n.appendNamedBankAccounts(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedShippingAddresses {
+		if err := uq.loadShippingAddresses(ctx, query, nodes,
+			func(n *User) { n.appendNamedShippingAddresses(name) },
+			func(n *User, e *ShippingAddress) { n.appendNamedShippingAddresses(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedPaymentMethods {
+		if err := uq.loadPaymentMethods(ctx, query, nodes,
+			func(n *User) { n.appendNamedPaymentMethods(name) },
+			func(n *User, e *PaymentMethod) { n.appendNamedPaymentMethods(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -420,7 +581,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	return nodes, nil
 }
 
-func (uq *UserQuery) loadCars(ctx context.Context, query *CarQuery, nodes []*User, init func(*User), assign func(*User, *Car)) error {
+func (uq *UserQuery) loadNotifications(ctx context.Context, query *NotificationQuery, nodes []*User, init func(*User), assign func(*User, *Notification)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
 	for i := range nodes {
@@ -431,21 +592,114 @@ func (uq *UserQuery) loadCars(ctx context.Context, query *CarQuery, nodes []*Use
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.Car(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.CarsColumn, fks...))
+	query.Where(predicate.Notification(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.NotificationsColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_cars
+		fk := n.user_notifications
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_cars" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_notifications" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_cars" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_notifications" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadBankAccounts(ctx context.Context, query *BankAccountQuery, nodes []*User, init func(*User), assign func(*User, *BankAccount)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.BankAccount(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.BankAccountsColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_bank_accounts
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_bank_accounts" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_bank_accounts" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadShippingAddresses(ctx context.Context, query *ShippingAddressQuery, nodes []*User, init func(*User), assign func(*User, *ShippingAddress)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.ShippingAddress(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.ShippingAddressesColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_shipping_addresses
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_shipping_addresses" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_shipping_addresses" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadPaymentMethods(ctx context.Context, query *PaymentMethodQuery, nodes []*User, init func(*User), assign func(*User, *PaymentMethod)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.PaymentMethod(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.PaymentMethodsColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_payment_methods
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_payment_methods" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_payment_methods" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -536,17 +790,59 @@ func (uq *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// WithNamedCars tells the query-builder to eager-load the nodes that are connected to the "cars"
+// WithNamedNotifications tells the query-builder to eager-load the nodes that are connected to the "notifications"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithNamedCars(name string, opts ...func(*CarQuery)) *UserQuery {
-	query := (&CarClient{config: uq.config}).Query()
+func (uq *UserQuery) WithNamedNotifications(name string, opts ...func(*NotificationQuery)) *UserQuery {
+	query := (&NotificationClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if uq.withNamedCars == nil {
-		uq.withNamedCars = make(map[string]*CarQuery)
+	if uq.withNamedNotifications == nil {
+		uq.withNamedNotifications = make(map[string]*NotificationQuery)
 	}
-	uq.withNamedCars[name] = query
+	uq.withNamedNotifications[name] = query
+	return uq
+}
+
+// WithNamedBankAccounts tells the query-builder to eager-load the nodes that are connected to the "bankAccounts"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedBankAccounts(name string, opts ...func(*BankAccountQuery)) *UserQuery {
+	query := (&BankAccountClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedBankAccounts == nil {
+		uq.withNamedBankAccounts = make(map[string]*BankAccountQuery)
+	}
+	uq.withNamedBankAccounts[name] = query
+	return uq
+}
+
+// WithNamedShippingAddresses tells the query-builder to eager-load the nodes that are connected to the "shippingAddresses"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedShippingAddresses(name string, opts ...func(*ShippingAddressQuery)) *UserQuery {
+	query := (&ShippingAddressClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedShippingAddresses == nil {
+		uq.withNamedShippingAddresses = make(map[string]*ShippingAddressQuery)
+	}
+	uq.withNamedShippingAddresses[name] = query
+	return uq
+}
+
+// WithNamedPaymentMethods tells the query-builder to eager-load the nodes that are connected to the "paymentMethods"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedPaymentMethods(name string, opts ...func(*PaymentMethodQuery)) *UserQuery {
+	query := (&PaymentMethodClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedPaymentMethods == nil {
+		uq.withNamedPaymentMethods = make(map[string]*PaymentMethodQuery)
+	}
+	uq.withNamedPaymentMethods[name] = query
 	return uq
 }
 

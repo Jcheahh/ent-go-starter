@@ -12,28 +12,88 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldAge holds the string denoting the age field in the database.
-	FieldAge = "age"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// EdgeCars holds the string denoting the cars edge name in mutations.
-	EdgeCars = "cars"
+	// FieldEmail holds the string denoting the email field in the database.
+	FieldEmail = "email"
+	// FieldPhone holds the string denoting the phone field in the database.
+	FieldPhone = "phone"
+	// FieldAddress holds the string denoting the address field in the database.
+	FieldAddress = "address"
+	// FieldCity holds the string denoting the city field in the database.
+	FieldCity = "city"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldZip holds the string denoting the zip field in the database.
+	FieldZip = "zip"
+	// FieldCountry holds the string denoting the country field in the database.
+	FieldCountry = "country"
+	// FieldDateCreated holds the string denoting the datecreated field in the database.
+	FieldDateCreated = "date_created"
+	// FieldDateUpdated holds the string denoting the dateupdated field in the database.
+	FieldDateUpdated = "date_updated"
+	// EdgeNotifications holds the string denoting the notifications edge name in mutations.
+	EdgeNotifications = "notifications"
+	// EdgeBankAccounts holds the string denoting the bankaccounts edge name in mutations.
+	EdgeBankAccounts = "bankAccounts"
+	// EdgeShippingAddresses holds the string denoting the shippingaddresses edge name in mutations.
+	EdgeShippingAddresses = "shippingAddresses"
+	// EdgePaymentMethods holds the string denoting the paymentmethods edge name in mutations.
+	EdgePaymentMethods = "paymentMethods"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// CarsTable is the table that holds the cars relation/edge.
-	CarsTable = "cars"
-	// CarsInverseTable is the table name for the Car entity.
-	// It exists in this package in order to avoid circular dependency with the "car" package.
-	CarsInverseTable = "cars"
-	// CarsColumn is the table column denoting the cars relation/edge.
-	CarsColumn = "user_cars"
+	// NotificationsTable is the table that holds the notifications relation/edge.
+	NotificationsTable = "notifications"
+	// NotificationsInverseTable is the table name for the Notification entity.
+	// It exists in this package in order to avoid circular dependency with the "notification" package.
+	NotificationsInverseTable = "notifications"
+	// NotificationsColumn is the table column denoting the notifications relation/edge.
+	NotificationsColumn = "user_notifications"
+	// BankAccountsTable is the table that holds the bankAccounts relation/edge.
+	BankAccountsTable = "bank_accounts"
+	// BankAccountsInverseTable is the table name for the BankAccount entity.
+	// It exists in this package in order to avoid circular dependency with the "bankaccount" package.
+	BankAccountsInverseTable = "bank_accounts"
+	// BankAccountsColumn is the table column denoting the bankAccounts relation/edge.
+	BankAccountsColumn = "user_bank_accounts"
+	// ShippingAddressesTable is the table that holds the shippingAddresses relation/edge.
+	ShippingAddressesTable = "shipping_addresses"
+	// ShippingAddressesInverseTable is the table name for the ShippingAddress entity.
+	// It exists in this package in order to avoid circular dependency with the "shippingaddress" package.
+	ShippingAddressesInverseTable = "shipping_addresses"
+	// ShippingAddressesColumn is the table column denoting the shippingAddresses relation/edge.
+	ShippingAddressesColumn = "user_shipping_addresses"
+	// PaymentMethodsTable is the table that holds the paymentMethods relation/edge.
+	PaymentMethodsTable = "payment_methods"
+	// PaymentMethodsInverseTable is the table name for the PaymentMethod entity.
+	// It exists in this package in order to avoid circular dependency with the "paymentmethod" package.
+	PaymentMethodsInverseTable = "payment_methods"
+	// PaymentMethodsColumn is the table column denoting the paymentMethods relation/edge.
+	PaymentMethodsColumn = "user_payment_methods"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldAge,
 	FieldName,
+	FieldEmail,
+	FieldPhone,
+	FieldAddress,
+	FieldCity,
+	FieldState,
+	FieldZip,
+	FieldCountry,
+	FieldDateCreated,
+	FieldDateUpdated,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "users"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"notification_recipient",
+	"user_buyer_user_profile",
+	"user_influencer_user_profile",
+	"user_seller_user_profile",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -43,14 +103,19 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
 
 var (
-	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	AgeValidator func(int) error
-	// DefaultName holds the default value on creation for the "name" field.
-	DefaultName string
+	// DefaultDateCreated holds the default value on creation for the "dateCreated" field.
+	DefaultDateCreated string
+	// DefaultDateUpdated holds the default value on creation for the "dateUpdated" field.
+	DefaultDateUpdated string
 )
 
 // Order defines the ordering method for the User queries.
@@ -61,33 +126,136 @@ func ByID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByAge orders the results by the age field.
-func ByAge(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldAge, opts...).ToFunc()
-}
-
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
-// ByCarsCount orders the results by cars count.
-func ByCarsCount(opts ...sql.OrderTermOption) Order {
+// ByEmail orders the results by the email field.
+func ByEmail(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+}
+
+// ByPhone orders the results by the phone field.
+func ByPhone(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+}
+
+// ByAddress orders the results by the address field.
+func ByAddress(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldAddress, opts...).ToFunc()
+}
+
+// ByCity orders the results by the city field.
+func ByCity(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCity, opts...).ToFunc()
+}
+
+// ByState orders the results by the state field.
+func ByState(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldState, opts...).ToFunc()
+}
+
+// ByZip orders the results by the zip field.
+func ByZip(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldZip, opts...).ToFunc()
+}
+
+// ByCountry orders the results by the country field.
+func ByCountry(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCountry, opts...).ToFunc()
+}
+
+// ByDateCreated orders the results by the dateCreated field.
+func ByDateCreated(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
+}
+
+// ByDateUpdated orders the results by the dateUpdated field.
+func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
+}
+
+// ByNotificationsCount orders the results by notifications count.
+func ByNotificationsCount(opts ...sql.OrderTermOption) Order {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newCarsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newNotificationsStep(), opts...)
 	}
 }
 
-// ByCars orders the results by cars terms.
-func ByCars(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+// ByNotifications orders the results by notifications terms.
+func ByNotifications(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCarsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNotificationsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newCarsStep() *sqlgraph.Step {
+
+// ByBankAccountsCount orders the results by bankAccounts count.
+func ByBankAccountsCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newBankAccountsStep(), opts...)
+	}
+}
+
+// ByBankAccounts orders the results by bankAccounts terms.
+func ByBankAccounts(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBankAccountsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByShippingAddressesCount orders the results by shippingAddresses count.
+func ByShippingAddressesCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newShippingAddressesStep(), opts...)
+	}
+}
+
+// ByShippingAddresses orders the results by shippingAddresses terms.
+func ByShippingAddresses(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newShippingAddressesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPaymentMethodsCount orders the results by paymentMethods count.
+func ByPaymentMethodsCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPaymentMethodsStep(), opts...)
+	}
+}
+
+// ByPaymentMethods orders the results by paymentMethods terms.
+func ByPaymentMethods(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPaymentMethodsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newNotificationsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CarsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, CarsTable, CarsColumn),
+		sqlgraph.To(NotificationsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotificationsTable, NotificationsColumn),
+	)
+}
+func newBankAccountsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(BankAccountsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, BankAccountsTable, BankAccountsColumn),
+	)
+}
+func newShippingAddressesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ShippingAddressesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ShippingAddressesTable, ShippingAddressesColumn),
+	)
+}
+func newPaymentMethodsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PaymentMethodsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PaymentMethodsTable, PaymentMethodsColumn),
 	)
 }

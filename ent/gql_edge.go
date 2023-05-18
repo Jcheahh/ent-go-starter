@@ -8,22 +8,698 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-func (c *Car) Owner(ctx context.Context) (*User, error) {
-	result, err := c.Edges.OwnerOrErr()
-	if IsNotLoaded(err) {
-		result, err = c.QueryOwner().Only(ctx)
+func (bp *BlogPost) Author(ctx context.Context) (result []*UserSeller, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bp.NamedAuthor(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bp.Edges.AuthorOrErr()
 	}
-	return result, MaskNotFound(err)
+	if IsNotLoaded(err) {
+		result, err = bp.QueryAuthor().All(ctx)
+	}
+	return result, err
 }
 
-func (u *User) Cars(ctx context.Context) (result []*Car, err error) {
+func (c *Category) Products(ctx context.Context) (result []*Product, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedCars(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = c.NamedProducts(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.CarsOrErr()
+		result, err = c.Edges.ProductsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryCars().All(ctx)
+		result, err = c.QueryProducts().All(ctx)
+	}
+	return result, err
+}
+
+func (cs *CommissionStructure) ProductSeller(ctx context.Context) (result []*UserSeller, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = cs.NamedProductSeller(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = cs.Edges.ProductSellerOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = cs.QueryProductSeller().All(ctx)
+	}
+	return result, err
+}
+
+func (cb *ContentBlock) Image(ctx context.Context) (result []*Image, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = cb.NamedImage(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = cb.Edges.ImageOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = cb.QueryImage().All(ctx)
+	}
+	return result, err
+}
+
+func (gb *GroupBuy) Product(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = gb.NamedProduct(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = gb.Edges.ProductOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = gb.QueryProduct().All(ctx)
+	}
+	return result, err
+}
+
+func (gb *GroupBuy) Transaction(ctx context.Context) (result []*Transaction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = gb.NamedTransaction(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = gb.Edges.TransactionOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = gb.QueryTransaction().All(ctx)
+	}
+	return result, err
+}
+
+func (hc *HeroContent) Image(ctx context.Context) (result []*Image, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = hc.NamedImage(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = hc.Edges.ImageOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = hc.QueryImage().All(ctx)
+	}
+	return result, err
+}
+
+func (mc *MarketingCampaign) Product(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = mc.NamedProduct(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = mc.Edges.ProductOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = mc.QueryProduct().All(ctx)
+	}
+	return result, err
+}
+
+func (mc *MarketingCampaign) ConsumerReward(ctx context.Context) (result []*RewardType, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = mc.NamedConsumerReward(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = mc.Edges.ConsumerRewardOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = mc.QueryConsumerReward().All(ctx)
+	}
+	return result, err
+}
+
+func (n *Notification) Recipient(ctx context.Context) (result []*User, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = n.NamedRecipient(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = n.Edges.RecipientOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = n.QueryRecipient().All(ctx)
+	}
+	return result, err
+}
+
+func (pc *PrimaryContent) ContentBlock(ctx context.Context) (result []*ContentBlock, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pc.NamedContentBlock(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pc.Edges.ContentBlockOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pc.QueryContentBlock().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) ProductSeller(ctx context.Context) (result []*UserSeller, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedProductSeller(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ProductSellerOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryProductSeller().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Reviews(ctx context.Context) (result []*Review, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedReviews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ReviewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryReviews().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Images(ctx context.Context) (result []*Image, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedImages(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ImagesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryImages().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Categories(ctx context.Context) (result []*Category, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedCategories(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.CategoriesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryCategories().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Tags(ctx context.Context) (result []*Tag, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedTags(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.TagsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryTags().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) ProductAttributes(ctx context.Context) (result []*ProductAttribute, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedProductAttributes(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ProductAttributesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryProductAttributes().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Variations(ctx context.Context) (result []*ProductVariation, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedVariations(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.VariationsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryVariations().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) CommissionStructure(ctx context.Context) (result []*CommissionStructure, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedCommissionStructure(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.CommissionStructureOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryCommissionStructure().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Shop(ctx context.Context) (result []*Shop, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedShop(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ShopOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryShop().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) GroupBuys(ctx context.Context) (result []*GroupBuy, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedGroupBuys(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.GroupBuysOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryGroupBuys().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) ProductPageViews(ctx context.Context) (result []*ProductPageView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedProductPageViews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ProductPageViewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryProductPageViews().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) BlogPosts(ctx context.Context) (result []*BlogPost, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedBlogPosts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.BlogPostsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryBlogPosts().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) MarketingCampaigns(ctx context.Context) (result []*MarketingCampaign, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedMarketingCampaigns(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.MarketingCampaignsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryMarketingCampaigns().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) Chats(ctx context.Context) (result []*Chat, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedChats(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.ChatsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryChats().All(ctx)
+	}
+	return result, err
+}
+
+func (pr *Product) EmailCampaign(ctx context.Context) (result []*EmailCampaign, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pr.NamedEmailCampaign(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pr.Edges.EmailCampaignOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pr.QueryEmailCampaign().All(ctx)
+	}
+	return result, err
+}
+
+func (ppv *ProductPageView) HeroContent(ctx context.Context) (result []*HeroContent, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ppv.NamedHeroContent(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ppv.Edges.HeroContentOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ppv.QueryHeroContent().All(ctx)
+	}
+	return result, err
+}
+
+func (ppv *ProductPageView) PrimaryContent(ctx context.Context) (result []*PrimaryContent, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ppv.NamedPrimaryContent(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ppv.Edges.PrimaryContentOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ppv.QueryPrimaryContent().All(ctx)
+	}
+	return result, err
+}
+
+func (ppv *ProductPageView) ViewAnalytics(ctx context.Context) (result []*ViewAnalytics, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ppv.NamedViewAnalytics(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ppv.Edges.ViewAnalyticsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ppv.QueryViewAnalytics().All(ctx)
+	}
+	return result, err
+}
+
+func (pv *ProductVariation) ProductAttributes(ctx context.Context) (result []*ProductAttribute, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = pv.NamedProductAttributes(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = pv.Edges.ProductAttributesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = pv.QueryProductAttributes().All(ctx)
+	}
+	return result, err
+}
+
+func (rl *ReferralLink) Visits(ctx context.Context) (result []*LinkVisit, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = rl.NamedVisits(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = rl.Edges.VisitsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = rl.QueryVisits().All(ctx)
+	}
+	return result, err
+}
+
+func (rt *RefundTransactions) Transaction(ctx context.Context) (result []*Transaction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = rt.NamedTransaction(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = rt.Edges.TransactionOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = rt.QueryTransaction().All(ctx)
+	}
+	return result, err
+}
+
+func (r *Review) Product(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = r.NamedProduct(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = r.Edges.ProductOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = r.QueryProduct().All(ctx)
+	}
+	return result, err
+}
+
+func (r *Review) ProductCustomer(ctx context.Context) (result []*UserBuyer, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = r.NamedProductCustomer(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = r.Edges.ProductCustomerOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = r.QueryProductCustomer().All(ctx)
+	}
+	return result, err
+}
+
+func (s *Shop) Products(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = s.NamedProducts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = s.Edges.ProductsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = s.QueryProducts().All(ctx)
+	}
+	return result, err
+}
+
+func (s *Shop) Transactions(ctx context.Context) (result []*Transaction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = s.NamedTransactions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = s.Edges.TransactionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = s.QueryTransactions().All(ctx)
+	}
+	return result, err
+}
+
+func (s *Shop) BankAccounts(ctx context.Context) (result []*BankAccount, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = s.NamedBankAccounts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = s.Edges.BankAccountsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = s.QueryBankAccounts().All(ctx)
+	}
+	return result, err
+}
+
+func (t *Transaction) Product(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = t.NamedProduct(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = t.Edges.ProductOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = t.QueryProduct().All(ctx)
+	}
+	return result, err
+}
+
+func (t *Transaction) OriginLink(ctx context.Context) (result []*LinkVisit, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = t.NamedOriginLink(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = t.Edges.OriginLinkOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = t.QueryOriginLink().All(ctx)
+	}
+	return result, err
+}
+
+func (t *Transaction) ProductCustomer(ctx context.Context) (result []*UserBuyer, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = t.NamedProductCustomer(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = t.Edges.ProductCustomerOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = t.QueryProductCustomer().All(ctx)
+	}
+	return result, err
+}
+
+func (t *Transaction) Shop(ctx context.Context) (result []*Shop, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = t.NamedShop(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = t.Edges.ShopOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = t.QueryShop().All(ctx)
+	}
+	return result, err
+}
+
+func (t *Transaction) ProductInfluencer(ctx context.Context) (result []*UserInfluencer, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = t.NamedProductInfluencer(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = t.Edges.ProductInfluencerOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = t.QueryProductInfluencer().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) Notifications(ctx context.Context) (result []*Notification, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedNotifications(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.NotificationsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryNotifications().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) BankAccounts(ctx context.Context) (result []*BankAccount, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedBankAccounts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.BankAccountsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryBankAccounts().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) ShippingAddresses(ctx context.Context) (result []*ShippingAddress, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedShippingAddresses(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.ShippingAddressesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryShippingAddresses().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) PaymentMethods(ctx context.Context) (result []*PaymentMethod, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedPaymentMethods(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.PaymentMethodsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryPaymentMethods().All(ctx)
+	}
+	return result, err
+}
+
+func (ub *UserBuyer) UserProfile(ctx context.Context) (result []*User, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ub.NamedUserProfile(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ub.Edges.UserProfileOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ub.QueryUserProfile().All(ctx)
+	}
+	return result, err
+}
+
+func (ub *UserBuyer) Reviews(ctx context.Context) (result []*Review, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ub.NamedReviews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ub.Edges.ReviewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ub.QueryReviews().All(ctx)
+	}
+	return result, err
+}
+
+func (ub *UserBuyer) Transactions(ctx context.Context) (result []*Transaction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ub.NamedTransactions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ub.Edges.TransactionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ub.QueryTransactions().All(ctx)
+	}
+	return result, err
+}
+
+func (ub *UserBuyer) LinksClicked(ctx context.Context) (result []*LinkVisit, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ub.NamedLinksClicked(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ub.Edges.LinksClickedOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ub.QueryLinksClicked().All(ctx)
+	}
+	return result, err
+}
+
+func (ui *UserInfluencer) UserProfile(ctx context.Context) (result []*User, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ui.NamedUserProfile(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ui.Edges.UserProfileOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ui.QueryUserProfile().All(ctx)
+	}
+	return result, err
+}
+
+func (ui *UserInfluencer) ReferralLinks(ctx context.Context) (result []*ReferralLink, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ui.NamedReferralLinks(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ui.Edges.ReferralLinksOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ui.QueryReferralLinks().All(ctx)
+	}
+	return result, err
+}
+
+func (ui *UserInfluencer) Reviews(ctx context.Context) (result []*Review, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ui.NamedReviews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ui.Edges.ReviewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ui.QueryReviews().All(ctx)
+	}
+	return result, err
+}
+
+func (ui *UserInfluencer) Products(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ui.NamedProducts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ui.Edges.ProductsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ui.QueryProducts().All(ctx)
+	}
+	return result, err
+}
+
+func (ui *UserInfluencer) Tags(ctx context.Context) (result []*Tag, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ui.NamedTags(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ui.Edges.TagsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ui.QueryTags().All(ctx)
+	}
+	return result, err
+}
+
+func (us *UserSeller) UserProfile(ctx context.Context) (result []*User, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = us.NamedUserProfile(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = us.Edges.UserProfileOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = us.QueryUserProfile().All(ctx)
+	}
+	return result, err
+}
+
+func (us *UserSeller) Shops(ctx context.Context) (result []*Shop, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = us.NamedShops(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = us.Edges.ShopsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = us.QueryShops().All(ctx)
+	}
+	return result, err
+}
+
+func (va *ViewAnalytics) Product(ctx context.Context) (result []*Product, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = va.NamedProduct(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = va.Edges.ProductOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = va.QueryProduct().All(ctx)
 	}
 	return result, err
 }

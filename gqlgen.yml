@@ -13,8 +13,8 @@ resolver:
 # autobind tells gqngen to search for any type names in the GraphQL schema in the
 # provided package. If they match it will use them, otherwise it will generate new.
 autobind:
-  - todo/ent
-  - todo/ent/todo
+  - entdemo/ent
+  # - entdemo/ent/entdemo
 
 # This section declares type mapping between the GraphQL and Go type systems.
 models:
@@ -24,6 +24,4 @@ models:
       - github.com/99designs/gqlgen/graphql.IntID
   Node:
     model:
-      - todo/ent.Noder
-
-
+      - entdemo/ent.Noder
