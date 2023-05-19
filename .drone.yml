@@ -12,7 +12,10 @@ steps:
     image: docker
     volumes:
       - name: docker_sock
-        path: /var/run/docker.sock
+        host:
+          path: /var/run/docker.sock
+        target:
+          path: /var/run/docker.sock
     commands:
       - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
