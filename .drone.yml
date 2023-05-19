@@ -9,7 +9,7 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: docker
+    image: docker:cli
     commands:
       - apt-get -y update && apt-get -y install curl
       - curl -sSf https://atlasgo.sh | sh
