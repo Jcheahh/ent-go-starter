@@ -11,7 +11,7 @@ steps:
   - name: migration
     image: docker:cli
     commands:
-      - apt-get -y update && apt-get -y install curl
+      - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
 
       - atlas migrate diff all_schema
