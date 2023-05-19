@@ -10,6 +10,9 @@ steps:
 
   - name: migration
     image: docker
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
     commands:
       - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
