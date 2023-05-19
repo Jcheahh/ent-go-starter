@@ -10,6 +10,8 @@ steps:
 
   - name: migration
     image: docker:dind
+    settings:
+      debug: true
     volumes:
       - name: docker_sock
         host:
