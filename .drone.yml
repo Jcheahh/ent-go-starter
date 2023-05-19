@@ -9,7 +9,7 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: docker
+    image: docker:dind
     volumes:
       - name: docker_sock
         host:
