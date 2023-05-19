@@ -40,6 +40,11 @@ atlas migrate diff all_schema \
 --to "ent://ent/schema" \
 --dev-url "docker://postgres/12/test?search_path=public"
 
+atlas migrate diff all_schema \
+--dir "file://ent/migrate/migrations" \
+--to "ent://ent/schema" \
+--dev-url "postgresql://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public"
+
 atlas migrate apply \
 --dir "file://ent/migrate/migrations" \
 --url "postgres://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public&sslmode=disable"

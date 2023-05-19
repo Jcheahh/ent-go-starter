@@ -19,15 +19,13 @@ steps:
         target:
           path: /var/run/docker.sock
     commands:
-      - apk update && apk add --no-cache curl && apk add --no-cache systemd
-      - systemctl status docker
-      - systemctl start docker
+      - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
 
       - atlas migrate diff all_schema
         --dir "file://ent/migrate/migrations"
         --to "ent://ent/schema"
-        --dev-url "docker://postgres/12/test?search_path=public"
+        --dev-url "postgresql://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public"
 
       - atlas migrate apply
         --dir "file://ent/migrate/migrations"
