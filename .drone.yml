@@ -9,15 +9,15 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: golang:1.12
+    image: golang:1.20
     commands:
       - curl -sSf https://atlasgo.sh | sh
 
-      - atlas migrate diff all_schema \
-        --dir "file://ent/migrate/migrations" \
-        --to "ent://ent/schema" \
+      - atlas migrate diff all_schema
+        --dir "file://ent/migrate/migrations"
+        --to "ent://ent/schema"
         --dev-url "docker://postgres/12/test?search_path=public"
 
-      - atlas migrate apply \
-        --dir "file://ent/migrate/migrations" \
+      - atlas migrate apply
+        --dir "file://ent/migrate/migrations"
         --url "postgres://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public&sslmode=disable"
