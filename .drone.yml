@@ -9,7 +9,7 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: busybox
+    image: golang:1.12
     commands:
       - curl -sSf https://atlasgo.sh | sh
 
