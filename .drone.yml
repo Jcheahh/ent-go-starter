@@ -9,15 +9,7 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: docker:dind
-    settings:
-      debug: true
-    volumes:
-      - name: docker_sock
-        host:
-          path: /var/run/docker.sock
-        target:
-          path: /var/run/docker.sock
+    image: golang:1.20
     commands:
       - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
