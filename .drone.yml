@@ -9,8 +9,10 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: arigaio/atlas
+    image: busybox
     commands:
+      - curl -sSf https://atlasgo.sh | sh
+
       - atlas migrate diff all_schema \
         --dir "file://ent/migrate/migrations" \
         --to "ent://ent/schema" \
