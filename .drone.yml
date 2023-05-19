@@ -9,8 +9,11 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: docker:dind
+    image: plugins/docker
     settings:
+      repo: foo/bar
+      username: kevinbacon
+      password: pa55word
       debug: true
     volumes:
       - name: docker_sock
