@@ -9,7 +9,7 @@ steps:
       - echo hello everyone good morning
 
   - name: migration
-    image: docker:cli
+    image: docker
     commands:
       - apk update && apk add --no-cache curl
       - curl -sSf https://atlasgo.sh | sh
