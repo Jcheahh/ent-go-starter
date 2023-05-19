@@ -21,7 +21,7 @@ import (
 type MarketingCampaignQuery struct {
 	config
 	ctx                     *QueryContext
-	order                   []marketingcampaign.Order
+	order                   []marketingcampaign.OrderOption
 	inters                  []Interceptor
 	predicates              []predicate.MarketingCampaign
 	withProduct             *ProductQuery
@@ -62,7 +62,7 @@ func (mcq *MarketingCampaignQuery) Unique(unique bool) *MarketingCampaignQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (mcq *MarketingCampaignQuery) Order(o ...marketingcampaign.Order) *MarketingCampaignQuery {
+func (mcq *MarketingCampaignQuery) Order(o ...marketingcampaign.OrderOption) *MarketingCampaignQuery {
 	mcq.order = append(mcq.order, o...)
 	return mcq
 }
@@ -300,7 +300,7 @@ func (mcq *MarketingCampaignQuery) Clone() *MarketingCampaignQuery {
 	return &MarketingCampaignQuery{
 		config:             mcq.config,
 		ctx:                mcq.ctx.Clone(),
-		order:              append([]marketingcampaign.Order{}, mcq.order...),
+		order:              append([]marketingcampaign.OrderOption{}, mcq.order...),
 		inters:             append([]Interceptor{}, mcq.inters...),
 		predicates:         append([]predicate.MarketingCampaign{}, mcq.predicates...),
 		withProduct:        mcq.withProduct.Clone(),
@@ -489,7 +489,7 @@ func (mcq *MarketingCampaignQuery) loadProduct(ctx context.Context, query *Produ
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(marketingcampaign.ProductColumn, fks...))
+		s.Where(sql.InValues(s.C(marketingcampaign.ProductColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -502,7 +502,7 @@ func (mcq *MarketingCampaignQuery) loadProduct(ctx context.Context, query *Produ
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "marketing_campaign_product" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "marketing_campaign_product" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -520,7 +520,7 @@ func (mcq *MarketingCampaignQuery) loadConsumerReward(ctx context.Context, query
 	}
 	query.withFKs = true
 	query.Where(predicate.RewardType(func(s *sql.Selector) {
-		s.Where(sql.InValues(marketingcampaign.ConsumerRewardColumn, fks...))
+		s.Where(sql.InValues(s.C(marketingcampaign.ConsumerRewardColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -533,7 +533,7 @@ func (mcq *MarketingCampaignQuery) loadConsumerReward(ctx context.Context, query
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "marketing_campaign_consumer_reward" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "marketing_campaign_consumer_reward" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

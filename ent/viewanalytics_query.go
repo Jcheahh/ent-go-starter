@@ -20,7 +20,7 @@ import (
 type ViewAnalyticsQuery struct {
 	config
 	ctx              *QueryContext
-	order            []viewanalytics.Order
+	order            []viewanalytics.OrderOption
 	inters           []Interceptor
 	predicates       []predicate.ViewAnalytics
 	withProduct      *ProductQuery
@@ -59,7 +59,7 @@ func (vaq *ViewAnalyticsQuery) Unique(unique bool) *ViewAnalyticsQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (vaq *ViewAnalyticsQuery) Order(o ...viewanalytics.Order) *ViewAnalyticsQuery {
+func (vaq *ViewAnalyticsQuery) Order(o ...viewanalytics.OrderOption) *ViewAnalyticsQuery {
 	vaq.order = append(vaq.order, o...)
 	return vaq
 }
@@ -275,7 +275,7 @@ func (vaq *ViewAnalyticsQuery) Clone() *ViewAnalyticsQuery {
 	return &ViewAnalyticsQuery{
 		config:      vaq.config,
 		ctx:         vaq.ctx.Clone(),
-		order:       append([]viewanalytics.Order{}, vaq.order...),
+		order:       append([]viewanalytics.OrderOption{}, vaq.order...),
 		inters:      append([]Interceptor{}, vaq.inters...),
 		predicates:  append([]predicate.ViewAnalytics{}, vaq.predicates...),
 		withProduct: vaq.withProduct.Clone(),
@@ -437,7 +437,7 @@ func (vaq *ViewAnalyticsQuery) loadProduct(ctx context.Context, query *ProductQu
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(viewanalytics.ProductColumn, fks...))
+		s.Where(sql.InValues(s.C(viewanalytics.ProductColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (vaq *ViewAnalyticsQuery) loadProduct(ctx context.Context, query *ProductQu
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "view_analytics_product" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "view_analytics_product" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

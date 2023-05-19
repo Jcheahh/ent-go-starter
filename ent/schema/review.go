@@ -14,10 +14,18 @@ type Review struct {
 
 func (Review) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("type"),
-		field.String("content"),
-		field.String("rating"),
-		field.String("dateCreated"),
+		field.String("type").Annotations(
+			entgql.OrderField("TYPE"),
+		),
+		field.String("content").Annotations(
+			entgql.OrderField("CONTENT"),
+		),
+		field.String("rating").Annotations(
+			entgql.OrderField("RATING"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
 	}
 }
 
@@ -31,6 +39,7 @@ func (Review) Edges() []ent.Edge {
 func (Review) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

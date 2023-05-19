@@ -82,70 +82,70 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the UserBuyer queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the UserBuyer queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByPlaceholder orders the results by the placeholder field.
-func ByPlaceholder(opts ...sql.OrderTermOption) Order {
+func ByPlaceholder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPlaceholder, opts...).ToFunc()
 }
 
 // ByUserProfileCount orders the results by userProfile count.
-func ByUserProfileCount(opts ...sql.OrderTermOption) Order {
+func ByUserProfileCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newUserProfileStep(), opts...)
 	}
 }
 
 // ByUserProfile orders the results by userProfile terms.
-func ByUserProfile(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByUserProfile(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserProfileStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByReviewsCount orders the results by reviews count.
-func ByReviewsCount(opts ...sql.OrderTermOption) Order {
+func ByReviewsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newReviewsStep(), opts...)
 	}
 }
 
 // ByReviews orders the results by reviews terms.
-func ByReviews(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByReviews(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newReviewsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByTransactionsCount orders the results by transactions count.
-func ByTransactionsCount(opts ...sql.OrderTermOption) Order {
+func ByTransactionsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newTransactionsStep(), opts...)
 	}
 }
 
 // ByTransactions orders the results by transactions terms.
-func ByTransactions(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByTransactions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newTransactionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByLinksClickedCount orders the results by linksClicked count.
-func ByLinksClickedCount(opts ...sql.OrderTermOption) Order {
+func ByLinksClickedCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newLinksClickedStep(), opts...)
 	}
 }
 
 // ByLinksClicked orders the results by linksClicked terms.
-func ByLinksClicked(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByLinksClicked(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newLinksClickedStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

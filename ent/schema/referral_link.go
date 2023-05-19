@@ -15,10 +15,18 @@ type ReferralLink struct {
 
 func (ReferralLink) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("xid"),
-		field.String("name"),
-		field.String("description"),
-		field.String("link"),
+		field.Int("xid").Annotations(
+			entgql.OrderField("XID"),
+		),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("link").Annotations(
+			entgql.OrderField("LINK"),
+		),
 	}
 }
 
@@ -31,6 +39,7 @@ func (ReferralLink) Edges() []ent.Edge {
 func (ReferralLink) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

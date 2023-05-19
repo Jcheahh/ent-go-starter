@@ -16,7 +16,9 @@ type UserSeller struct {
 // Fields of the UserSeller.
 func (UserSeller) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("brandName"),
+		field.String("brandName").Annotations(
+			entgql.OrderField("BRANDNAME"),
+		),
 	}
 }
 
@@ -31,6 +33,7 @@ func (UserSeller) Edges() []ent.Edge {
 func (UserSeller) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

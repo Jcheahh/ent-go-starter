@@ -9,6 +9,7 @@ import (
 
 	"entdemo/ent"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -58,6 +59,7 @@ func main() {
 	}
 
 	srv := handler.NewDefaultServer(NewSchema(client))
+	srv.Use(entgql.Transactioner{TxOpener: client})
 	http.Handle("/",
 		playground.Handler("Todo", "/query"),
 	)

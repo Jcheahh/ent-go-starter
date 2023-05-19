@@ -20,7 +20,7 @@ import (
 type ProductVariationQuery struct {
 	config
 	ctx                        *QueryContext
-	order                      []productvariation.Order
+	order                      []productvariation.OrderOption
 	inters                     []Interceptor
 	predicates                 []predicate.ProductVariation
 	withProductAttributes      *ProductAttributeQuery
@@ -59,7 +59,7 @@ func (pvq *ProductVariationQuery) Unique(unique bool) *ProductVariationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pvq *ProductVariationQuery) Order(o ...productvariation.Order) *ProductVariationQuery {
+func (pvq *ProductVariationQuery) Order(o ...productvariation.OrderOption) *ProductVariationQuery {
 	pvq.order = append(pvq.order, o...)
 	return pvq
 }
@@ -275,7 +275,7 @@ func (pvq *ProductVariationQuery) Clone() *ProductVariationQuery {
 	return &ProductVariationQuery{
 		config:                pvq.config,
 		ctx:                   pvq.ctx.Clone(),
-		order:                 append([]productvariation.Order{}, pvq.order...),
+		order:                 append([]productvariation.OrderOption{}, pvq.order...),
 		inters:                append([]Interceptor{}, pvq.inters...),
 		predicates:            append([]predicate.ProductVariation{}, pvq.predicates...),
 		withProductAttributes: pvq.withProductAttributes.Clone(),
@@ -439,7 +439,7 @@ func (pvq *ProductVariationQuery) loadProductAttributes(ctx context.Context, que
 	}
 	query.withFKs = true
 	query.Where(predicate.ProductAttribute(func(s *sql.Selector) {
-		s.Where(sql.InValues(productvariation.ProductAttributesColumn, fks...))
+		s.Where(sql.InValues(s.C(productvariation.ProductAttributesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -452,7 +452,7 @@ func (pvq *ProductVariationQuery) loadProductAttributes(ctx context.Context, que
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_variation_product_attributes" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_variation_product_attributes" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

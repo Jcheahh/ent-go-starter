@@ -20,7 +20,7 @@ import (
 type ContentBlockQuery struct {
 	config
 	ctx            *QueryContext
-	order          []contentblock.Order
+	order          []contentblock.OrderOption
 	inters         []Interceptor
 	predicates     []predicate.ContentBlock
 	withImage      *ImageQuery
@@ -59,7 +59,7 @@ func (cbq *ContentBlockQuery) Unique(unique bool) *ContentBlockQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (cbq *ContentBlockQuery) Order(o ...contentblock.Order) *ContentBlockQuery {
+func (cbq *ContentBlockQuery) Order(o ...contentblock.OrderOption) *ContentBlockQuery {
 	cbq.order = append(cbq.order, o...)
 	return cbq
 }
@@ -275,7 +275,7 @@ func (cbq *ContentBlockQuery) Clone() *ContentBlockQuery {
 	return &ContentBlockQuery{
 		config:     cbq.config,
 		ctx:        cbq.ctx.Clone(),
-		order:      append([]contentblock.Order{}, cbq.order...),
+		order:      append([]contentblock.OrderOption{}, cbq.order...),
 		inters:     append([]Interceptor{}, cbq.inters...),
 		predicates: append([]predicate.ContentBlock{}, cbq.predicates...),
 		withImage:  cbq.withImage.Clone(),
@@ -437,7 +437,7 @@ func (cbq *ContentBlockQuery) loadImage(ctx context.Context, query *ImageQuery, 
 	}
 	query.withFKs = true
 	query.Where(predicate.Image(func(s *sql.Selector) {
-		s.Where(sql.InValues(contentblock.ImageColumn, fks...))
+		s.Where(sql.InValues(s.C(contentblock.ImageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (cbq *ContentBlockQuery) loadImage(ctx context.Context, query *ImageQuery, 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "content_block_image" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "content_block_image" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -14,11 +14,21 @@ type GroupBuy struct {
 
 func (GroupBuy) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("dateCreated"),
-		field.Int("productPrice"),
-		field.Int("moq"),
-		field.String("startDate"),
-		field.String("endDate"),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.Int("productPrice").Annotations(
+			entgql.OrderField("PRODUCTPRICE"),
+		),
+		field.Int("moq").Annotations(
+			entgql.OrderField("MOQ"),
+		),
+		field.String("startDate").Annotations(
+			entgql.OrderField("STARTDATE"),
+		),
+		field.String("endDate").Annotations(
+			entgql.OrderField("ENDDATE"),
+		),
 	}
 }
 
@@ -32,6 +42,7 @@ func (GroupBuy) Edges() []ent.Edge {
 func (GroupBuy) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

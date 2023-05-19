@@ -21,7 +21,7 @@ import (
 type ReviewQuery struct {
 	config
 	ctx                      *QueryContext
-	order                    []review.Order
+	order                    []review.OrderOption
 	inters                   []Interceptor
 	predicates               []predicate.Review
 	withProduct              *ProductQuery
@@ -62,7 +62,7 @@ func (rq *ReviewQuery) Unique(unique bool) *ReviewQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (rq *ReviewQuery) Order(o ...review.Order) *ReviewQuery {
+func (rq *ReviewQuery) Order(o ...review.OrderOption) *ReviewQuery {
 	rq.order = append(rq.order, o...)
 	return rq
 }
@@ -300,7 +300,7 @@ func (rq *ReviewQuery) Clone() *ReviewQuery {
 	return &ReviewQuery{
 		config:              rq.config,
 		ctx:                 rq.ctx.Clone(),
-		order:               append([]review.Order{}, rq.order...),
+		order:               append([]review.OrderOption{}, rq.order...),
 		inters:              append([]Interceptor{}, rq.inters...),
 		predicates:          append([]predicate.Review{}, rq.predicates...),
 		withProduct:         rq.withProduct.Clone(),
@@ -489,7 +489,7 @@ func (rq *ReviewQuery) loadProduct(ctx context.Context, query *ProductQuery, nod
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(review.ProductColumn, fks...))
+		s.Where(sql.InValues(s.C(review.ProductColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -502,7 +502,7 @@ func (rq *ReviewQuery) loadProduct(ctx context.Context, query *ProductQuery, nod
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "review_product" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "review_product" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -520,7 +520,7 @@ func (rq *ReviewQuery) loadProductCustomer(ctx context.Context, query *UserBuyer
 	}
 	query.withFKs = true
 	query.Where(predicate.UserBuyer(func(s *sql.Selector) {
-		s.Where(sql.InValues(review.ProductCustomerColumn, fks...))
+		s.Where(sql.InValues(s.C(review.ProductCustomerColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -533,7 +533,7 @@ func (rq *ReviewQuery) loadProductCustomer(ctx context.Context, query *UserBuyer
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "review_product_customer" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "review_product_customer" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

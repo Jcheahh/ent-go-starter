@@ -73,48 +73,48 @@ var (
 	DefaultDateUpdated string
 )
 
-// Order defines the ordering method for the Notification queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Notification queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
-func ByTitle(opts ...sql.OrderTermOption) Order {
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
 }
 
 // ByContent orders the results by the content field.
-func ByContent(opts ...sql.OrderTermOption) Order {
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByRead orders the results by the read field.
-func ByRead(opts ...sql.OrderTermOption) Order {
+func ByRead(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRead, opts...).ToFunc()
 }
 
 // ByRecipientCount orders the results by recipient count.
-func ByRecipientCount(opts ...sql.OrderTermOption) Order {
+func ByRecipientCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newRecipientStep(), opts...)
 	}
 }
 
 // ByRecipient orders the results by recipient terms.
-func ByRecipient(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByRecipient(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newRecipientStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

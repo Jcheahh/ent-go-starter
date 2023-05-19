@@ -13,15 +13,22 @@ type ProductAttribute struct {
 
 func (ProductAttribute) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("name"),
-		field.Int("description"),
-		field.Int("value"),
+		field.Int("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.Int("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.Int("value").Annotations(
+			entgql.OrderField("VALUE"),
+		),
 	}
 }
 
 func (ProductAttribute) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

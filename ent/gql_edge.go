@@ -32,14 +32,14 @@ func (c *Category) Products(ctx context.Context) (result []*Product, err error) 
 	return result, err
 }
 
-func (cs *CommissionStructure) ProductSeller(ctx context.Context) (result []*UserSeller, err error) {
+func (css *CommissionStructureSchema) ProductSeller(ctx context.Context) (result []*UserSeller, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = cs.NamedProductSeller(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = css.NamedProductSeller(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = cs.Edges.ProductSellerOrErr()
+		result, err = css.Edges.ProductSellerOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = cs.QueryProductSeller().All(ctx)
+		result, err = css.QueryProductSeller().All(ctx)
 	}
 	return result, err
 }
@@ -224,7 +224,7 @@ func (pr *Product) Variations(ctx context.Context) (result []*ProductVariation, 
 	return result, err
 }
 
-func (pr *Product) CommissionStructure(ctx context.Context) (result []*CommissionStructure, err error) {
+func (pr *Product) CommissionStructure(ctx context.Context) (result []*CommissionStructureSchema, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = pr.NamedCommissionStructure(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {

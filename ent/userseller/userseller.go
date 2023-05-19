@@ -46,7 +46,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"blog_post_author",
-	"commission_structure_product_seller",
+	"commission_structure_schema_product_seller",
 	"product_product_seller",
 }
 
@@ -65,42 +65,42 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the UserSeller queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the UserSeller queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByBrandName orders the results by the brandName field.
-func ByBrandName(opts ...sql.OrderTermOption) Order {
+func ByBrandName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBrandName, opts...).ToFunc()
 }
 
 // ByUserProfileCount orders the results by userProfile count.
-func ByUserProfileCount(opts ...sql.OrderTermOption) Order {
+func ByUserProfileCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newUserProfileStep(), opts...)
 	}
 }
 
 // ByUserProfile orders the results by userProfile terms.
-func ByUserProfile(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByUserProfile(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserProfileStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByShopsCount orders the results by shops count.
-func ByShopsCount(opts ...sql.OrderTermOption) Order {
+func ByShopsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newShopsStep(), opts...)
 	}
 }
 
 // ByShops orders the results by shops terms.
-func ByShops(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByShops(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newShopsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

@@ -23,7 +23,7 @@ import (
 type UserBuyerQuery struct {
 	config
 	ctx                   *QueryContext
-	order                 []userbuyer.Order
+	order                 []userbuyer.OrderOption
 	inters                []Interceptor
 	predicates            []predicate.UserBuyer
 	withUserProfile       *UserQuery
@@ -68,7 +68,7 @@ func (ubq *UserBuyerQuery) Unique(unique bool) *UserBuyerQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ubq *UserBuyerQuery) Order(o ...userbuyer.Order) *UserBuyerQuery {
+func (ubq *UserBuyerQuery) Order(o ...userbuyer.OrderOption) *UserBuyerQuery {
 	ubq.order = append(ubq.order, o...)
 	return ubq
 }
@@ -350,7 +350,7 @@ func (ubq *UserBuyerQuery) Clone() *UserBuyerQuery {
 	return &UserBuyerQuery{
 		config:           ubq.config,
 		ctx:              ubq.ctx.Clone(),
-		order:            append([]userbuyer.Order{}, ubq.order...),
+		order:            append([]userbuyer.OrderOption{}, ubq.order...),
 		inters:           append([]Interceptor{}, ubq.inters...),
 		predicates:       append([]predicate.UserBuyer{}, ubq.predicates...),
 		withUserProfile:  ubq.withUserProfile.Clone(),
@@ -593,7 +593,7 @@ func (ubq *UserBuyerQuery) loadUserProfile(ctx context.Context, query *UserQuery
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(userbuyer.UserProfileColumn, fks...))
+		s.Where(sql.InValues(s.C(userbuyer.UserProfileColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -606,7 +606,7 @@ func (ubq *UserBuyerQuery) loadUserProfile(ctx context.Context, query *UserQuery
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_buyer_user_profile" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_buyer_user_profile" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -624,7 +624,7 @@ func (ubq *UserBuyerQuery) loadReviews(ctx context.Context, query *ReviewQuery, 
 	}
 	query.withFKs = true
 	query.Where(predicate.Review(func(s *sql.Selector) {
-		s.Where(sql.InValues(userbuyer.ReviewsColumn, fks...))
+		s.Where(sql.InValues(s.C(userbuyer.ReviewsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -637,7 +637,7 @@ func (ubq *UserBuyerQuery) loadReviews(ctx context.Context, query *ReviewQuery, 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_buyer_reviews" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_buyer_reviews" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -655,7 +655,7 @@ func (ubq *UserBuyerQuery) loadTransactions(ctx context.Context, query *Transact
 	}
 	query.withFKs = true
 	query.Where(predicate.Transaction(func(s *sql.Selector) {
-		s.Where(sql.InValues(userbuyer.TransactionsColumn, fks...))
+		s.Where(sql.InValues(s.C(userbuyer.TransactionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -668,7 +668,7 @@ func (ubq *UserBuyerQuery) loadTransactions(ctx context.Context, query *Transact
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_buyer_transactions" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_buyer_transactions" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -686,7 +686,7 @@ func (ubq *UserBuyerQuery) loadLinksClicked(ctx context.Context, query *LinkVisi
 	}
 	query.withFKs = true
 	query.Where(predicate.LinkVisit(func(s *sql.Selector) {
-		s.Where(sql.InValues(userbuyer.LinksClickedColumn, fks...))
+		s.Where(sql.InValues(s.C(userbuyer.LinksClickedColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -699,7 +699,7 @@ func (ubq *UserBuyerQuery) loadLinksClicked(ctx context.Context, query *LinkVisi
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_buyer_links_clicked" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_buyer_links_clicked" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -7,7 +7,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/groupbuy"
 	"entdemo/ent/image"
@@ -169,14 +169,14 @@ func (pc *ProductCreate) AddVariations(p ...*ProductVariation) *ProductCreate {
 	return pc.AddVariationIDs(ids...)
 }
 
-// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructure entity by IDs.
+// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructureSchema entity by IDs.
 func (pc *ProductCreate) AddCommissionStructureIDs(ids ...int) *ProductCreate {
 	pc.mutation.AddCommissionStructureIDs(ids...)
 	return pc
 }
 
-// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructure entity.
-func (pc *ProductCreate) AddCommissionStructure(c ...*CommissionStructure) *ProductCreate {
+// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructureSchema entity.
+func (pc *ProductCreate) AddCommissionStructure(c ...*CommissionStructureSchema) *ProductCreate {
 	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -507,7 +507,7 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

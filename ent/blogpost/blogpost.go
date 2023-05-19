@@ -63,43 +63,43 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the BlogPost queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the BlogPost queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
-func ByTitle(opts ...sql.OrderTermOption) Order {
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
 }
 
 // ByContent orders the results by the content field.
-func ByContent(opts ...sql.OrderTermOption) Order {
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByAuthorCount orders the results by author count.
-func ByAuthorCount(opts ...sql.OrderTermOption) Order {
+func ByAuthorCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newAuthorStep(), opts...)
 	}
 }
 
 // ByAuthor orders the results by author terms.
-func ByAuthor(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByAuthor(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAuthorStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

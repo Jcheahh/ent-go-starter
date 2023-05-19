@@ -14,7 +14,9 @@ type ProductPageView struct {
 
 func (ProductPageView) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("version"),
+		field.Int("version").Annotations(
+			entgql.OrderField("VERSION"),
+		),
 	}
 }
 
@@ -29,6 +31,7 @@ func (ProductPageView) Edges() []ent.Edge {
 func (ProductPageView) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

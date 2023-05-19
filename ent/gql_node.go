@@ -8,7 +8,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/contentblock"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
@@ -55,104 +55,170 @@ type Noder interface {
 	IsNode()
 }
 
-// IsNode implements the Node interface check for GQLGen.
-func (n *BankAccount) IsNode() {}
+var bankaccountImplementors = []string{"BankAccount", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *BlogPost) IsNode() {}
+func (*BankAccount) IsNode() {}
+
+var blogpostImplementors = []string{"BlogPost", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Category) IsNode() {}
+func (*BlogPost) IsNode() {}
+
+var categoryImplementors = []string{"Category", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Chat) IsNode() {}
+func (*Category) IsNode() {}
+
+var chatImplementors = []string{"Chat", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *CommissionStructure) IsNode() {}
+func (*Chat) IsNode() {}
+
+var commissionstructureschemaImplementors = []string{"CommissionStructureSchema", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ContentBlock) IsNode() {}
+func (*CommissionStructureSchema) IsNode() {}
+
+var contentblockImplementors = []string{"ContentBlock", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *EmailCampaign) IsNode() {}
+func (*ContentBlock) IsNode() {}
+
+var emailcampaignImplementors = []string{"EmailCampaign", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Group) IsNode() {}
+func (*EmailCampaign) IsNode() {}
+
+var groupImplementors = []string{"Group", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *GroupBuy) IsNode() {}
+func (*Group) IsNode() {}
+
+var groupbuyImplementors = []string{"GroupBuy", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *HeroContent) IsNode() {}
+func (*GroupBuy) IsNode() {}
+
+var herocontentImplementors = []string{"HeroContent", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Image) IsNode() {}
+func (*HeroContent) IsNode() {}
+
+var imageImplementors = []string{"Image", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *LinkVisit) IsNode() {}
+func (*Image) IsNode() {}
+
+var linkvisitImplementors = []string{"LinkVisit", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *MarketingCampaign) IsNode() {}
+func (*LinkVisit) IsNode() {}
+
+var marketingcampaignImplementors = []string{"MarketingCampaign", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Notification) IsNode() {}
+func (*MarketingCampaign) IsNode() {}
+
+var notificationImplementors = []string{"Notification", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *PaymentMethod) IsNode() {}
+func (*Notification) IsNode() {}
+
+var paymentmethodImplementors = []string{"PaymentMethod", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *PrimaryContent) IsNode() {}
+func (*PaymentMethod) IsNode() {}
+
+var primarycontentImplementors = []string{"PrimaryContent", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Product) IsNode() {}
+func (*PrimaryContent) IsNode() {}
+
+var productImplementors = []string{"Product", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ProductAttribute) IsNode() {}
+func (*Product) IsNode() {}
+
+var productattributeImplementors = []string{"ProductAttribute", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ProductPageView) IsNode() {}
+func (*ProductAttribute) IsNode() {}
+
+var productpageviewImplementors = []string{"ProductPageView", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ProductVariation) IsNode() {}
+func (*ProductPageView) IsNode() {}
+
+var productvariationImplementors = []string{"ProductVariation", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ReferralLink) IsNode() {}
+func (*ProductVariation) IsNode() {}
+
+var referrallinkImplementors = []string{"ReferralLink", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *RefundTransactions) IsNode() {}
+func (*ReferralLink) IsNode() {}
+
+var refundtransactionsImplementors = []string{"RefundTransactions", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Review) IsNode() {}
+func (*RefundTransactions) IsNode() {}
+
+var reviewImplementors = []string{"Review", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *RewardType) IsNode() {}
+func (*Review) IsNode() {}
+
+var rewardtypeImplementors = []string{"RewardType", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ShippingAddress) IsNode() {}
+func (*RewardType) IsNode() {}
+
+var shippingaddressImplementors = []string{"ShippingAddress", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Shop) IsNode() {}
+func (*ShippingAddress) IsNode() {}
+
+var shopImplementors = []string{"Shop", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Tag) IsNode() {}
+func (*Shop) IsNode() {}
+
+var tagImplementors = []string{"Tag", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Transaction) IsNode() {}
+func (*Tag) IsNode() {}
+
+var transactionImplementors = []string{"Transaction", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *User) IsNode() {}
+func (*Transaction) IsNode() {}
+
+var userImplementors = []string{"User", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserBuyer) IsNode() {}
+func (*User) IsNode() {}
+
+var userbuyerImplementors = []string{"UserBuyer", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserInfluencer) IsNode() {}
+func (*UserBuyer) IsNode() {}
+
+var userinfluencerImplementors = []string{"UserInfluencer", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserSeller) IsNode() {}
+func (*UserInfluencer) IsNode() {}
+
+var usersellerImplementors = []string{"UserSeller", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *ViewAnalytics) IsNode() {}
+func (*UserSeller) IsNode() {}
+
+var viewanalyticsImplementors = []string{"ViewAnalytics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*ViewAnalytics) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -215,7 +281,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case bankaccount.Table:
 		query := c.BankAccount.Query().
 			Where(bankaccount.ID(id))
-		query, err := query.CollectFields(ctx, "BankAccount")
+		query, err := query.CollectFields(ctx, bankaccountImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -227,7 +293,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case blogpost.Table:
 		query := c.BlogPost.Query().
 			Where(blogpost.ID(id))
-		query, err := query.CollectFields(ctx, "BlogPost")
+		query, err := query.CollectFields(ctx, blogpostImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -239,7 +305,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case category.Table:
 		query := c.Category.Query().
 			Where(category.ID(id))
-		query, err := query.CollectFields(ctx, "Category")
+		query, err := query.CollectFields(ctx, categoryImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -251,7 +317,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case chat.Table:
 		query := c.Chat.Query().
 			Where(chat.ID(id))
-		query, err := query.CollectFields(ctx, "Chat")
+		query, err := query.CollectFields(ctx, chatImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -260,10 +326,10 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case commissionstructure.Table:
-		query := c.CommissionStructure.Query().
-			Where(commissionstructure.ID(id))
-		query, err := query.CollectFields(ctx, "CommissionStructure")
+	case commissionstructureschema.Table:
+		query := c.CommissionStructureSchema.Query().
+			Where(commissionstructureschema.ID(id))
+		query, err := query.CollectFields(ctx, commissionstructureschemaImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -275,7 +341,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case contentblock.Table:
 		query := c.ContentBlock.Query().
 			Where(contentblock.ID(id))
-		query, err := query.CollectFields(ctx, "ContentBlock")
+		query, err := query.CollectFields(ctx, contentblockImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -287,7 +353,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case emailcampaign.Table:
 		query := c.EmailCampaign.Query().
 			Where(emailcampaign.ID(id))
-		query, err := query.CollectFields(ctx, "EmailCampaign")
+		query, err := query.CollectFields(ctx, emailcampaignImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -299,7 +365,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case group.Table:
 		query := c.Group.Query().
 			Where(group.ID(id))
-		query, err := query.CollectFields(ctx, "Group")
+		query, err := query.CollectFields(ctx, groupImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -311,7 +377,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case groupbuy.Table:
 		query := c.GroupBuy.Query().
 			Where(groupbuy.ID(id))
-		query, err := query.CollectFields(ctx, "GroupBuy")
+		query, err := query.CollectFields(ctx, groupbuyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -323,7 +389,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case herocontent.Table:
 		query := c.HeroContent.Query().
 			Where(herocontent.ID(id))
-		query, err := query.CollectFields(ctx, "HeroContent")
+		query, err := query.CollectFields(ctx, herocontentImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -335,7 +401,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case image.Table:
 		query := c.Image.Query().
 			Where(image.ID(id))
-		query, err := query.CollectFields(ctx, "Image")
+		query, err := query.CollectFields(ctx, imageImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -347,7 +413,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case linkvisit.Table:
 		query := c.LinkVisit.Query().
 			Where(linkvisit.ID(id))
-		query, err := query.CollectFields(ctx, "LinkVisit")
+		query, err := query.CollectFields(ctx, linkvisitImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -359,7 +425,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case marketingcampaign.Table:
 		query := c.MarketingCampaign.Query().
 			Where(marketingcampaign.ID(id))
-		query, err := query.CollectFields(ctx, "MarketingCampaign")
+		query, err := query.CollectFields(ctx, marketingcampaignImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -371,7 +437,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case notification.Table:
 		query := c.Notification.Query().
 			Where(notification.ID(id))
-		query, err := query.CollectFields(ctx, "Notification")
+		query, err := query.CollectFields(ctx, notificationImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -383,7 +449,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case paymentmethod.Table:
 		query := c.PaymentMethod.Query().
 			Where(paymentmethod.ID(id))
-		query, err := query.CollectFields(ctx, "PaymentMethod")
+		query, err := query.CollectFields(ctx, paymentmethodImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -395,7 +461,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case primarycontent.Table:
 		query := c.PrimaryContent.Query().
 			Where(primarycontent.ID(id))
-		query, err := query.CollectFields(ctx, "PrimaryContent")
+		query, err := query.CollectFields(ctx, primarycontentImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -407,7 +473,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case product.Table:
 		query := c.Product.Query().
 			Where(product.ID(id))
-		query, err := query.CollectFields(ctx, "Product")
+		query, err := query.CollectFields(ctx, productImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -419,7 +485,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case productattribute.Table:
 		query := c.ProductAttribute.Query().
 			Where(productattribute.ID(id))
-		query, err := query.CollectFields(ctx, "ProductAttribute")
+		query, err := query.CollectFields(ctx, productattributeImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -431,7 +497,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case productpageview.Table:
 		query := c.ProductPageView.Query().
 			Where(productpageview.ID(id))
-		query, err := query.CollectFields(ctx, "ProductPageView")
+		query, err := query.CollectFields(ctx, productpageviewImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -443,7 +509,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case productvariation.Table:
 		query := c.ProductVariation.Query().
 			Where(productvariation.ID(id))
-		query, err := query.CollectFields(ctx, "ProductVariation")
+		query, err := query.CollectFields(ctx, productvariationImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -455,7 +521,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case referrallink.Table:
 		query := c.ReferralLink.Query().
 			Where(referrallink.ID(id))
-		query, err := query.CollectFields(ctx, "ReferralLink")
+		query, err := query.CollectFields(ctx, referrallinkImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -467,7 +533,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case refundtransactions.Table:
 		query := c.RefundTransactions.Query().
 			Where(refundtransactions.ID(id))
-		query, err := query.CollectFields(ctx, "RefundTransactions")
+		query, err := query.CollectFields(ctx, refundtransactionsImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -479,7 +545,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case review.Table:
 		query := c.Review.Query().
 			Where(review.ID(id))
-		query, err := query.CollectFields(ctx, "Review")
+		query, err := query.CollectFields(ctx, reviewImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -491,7 +557,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case rewardtype.Table:
 		query := c.RewardType.Query().
 			Where(rewardtype.ID(id))
-		query, err := query.CollectFields(ctx, "RewardType")
+		query, err := query.CollectFields(ctx, rewardtypeImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -503,7 +569,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case shippingaddress.Table:
 		query := c.ShippingAddress.Query().
 			Where(shippingaddress.ID(id))
-		query, err := query.CollectFields(ctx, "ShippingAddress")
+		query, err := query.CollectFields(ctx, shippingaddressImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -515,7 +581,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case shop.Table:
 		query := c.Shop.Query().
 			Where(shop.ID(id))
-		query, err := query.CollectFields(ctx, "Shop")
+		query, err := query.CollectFields(ctx, shopImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -527,7 +593,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case tag.Table:
 		query := c.Tag.Query().
 			Where(tag.ID(id))
-		query, err := query.CollectFields(ctx, "Tag")
+		query, err := query.CollectFields(ctx, tagImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -539,7 +605,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case transaction.Table:
 		query := c.Transaction.Query().
 			Where(transaction.ID(id))
-		query, err := query.CollectFields(ctx, "Transaction")
+		query, err := query.CollectFields(ctx, transactionImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -551,7 +617,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case user.Table:
 		query := c.User.Query().
 			Where(user.ID(id))
-		query, err := query.CollectFields(ctx, "User")
+		query, err := query.CollectFields(ctx, userImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -563,7 +629,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userbuyer.Table:
 		query := c.UserBuyer.Query().
 			Where(userbuyer.ID(id))
-		query, err := query.CollectFields(ctx, "UserBuyer")
+		query, err := query.CollectFields(ctx, userbuyerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -575,7 +641,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userinfluencer.Table:
 		query := c.UserInfluencer.Query().
 			Where(userinfluencer.ID(id))
-		query, err := query.CollectFields(ctx, "UserInfluencer")
+		query, err := query.CollectFields(ctx, userinfluencerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -587,7 +653,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userseller.Table:
 		query := c.UserSeller.Query().
 			Where(userseller.ID(id))
-		query, err := query.CollectFields(ctx, "UserSeller")
+		query, err := query.CollectFields(ctx, usersellerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -599,7 +665,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case viewanalytics.Table:
 		query := c.ViewAnalytics.Query().
 			Where(viewanalytics.ID(id))
-		query, err := query.CollectFields(ctx, "ViewAnalytics")
+		query, err := query.CollectFields(ctx, viewanalyticsImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -684,7 +750,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case bankaccount.Table:
 		query := c.BankAccount.Query().
 			Where(bankaccount.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "BankAccount")
+		query, err := query.CollectFields(ctx, bankaccountImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -700,7 +766,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case blogpost.Table:
 		query := c.BlogPost.Query().
 			Where(blogpost.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "BlogPost")
+		query, err := query.CollectFields(ctx, blogpostImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -716,7 +782,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case category.Table:
 		query := c.Category.Query().
 			Where(category.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Category")
+		query, err := query.CollectFields(ctx, categoryImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -732,7 +798,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case chat.Table:
 		query := c.Chat.Query().
 			Where(chat.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Chat")
+		query, err := query.CollectFields(ctx, chatImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -745,10 +811,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case commissionstructure.Table:
-		query := c.CommissionStructure.Query().
-			Where(commissionstructure.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "CommissionStructure")
+	case commissionstructureschema.Table:
+		query := c.CommissionStructureSchema.Query().
+			Where(commissionstructureschema.IDIn(ids...))
+		query, err := query.CollectFields(ctx, commissionstructureschemaImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -764,7 +830,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case contentblock.Table:
 		query := c.ContentBlock.Query().
 			Where(contentblock.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ContentBlock")
+		query, err := query.CollectFields(ctx, contentblockImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -780,7 +846,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case emailcampaign.Table:
 		query := c.EmailCampaign.Query().
 			Where(emailcampaign.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "EmailCampaign")
+		query, err := query.CollectFields(ctx, emailcampaignImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -796,7 +862,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case group.Table:
 		query := c.Group.Query().
 			Where(group.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Group")
+		query, err := query.CollectFields(ctx, groupImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -812,7 +878,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case groupbuy.Table:
 		query := c.GroupBuy.Query().
 			Where(groupbuy.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "GroupBuy")
+		query, err := query.CollectFields(ctx, groupbuyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -828,7 +894,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case herocontent.Table:
 		query := c.HeroContent.Query().
 			Where(herocontent.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "HeroContent")
+		query, err := query.CollectFields(ctx, herocontentImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -844,7 +910,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case image.Table:
 		query := c.Image.Query().
 			Where(image.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Image")
+		query, err := query.CollectFields(ctx, imageImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -860,7 +926,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case linkvisit.Table:
 		query := c.LinkVisit.Query().
 			Where(linkvisit.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "LinkVisit")
+		query, err := query.CollectFields(ctx, linkvisitImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -876,7 +942,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case marketingcampaign.Table:
 		query := c.MarketingCampaign.Query().
 			Where(marketingcampaign.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "MarketingCampaign")
+		query, err := query.CollectFields(ctx, marketingcampaignImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -892,7 +958,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case notification.Table:
 		query := c.Notification.Query().
 			Where(notification.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Notification")
+		query, err := query.CollectFields(ctx, notificationImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -908,7 +974,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case paymentmethod.Table:
 		query := c.PaymentMethod.Query().
 			Where(paymentmethod.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "PaymentMethod")
+		query, err := query.CollectFields(ctx, paymentmethodImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -924,7 +990,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case primarycontent.Table:
 		query := c.PrimaryContent.Query().
 			Where(primarycontent.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "PrimaryContent")
+		query, err := query.CollectFields(ctx, primarycontentImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -940,7 +1006,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case product.Table:
 		query := c.Product.Query().
 			Where(product.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Product")
+		query, err := query.CollectFields(ctx, productImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -956,7 +1022,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case productattribute.Table:
 		query := c.ProductAttribute.Query().
 			Where(productattribute.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ProductAttribute")
+		query, err := query.CollectFields(ctx, productattributeImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -972,7 +1038,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case productpageview.Table:
 		query := c.ProductPageView.Query().
 			Where(productpageview.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ProductPageView")
+		query, err := query.CollectFields(ctx, productpageviewImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -988,7 +1054,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case productvariation.Table:
 		query := c.ProductVariation.Query().
 			Where(productvariation.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ProductVariation")
+		query, err := query.CollectFields(ctx, productvariationImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1004,7 +1070,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case referrallink.Table:
 		query := c.ReferralLink.Query().
 			Where(referrallink.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ReferralLink")
+		query, err := query.CollectFields(ctx, referrallinkImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1020,7 +1086,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case refundtransactions.Table:
 		query := c.RefundTransactions.Query().
 			Where(refundtransactions.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "RefundTransactions")
+		query, err := query.CollectFields(ctx, refundtransactionsImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1036,7 +1102,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case review.Table:
 		query := c.Review.Query().
 			Where(review.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Review")
+		query, err := query.CollectFields(ctx, reviewImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1052,7 +1118,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case rewardtype.Table:
 		query := c.RewardType.Query().
 			Where(rewardtype.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "RewardType")
+		query, err := query.CollectFields(ctx, rewardtypeImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1068,7 +1134,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case shippingaddress.Table:
 		query := c.ShippingAddress.Query().
 			Where(shippingaddress.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ShippingAddress")
+		query, err := query.CollectFields(ctx, shippingaddressImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1084,7 +1150,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case shop.Table:
 		query := c.Shop.Query().
 			Where(shop.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Shop")
+		query, err := query.CollectFields(ctx, shopImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1100,7 +1166,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case tag.Table:
 		query := c.Tag.Query().
 			Where(tag.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Tag")
+		query, err := query.CollectFields(ctx, tagImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1116,7 +1182,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case transaction.Table:
 		query := c.Transaction.Query().
 			Where(transaction.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Transaction")
+		query, err := query.CollectFields(ctx, transactionImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1132,7 +1198,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case user.Table:
 		query := c.User.Query().
 			Where(user.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "User")
+		query, err := query.CollectFields(ctx, userImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1148,7 +1214,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userbuyer.Table:
 		query := c.UserBuyer.Query().
 			Where(userbuyer.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserBuyer")
+		query, err := query.CollectFields(ctx, userbuyerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1164,7 +1230,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userinfluencer.Table:
 		query := c.UserInfluencer.Query().
 			Where(userinfluencer.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserInfluencer")
+		query, err := query.CollectFields(ctx, userinfluencerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1180,7 +1246,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userseller.Table:
 		query := c.UserSeller.Query().
 			Where(userseller.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserSeller")
+		query, err := query.CollectFields(ctx, usersellerImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1196,7 +1262,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case viewanalytics.Table:
 		query := c.ViewAnalytics.Query().
 			Where(viewanalytics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "ViewAnalytics")
+		query, err := query.CollectFields(ctx, viewanalyticsImplementors...)
 		if err != nil {
 			return nil, err
 		}

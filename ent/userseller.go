@@ -20,11 +20,11 @@ type UserSeller struct {
 	BrandName string `json:"brandName,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserSellerQuery when eager-loading is set.
-	Edges                               UserSellerEdges `json:"edges"`
-	blog_post_author                    *int
-	commission_structure_product_seller *int
-	product_product_seller              *int
-	selectValues                        sql.SelectValues
+	Edges                                      UserSellerEdges `json:"edges"`
+	blog_post_author                           *int
+	commission_structure_schema_product_seller *int
+	product_product_seller                     *int
+	selectValues                               sql.SelectValues
 }
 
 // UserSellerEdges holds the relations/edges for other nodes in the graph.
@@ -72,7 +72,7 @@ func (*UserSeller) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case userseller.ForeignKeys[0]: // blog_post_author
 			values[i] = new(sql.NullInt64)
-		case userseller.ForeignKeys[1]: // commission_structure_product_seller
+		case userseller.ForeignKeys[1]: // commission_structure_schema_product_seller
 			values[i] = new(sql.NullInt64)
 		case userseller.ForeignKeys[2]: // product_product_seller
 			values[i] = new(sql.NullInt64)
@@ -112,10 +112,10 @@ func (us *UserSeller) assignValues(columns []string, values []any) error {
 			}
 		case userseller.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field commission_structure_product_seller", value)
+				return fmt.Errorf("unexpected type %T for edge-field commission_structure_schema_product_seller", value)
 			} else if value.Valid {
-				us.commission_structure_product_seller = new(int)
-				*us.commission_structure_product_seller = int(value.Int64)
+				us.commission_structure_schema_product_seller = new(int)
+				*us.commission_structure_schema_product_seller = int(value.Int64)
 			}
 		case userseller.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {

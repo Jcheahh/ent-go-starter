@@ -20,7 +20,7 @@ import (
 type PrimaryContentQuery struct {
 	config
 	ctx                   *QueryContext
-	order                 []primarycontent.Order
+	order                 []primarycontent.OrderOption
 	inters                []Interceptor
 	predicates            []predicate.PrimaryContent
 	withContentBlock      *ContentBlockQuery
@@ -59,7 +59,7 @@ func (pcq *PrimaryContentQuery) Unique(unique bool) *PrimaryContentQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pcq *PrimaryContentQuery) Order(o ...primarycontent.Order) *PrimaryContentQuery {
+func (pcq *PrimaryContentQuery) Order(o ...primarycontent.OrderOption) *PrimaryContentQuery {
 	pcq.order = append(pcq.order, o...)
 	return pcq
 }
@@ -275,7 +275,7 @@ func (pcq *PrimaryContentQuery) Clone() *PrimaryContentQuery {
 	return &PrimaryContentQuery{
 		config:           pcq.config,
 		ctx:              pcq.ctx.Clone(),
-		order:            append([]primarycontent.Order{}, pcq.order...),
+		order:            append([]primarycontent.OrderOption{}, pcq.order...),
 		inters:           append([]Interceptor{}, pcq.inters...),
 		predicates:       append([]predicate.PrimaryContent{}, pcq.predicates...),
 		withContentBlock: pcq.withContentBlock.Clone(),
@@ -437,7 +437,7 @@ func (pcq *PrimaryContentQuery) loadContentBlock(ctx context.Context, query *Con
 	}
 	query.withFKs = true
 	query.Where(predicate.ContentBlock(func(s *sql.Selector) {
-		s.Where(sql.InValues(primarycontent.ContentBlockColumn, fks...))
+		s.Where(sql.InValues(s.C(primarycontent.ContentBlockColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (pcq *PrimaryContentQuery) loadContentBlock(ctx context.Context, query *Con
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "primary_content_content_block" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "primary_content_content_block" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

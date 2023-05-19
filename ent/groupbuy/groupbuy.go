@@ -75,62 +75,62 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the GroupBuy queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the GroupBuy queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByProductPrice orders the results by the productPrice field.
-func ByProductPrice(opts ...sql.OrderTermOption) Order {
+func ByProductPrice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProductPrice, opts...).ToFunc()
 }
 
 // ByMoq orders the results by the moq field.
-func ByMoq(opts ...sql.OrderTermOption) Order {
+func ByMoq(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMoq, opts...).ToFunc()
 }
 
 // ByStartDate orders the results by the startDate field.
-func ByStartDate(opts ...sql.OrderTermOption) Order {
+func ByStartDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStartDate, opts...).ToFunc()
 }
 
 // ByEndDate orders the results by the endDate field.
-func ByEndDate(opts ...sql.OrderTermOption) Order {
+func ByEndDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndDate, opts...).ToFunc()
 }
 
 // ByProductCount orders the results by product count.
-func ByProductCount(opts ...sql.OrderTermOption) Order {
+func ByProductCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductStep(), opts...)
 	}
 }
 
 // ByProduct orders the results by product terms.
-func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByTransactionCount orders the results by transaction count.
-func ByTransactionCount(opts ...sql.OrderTermOption) Order {
+func ByTransactionCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newTransactionStep(), opts...)
 	}
 }
 
 // ByTransaction orders the results by transaction terms.
-func ByTransaction(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByTransaction(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newTransactionStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

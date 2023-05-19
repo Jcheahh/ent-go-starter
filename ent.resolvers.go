@@ -7,6 +7,8 @@ package main
 import (
 	"context"
 	"entdemo/ent"
+
+	"entgo.io/contrib/entgql"
 )
 
 // Node is the resolver for the node field.
@@ -20,168 +22,300 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []int) ([]ent.Noder, erro
 }
 
 // BankAccounts is the resolver for the bankAccounts field.
-func (r *queryResolver) BankAccounts(ctx context.Context) ([]*ent.BankAccount, error) {
-	return r.client.BankAccount.Query().All(ctx)
+func (r *queryResolver) BankAccounts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.BankAccountOrder, where *ent.BankAccountWhereInput) (*ent.BankAccountConnection, error) {
+	return r.client.BankAccount.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithBankAccountOrder(orderBy),
+			ent.WithBankAccountFilter(where.Filter),
+		)
 }
 
 // BlogPosts is the resolver for the blogPosts field.
-func (r *queryResolver) BlogPosts(ctx context.Context) ([]*ent.BlogPost, error) {
-	return r.client.BlogPost.Query().All(ctx)
+func (r *queryResolver) BlogPosts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.BlogPostOrder, where *ent.BlogPostWhereInput) (*ent.BlogPostConnection, error) {
+	return r.client.BlogPost.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithBlogPostOrder(orderBy),
+			ent.WithBlogPostFilter(where.Filter),
+		)
 }
 
 // Categories is the resolver for the categories field.
-func (r *queryResolver) Categories(ctx context.Context) ([]*ent.Category, error) {
-	return r.client.Category.Query().All(ctx)
+func (r *queryResolver) Categories(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.CategoryOrder, where *ent.CategoryWhereInput) (*ent.CategoryConnection, error) {
+	return r.client.Category.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithCategoryOrder(orderBy),
+			ent.WithCategoryFilter(where.Filter),
+		)
 }
 
 // Chats is the resolver for the chats field.
-func (r *queryResolver) Chats(ctx context.Context) ([]*ent.Chat, error) {
-	return r.client.Chat.Query().All(ctx)
+func (r *queryResolver) Chats(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ChatOrder, where *ent.ChatWhereInput) (*ent.ChatConnection, error) {
+	return r.client.Chat.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithChatOrder(orderBy),
+			ent.WithChatFilter(where.Filter),
+		)
 }
 
-// CommissionStructures is the resolver for the commissionStructures field.
-func (r *queryResolver) CommissionStructures(ctx context.Context) ([]*ent.CommissionStructure, error) {
-	return r.client.CommissionStructure.Query().All(ctx)
+// CommissionStructureSchemas is the resolver for the commissionStructureSchemas field.
+func (r *queryResolver) CommissionStructureSchemas(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.CommissionStructureSchemaOrder, where *ent.CommissionStructureSchemaWhereInput) (*ent.CommissionStructureSchemaConnection, error) {
+	return r.client.CommissionStructureSchema.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithCommissionStructureSchemaOrder(orderBy),
+			ent.WithCommissionStructureSchemaFilter(where.Filter),
+		)
 }
 
 // ContentBlocks is the resolver for the contentBlocks field.
-func (r *queryResolver) ContentBlocks(ctx context.Context) ([]*ent.ContentBlock, error) {
-	return r.client.ContentBlock.Query().All(ctx)
+func (r *queryResolver) ContentBlocks(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ContentBlockOrder, where *ent.ContentBlockWhereInput) (*ent.ContentBlockConnection, error) {
+	return r.client.ContentBlock.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithContentBlockOrder(orderBy),
+			ent.WithContentBlockFilter(where.Filter),
+		)
 }
 
 // EmailCampaigns is the resolver for the emailCampaigns field.
-func (r *queryResolver) EmailCampaigns(ctx context.Context) ([]*ent.EmailCampaign, error) {
-	return r.client.EmailCampaign.Query().All(ctx)
+func (r *queryResolver) EmailCampaigns(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.EmailCampaignOrder, where *ent.EmailCampaignWhereInput) (*ent.EmailCampaignConnection, error) {
+	return r.client.EmailCampaign.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithEmailCampaignOrder(orderBy),
+			ent.WithEmailCampaignFilter(where.Filter),
+		)
 }
 
 // Groups is the resolver for the groups field.
-func (r *queryResolver) Groups(ctx context.Context) ([]*ent.Group, error) {
-	return r.client.Group.Query().All(ctx)
+func (r *queryResolver) Groups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.GroupOrder, where *ent.GroupWhereInput) (*ent.GroupConnection, error) {
+	return r.client.Group.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithGroupOrder(orderBy),
+			ent.WithGroupFilter(where.Filter),
+		)
 }
 
 // GroupBuys is the resolver for the groupBuys field.
-func (r *queryResolver) GroupBuys(ctx context.Context) ([]*ent.GroupBuy, error) {
-	return r.client.GroupBuy.Query().All(ctx)
+func (r *queryResolver) GroupBuys(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.GroupBuyOrder, where *ent.GroupBuyWhereInput) (*ent.GroupBuyConnection, error) {
+	return r.client.GroupBuy.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithGroupBuyOrder(orderBy),
+			ent.WithGroupBuyFilter(where.Filter),
+		)
 }
 
 // HeroContents is the resolver for the heroContents field.
-func (r *queryResolver) HeroContents(ctx context.Context) ([]*ent.HeroContent, error) {
-	return r.client.HeroContent.Query().All(ctx)
+func (r *queryResolver) HeroContents(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.HeroContentOrder, where *ent.HeroContentWhereInput) (*ent.HeroContentConnection, error) {
+	return r.client.HeroContent.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithHeroContentOrder(orderBy),
+			ent.WithHeroContentFilter(where.Filter),
+		)
 }
 
 // Images is the resolver for the images field.
-func (r *queryResolver) Images(ctx context.Context) ([]*ent.Image, error) {
-	return r.client.Image.Query().All(ctx)
+func (r *queryResolver) Images(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ImageOrder, where *ent.ImageWhereInput) (*ent.ImageConnection, error) {
+	return r.client.Image.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithImageOrder(orderBy),
+			ent.WithImageFilter(where.Filter),
+		)
 }
 
 // LinkVisits is the resolver for the linkVisits field.
-func (r *queryResolver) LinkVisits(ctx context.Context) ([]*ent.LinkVisit, error) {
-	return r.client.LinkVisit.Query().All(ctx)
+func (r *queryResolver) LinkVisits(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.LinkVisitOrder, where *ent.LinkVisitWhereInput) (*ent.LinkVisitConnection, error) {
+	return r.client.LinkVisit.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithLinkVisitOrder(orderBy),
+			ent.WithLinkVisitFilter(where.Filter),
+		)
 }
 
 // MarketingCampaigns is the resolver for the marketingCampaigns field.
-func (r *queryResolver) MarketingCampaigns(ctx context.Context) ([]*ent.MarketingCampaign, error) {
-	return r.client.MarketingCampaign.Query().All(ctx)
+func (r *queryResolver) MarketingCampaigns(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.MarketingCampaignOrder, where *ent.MarketingCampaignWhereInput) (*ent.MarketingCampaignConnection, error) {
+	return r.client.MarketingCampaign.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithMarketingCampaignOrder(orderBy),
+			ent.WithMarketingCampaignFilter(where.Filter),
+		)
 }
 
 // Notifications is the resolver for the notifications field.
-func (r *queryResolver) Notifications(ctx context.Context) ([]*ent.Notification, error) {
-	return r.client.Notification.Query().All(ctx)
+func (r *queryResolver) Notifications(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.NotificationOrder, where *ent.NotificationWhereInput) (*ent.NotificationConnection, error) {
+	return r.client.Notification.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithNotificationOrder(orderBy),
+			ent.WithNotificationFilter(where.Filter),
+		)
 }
 
 // PaymentMethods is the resolver for the paymentMethods field.
-func (r *queryResolver) PaymentMethods(ctx context.Context) ([]*ent.PaymentMethod, error) {
-	return r.client.PaymentMethod.Query().All(ctx)
+func (r *queryResolver) PaymentMethods(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.PaymentMethodOrder, where *ent.PaymentMethodWhereInput) (*ent.PaymentMethodConnection, error) {
+	return r.client.PaymentMethod.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithPaymentMethodOrder(orderBy),
+			ent.WithPaymentMethodFilter(where.Filter),
+		)
 }
 
 // PrimaryContents is the resolver for the primaryContents field.
-func (r *queryResolver) PrimaryContents(ctx context.Context) ([]*ent.PrimaryContent, error) {
-	return r.client.PrimaryContent.Query().All(ctx)
+func (r *queryResolver) PrimaryContents(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.PrimaryContentOrder, where *ent.PrimaryContentWhereInput) (*ent.PrimaryContentConnection, error) {
+	return r.client.PrimaryContent.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithPrimaryContentOrder(orderBy),
+			ent.WithPrimaryContentFilter(where.Filter),
+		)
 }
 
 // Products is the resolver for the products field.
-func (r *queryResolver) Products(ctx context.Context) ([]*ent.Product, error) {
-	return r.client.Product.Query().All(ctx)
+func (r *queryResolver) Products(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ProductOrder, where *ent.ProductWhereInput) (*ent.ProductConnection, error) {
+	return r.client.Product.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithProductOrder(orderBy),
+			ent.WithProductFilter(where.Filter),
+		)
 }
 
 // ProductAttributes is the resolver for the productAttributes field.
-func (r *queryResolver) ProductAttributes(ctx context.Context) ([]*ent.ProductAttribute, error) {
-	return r.client.ProductAttribute.Query().All(ctx)
+func (r *queryResolver) ProductAttributes(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ProductAttributeOrder, where *ent.ProductAttributeWhereInput) (*ent.ProductAttributeConnection, error) {
+	return r.client.ProductAttribute.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithProductAttributeOrder(orderBy),
+			ent.WithProductAttributeFilter(where.Filter),
+		)
 }
 
 // ProductPageViews is the resolver for the productPageViews field.
-func (r *queryResolver) ProductPageViews(ctx context.Context) ([]*ent.ProductPageView, error) {
-	return r.client.ProductPageView.Query().All(ctx)
+func (r *queryResolver) ProductPageViews(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ProductPageViewOrder, where *ent.ProductPageViewWhereInput) (*ent.ProductPageViewConnection, error) {
+	return r.client.ProductPageView.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithProductPageViewOrder(orderBy),
+			ent.WithProductPageViewFilter(where.Filter),
+		)
 }
 
 // ProductVariations is the resolver for the productVariations field.
-func (r *queryResolver) ProductVariations(ctx context.Context) ([]*ent.ProductVariation, error) {
-	return r.client.ProductVariation.Query().All(ctx)
+func (r *queryResolver) ProductVariations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ProductVariationOrder, where *ent.ProductVariationWhereInput) (*ent.ProductVariationConnection, error) {
+	return r.client.ProductVariation.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithProductVariationOrder(orderBy),
+			ent.WithProductVariationFilter(where.Filter),
+		)
 }
 
 // ReferralLinks is the resolver for the referralLinks field.
-func (r *queryResolver) ReferralLinks(ctx context.Context) ([]*ent.ReferralLink, error) {
-	return r.client.ReferralLink.Query().All(ctx)
+func (r *queryResolver) ReferralLinks(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ReferralLinkOrder, where *ent.ReferralLinkWhereInput) (*ent.ReferralLinkConnection, error) {
+	return r.client.ReferralLink.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithReferralLinkOrder(orderBy),
+			ent.WithReferralLinkFilter(where.Filter),
+		)
 }
 
 // RefundTransactionsSlice is the resolver for the refundTransactionsSlice field.
-func (r *queryResolver) RefundTransactionsSlice(ctx context.Context) ([]*ent.RefundTransactions, error) {
-	return r.client.RefundTransactions.Query().All(ctx)
+func (r *queryResolver) RefundTransactionsSlice(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.RefundTransactionsOrder, where *ent.RefundTransactionsWhereInput) (*ent.RefundTransactionsConnection, error) {
+	return r.client.RefundTransactions.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithRefundTransactionsOrder(orderBy),
+			ent.WithRefundTransactionsFilter(where.Filter),
+		)
 }
 
 // Reviews is the resolver for the reviews field.
-func (r *queryResolver) Reviews(ctx context.Context) ([]*ent.Review, error) {
-	return r.client.Review.Query().All(ctx)
+func (r *queryResolver) Reviews(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ReviewOrder, where *ent.ReviewWhereInput) (*ent.ReviewConnection, error) {
+	return r.client.Review.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithReviewOrder(orderBy),
+			ent.WithReviewFilter(where.Filter),
+		)
 }
 
 // RewardTypes is the resolver for the rewardTypes field.
-func (r *queryResolver) RewardTypes(ctx context.Context) ([]*ent.RewardType, error) {
-	return r.client.RewardType.Query().All(ctx)
+func (r *queryResolver) RewardTypes(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.RewardTypeOrder, where *ent.RewardTypeWhereInput) (*ent.RewardTypeConnection, error) {
+	return r.client.RewardType.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithRewardTypeOrder(orderBy),
+			ent.WithRewardTypeFilter(where.Filter),
+		)
 }
 
 // ShippingAddresses is the resolver for the shippingAddresses field.
-func (r *queryResolver) ShippingAddresses(ctx context.Context) ([]*ent.ShippingAddress, error) {
-	return r.client.ShippingAddress.Query().All(ctx)
+func (r *queryResolver) ShippingAddresses(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ShippingAddressOrder, where *ent.ShippingAddressWhereInput) (*ent.ShippingAddressConnection, error) {
+	return r.client.ShippingAddress.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithShippingAddressOrder(orderBy),
+			ent.WithShippingAddressFilter(where.Filter),
+		)
 }
 
 // Shops is the resolver for the shops field.
-func (r *queryResolver) Shops(ctx context.Context) ([]*ent.Shop, error) {
-	return r.client.Shop.Query().All(ctx)
+func (r *queryResolver) Shops(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ShopOrder, where *ent.ShopWhereInput) (*ent.ShopConnection, error) {
+	return r.client.Shop.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithShopOrder(orderBy),
+			ent.WithShopFilter(where.Filter),
+		)
 }
 
 // Tags is the resolver for the tags field.
-func (r *queryResolver) Tags(ctx context.Context) ([]*ent.Tag, error) {
-	return r.client.Tag.Query().All(ctx)
+func (r *queryResolver) Tags(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.TagOrder, where *ent.TagWhereInput) (*ent.TagConnection, error) {
+	return r.client.Tag.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithTagOrder(orderBy),
+			ent.WithTagFilter(where.Filter),
+		)
 }
 
 // Transactions is the resolver for the transactions field.
-func (r *queryResolver) Transactions(ctx context.Context) ([]*ent.Transaction, error) {
-	return r.client.Transaction.Query().All(ctx)
+func (r *queryResolver) Transactions(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.TransactionOrder, where *ent.TransactionWhereInput) (*ent.TransactionConnection, error) {
+	return r.client.Transaction.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithTransactionOrder(orderBy),
+			ent.WithTransactionFilter(where.Filter),
+		)
 }
 
 // Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*ent.User, error) {
-	return r.client.User.Query().All(ctx)
+func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+	return r.client.User.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithUserOrder(orderBy),
+			ent.WithUserFilter(where.Filter),
+		)
 }
 
 // UserBuyers is the resolver for the userBuyers field.
-func (r *queryResolver) UserBuyers(ctx context.Context) ([]*ent.UserBuyer, error) {
-	return r.client.UserBuyer.Query().All(ctx)
+func (r *queryResolver) UserBuyers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.UserBuyerOrder, where *ent.UserBuyerWhereInput) (*ent.UserBuyerConnection, error) {
+	return r.client.UserBuyer.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithUserBuyerOrder(orderBy),
+			ent.WithUserBuyerFilter(where.Filter),
+		)
 }
 
 // UserInfluencers is the resolver for the userInfluencers field.
-func (r *queryResolver) UserInfluencers(ctx context.Context) ([]*ent.UserInfluencer, error) {
-	return r.client.UserInfluencer.Query().All(ctx)
+func (r *queryResolver) UserInfluencers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.UserInfluencerOrder, where *ent.UserInfluencerWhereInput) (*ent.UserInfluencerConnection, error) {
+	return r.client.UserInfluencer.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithUserInfluencerOrder(orderBy),
+			ent.WithUserInfluencerFilter(where.Filter),
+		)
 }
 
 // UserSellers is the resolver for the userSellers field.
-func (r *queryResolver) UserSellers(ctx context.Context) ([]*ent.UserSeller, error) {
-	return r.client.UserSeller.Query().All(ctx)
+func (r *queryResolver) UserSellers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.UserSellerOrder, where *ent.UserSellerWhereInput) (*ent.UserSellerConnection, error) {
+	return r.client.UserSeller.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithUserSellerOrder(orderBy),
+			ent.WithUserSellerFilter(where.Filter),
+		)
 }
 
 // ViewAnalyticsSlice is the resolver for the viewAnalyticsSlice field.
-func (r *queryResolver) ViewAnalyticsSlice(ctx context.Context) ([]*ent.ViewAnalytics, error) {
-	return r.client.ViewAnalytics.Query().All(ctx)
+func (r *queryResolver) ViewAnalyticsSlice(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy []*ent.ViewAnalyticsOrder, where *ent.ViewAnalyticsWhereInput) (*ent.ViewAnalyticsConnection, error) {
+	return r.client.ViewAnalytics.Query().
+		Paginate(ctx, after, first, before, last,
+			ent.WithViewAnalyticsOrder(orderBy),
+			ent.WithViewAnalyticsFilter(where.Filter),
+		)
 }
 
 // Query returns QueryResolver implementation.

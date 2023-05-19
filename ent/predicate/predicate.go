@@ -18,8 +18,8 @@ type Category func(*sql.Selector)
 // Chat is the predicate function for chat builders.
 type Chat func(*sql.Selector)
 
-// CommissionStructure is the predicate function for commissionstructure builders.
-type CommissionStructure func(*sql.Selector)
+// CommissionStructureSchema is the predicate function for commissionstructureschema builders.
+type CommissionStructureSchema func(*sql.Selector)
 
 // ContentBlock is the predicate function for contentblock builders.
 type ContentBlock func(*sql.Selector)

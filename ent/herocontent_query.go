@@ -20,7 +20,7 @@ import (
 type HeroContentQuery struct {
 	config
 	ctx            *QueryContext
-	order          []herocontent.Order
+	order          []herocontent.OrderOption
 	inters         []Interceptor
 	predicates     []predicate.HeroContent
 	withImage      *ImageQuery
@@ -59,7 +59,7 @@ func (hcq *HeroContentQuery) Unique(unique bool) *HeroContentQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (hcq *HeroContentQuery) Order(o ...herocontent.Order) *HeroContentQuery {
+func (hcq *HeroContentQuery) Order(o ...herocontent.OrderOption) *HeroContentQuery {
 	hcq.order = append(hcq.order, o...)
 	return hcq
 }
@@ -275,7 +275,7 @@ func (hcq *HeroContentQuery) Clone() *HeroContentQuery {
 	return &HeroContentQuery{
 		config:     hcq.config,
 		ctx:        hcq.ctx.Clone(),
-		order:      append([]herocontent.Order{}, hcq.order...),
+		order:      append([]herocontent.OrderOption{}, hcq.order...),
 		inters:     append([]Interceptor{}, hcq.inters...),
 		predicates: append([]predicate.HeroContent{}, hcq.predicates...),
 		withImage:  hcq.withImage.Clone(),
@@ -437,7 +437,7 @@ func (hcq *HeroContentQuery) loadImage(ctx context.Context, query *ImageQuery, n
 	}
 	query.withFKs = true
 	query.Where(predicate.Image(func(s *sql.Selector) {
-		s.Where(sql.InValues(herocontent.ImageColumn, fks...))
+		s.Where(sql.InValues(s.C(herocontent.ImageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (hcq *HeroContentQuery) loadImage(ctx context.Context, query *ImageQuery, n
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "hero_content_image" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "hero_content_image" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

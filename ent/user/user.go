@@ -118,115 +118,115 @@ var (
 	DefaultDateUpdated string
 )
 
-// Order defines the ordering method for the User queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the User queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByEmail orders the results by the email field.
-func ByEmail(opts ...sql.OrderTermOption) Order {
+func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
 }
 
 // ByPhone orders the results by the phone field.
-func ByPhone(opts ...sql.OrderTermOption) Order {
+func ByPhone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPhone, opts...).ToFunc()
 }
 
 // ByAddress orders the results by the address field.
-func ByAddress(opts ...sql.OrderTermOption) Order {
+func ByAddress(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAddress, opts...).ToFunc()
 }
 
 // ByCity orders the results by the city field.
-func ByCity(opts ...sql.OrderTermOption) Order {
+func ByCity(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCity, opts...).ToFunc()
 }
 
 // ByState orders the results by the state field.
-func ByState(opts ...sql.OrderTermOption) Order {
+func ByState(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldState, opts...).ToFunc()
 }
 
 // ByZip orders the results by the zip field.
-func ByZip(opts ...sql.OrderTermOption) Order {
+func ByZip(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldZip, opts...).ToFunc()
 }
 
 // ByCountry orders the results by the country field.
-func ByCountry(opts ...sql.OrderTermOption) Order {
+func ByCountry(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCountry, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByNotificationsCount orders the results by notifications count.
-func ByNotificationsCount(opts ...sql.OrderTermOption) Order {
+func ByNotificationsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newNotificationsStep(), opts...)
 	}
 }
 
 // ByNotifications orders the results by notifications terms.
-func ByNotifications(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByNotifications(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newNotificationsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByBankAccountsCount orders the results by bankAccounts count.
-func ByBankAccountsCount(opts ...sql.OrderTermOption) Order {
+func ByBankAccountsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newBankAccountsStep(), opts...)
 	}
 }
 
 // ByBankAccounts orders the results by bankAccounts terms.
-func ByBankAccounts(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByBankAccounts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newBankAccountsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByShippingAddressesCount orders the results by shippingAddresses count.
-func ByShippingAddressesCount(opts ...sql.OrderTermOption) Order {
+func ByShippingAddressesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newShippingAddressesStep(), opts...)
 	}
 }
 
 // ByShippingAddresses orders the results by shippingAddresses terms.
-func ByShippingAddresses(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByShippingAddresses(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newShippingAddressesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByPaymentMethodsCount orders the results by paymentMethods count.
-func ByPaymentMethodsCount(opts ...sql.OrderTermOption) Order {
+func ByPaymentMethodsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newPaymentMethodsStep(), opts...)
 	}
 }
 
 // ByPaymentMethods orders the results by paymentMethods terms.
-func ByPaymentMethods(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByPaymentMethods(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newPaymentMethodsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

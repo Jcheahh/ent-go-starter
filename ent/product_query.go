@@ -8,7 +8,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/groupbuy"
 	"entdemo/ent/image"
@@ -34,7 +34,7 @@ import (
 type ProductQuery struct {
 	config
 	ctx                          *QueryContext
-	order                        []product.Order
+	order                        []product.OrderOption
 	inters                       []Interceptor
 	predicates                   []predicate.Product
 	withProductSeller            *UserSellerQuery
@@ -44,7 +44,7 @@ type ProductQuery struct {
 	withTags                     *TagQuery
 	withProductAttributes        *ProductAttributeQuery
 	withVariations               *ProductVariationQuery
-	withCommissionStructure      *CommissionStructureQuery
+	withCommissionStructure      *CommissionStructureSchemaQuery
 	withShop                     *ShopQuery
 	withGroupBuys                *GroupBuyQuery
 	withProductPageViews         *ProductPageViewQuery
@@ -62,7 +62,7 @@ type ProductQuery struct {
 	withNamedTags                map[string]*TagQuery
 	withNamedProductAttributes   map[string]*ProductAttributeQuery
 	withNamedVariations          map[string]*ProductVariationQuery
-	withNamedCommissionStructure map[string]*CommissionStructureQuery
+	withNamedCommissionStructure map[string]*CommissionStructureSchemaQuery
 	withNamedShop                map[string]*ShopQuery
 	withNamedGroupBuys           map[string]*GroupBuyQuery
 	withNamedProductPageViews    map[string]*ProductPageViewQuery
@@ -101,7 +101,7 @@ func (pq *ProductQuery) Unique(unique bool) *ProductQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *ProductQuery) Order(o ...product.Order) *ProductQuery {
+func (pq *ProductQuery) Order(o ...product.OrderOption) *ProductQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -261,8 +261,8 @@ func (pq *ProductQuery) QueryVariations() *ProductVariationQuery {
 }
 
 // QueryCommissionStructure chains the current query on the "commissionStructure" edge.
-func (pq *ProductQuery) QueryCommissionStructure() *CommissionStructureQuery {
-	query := (&CommissionStructureClient{config: pq.config}).Query()
+func (pq *ProductQuery) QueryCommissionStructure() *CommissionStructureSchemaQuery {
+	query := (&CommissionStructureSchemaClient{config: pq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := pq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -273,7 +273,7 @@ func (pq *ProductQuery) QueryCommissionStructure() *CommissionStructureQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(product.Table, product.FieldID, selector),
-			sqlgraph.To(commissionstructure.Table, commissionstructure.FieldID),
+			sqlgraph.To(commissionstructureschema.Table, commissionstructureschema.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, product.CommissionStructureTable, product.CommissionStructureColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
@@ -625,7 +625,7 @@ func (pq *ProductQuery) Clone() *ProductQuery {
 	return &ProductQuery{
 		config:                  pq.config,
 		ctx:                     pq.ctx.Clone(),
-		order:                   append([]product.Order{}, pq.order...),
+		order:                   append([]product.OrderOption{}, pq.order...),
 		inters:                  append([]Interceptor{}, pq.inters...),
 		predicates:              append([]predicate.Product{}, pq.predicates...),
 		withProductSeller:       pq.withProductSeller.Clone(),
@@ -728,8 +728,8 @@ func (pq *ProductQuery) WithVariations(opts ...func(*ProductVariationQuery)) *Pr
 
 // WithCommissionStructure tells the query-builder to eager-load the nodes that are connected to
 // the "commissionStructure" edge. The optional arguments are used to configure the query builder of the edge.
-func (pq *ProductQuery) WithCommissionStructure(opts ...func(*CommissionStructureQuery)) *ProductQuery {
-	query := (&CommissionStructureClient{config: pq.config}).Query()
+func (pq *ProductQuery) WithCommissionStructure(opts ...func(*CommissionStructureSchemaQuery)) *ProductQuery {
+	query := (&CommissionStructureSchemaClient{config: pq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -988,8 +988,8 @@ func (pq *ProductQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prod
 	}
 	if query := pq.withCommissionStructure; query != nil {
 		if err := pq.loadCommissionStructure(ctx, query, nodes,
-			func(n *Product) { n.Edges.CommissionStructure = []*CommissionStructure{} },
-			func(n *Product, e *CommissionStructure) {
+			func(n *Product) { n.Edges.CommissionStructure = []*CommissionStructureSchema{} },
+			func(n *Product, e *CommissionStructureSchema) {
 				n.Edges.CommissionStructure = append(n.Edges.CommissionStructure, e)
 			}); err != nil {
 			return nil, err
@@ -1098,7 +1098,7 @@ func (pq *ProductQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prod
 	for name, query := range pq.withNamedCommissionStructure {
 		if err := pq.loadCommissionStructure(ctx, query, nodes,
 			func(n *Product) { n.appendNamedCommissionStructure(name) },
-			func(n *Product, e *CommissionStructure) { n.appendNamedCommissionStructure(name, e) }); err != nil {
+			func(n *Product, e *CommissionStructureSchema) { n.appendNamedCommissionStructure(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1171,7 +1171,7 @@ func (pq *ProductQuery) loadProductSeller(ctx context.Context, query *UserSeller
 	}
 	query.withFKs = true
 	query.Where(predicate.UserSeller(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ProductSellerColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ProductSellerColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1184,7 +1184,7 @@ func (pq *ProductQuery) loadProductSeller(ctx context.Context, query *UserSeller
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_product_seller" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_product_seller" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1202,7 +1202,7 @@ func (pq *ProductQuery) loadReviews(ctx context.Context, query *ReviewQuery, nod
 	}
 	query.withFKs = true
 	query.Where(predicate.Review(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ReviewsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ReviewsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1215,7 +1215,7 @@ func (pq *ProductQuery) loadReviews(ctx context.Context, query *ReviewQuery, nod
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_reviews" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_reviews" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1233,7 +1233,7 @@ func (pq *ProductQuery) loadImages(ctx context.Context, query *ImageQuery, nodes
 	}
 	query.withFKs = true
 	query.Where(predicate.Image(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ImagesColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ImagesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1246,7 +1246,7 @@ func (pq *ProductQuery) loadImages(ctx context.Context, query *ImageQuery, nodes
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_images" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_images" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1264,7 +1264,7 @@ func (pq *ProductQuery) loadCategories(ctx context.Context, query *CategoryQuery
 	}
 	query.withFKs = true
 	query.Where(predicate.Category(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.CategoriesColumn, fks...))
+		s.Where(sql.InValues(s.C(product.CategoriesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1277,7 +1277,7 @@ func (pq *ProductQuery) loadCategories(ctx context.Context, query *CategoryQuery
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_categories" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_categories" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1295,7 +1295,7 @@ func (pq *ProductQuery) loadTags(ctx context.Context, query *TagQuery, nodes []*
 	}
 	query.withFKs = true
 	query.Where(predicate.Tag(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.TagsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.TagsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1308,7 +1308,7 @@ func (pq *ProductQuery) loadTags(ctx context.Context, query *TagQuery, nodes []*
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_tags" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_tags" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1326,7 +1326,7 @@ func (pq *ProductQuery) loadProductAttributes(ctx context.Context, query *Produc
 	}
 	query.withFKs = true
 	query.Where(predicate.ProductAttribute(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ProductAttributesColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ProductAttributesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1339,7 +1339,7 @@ func (pq *ProductQuery) loadProductAttributes(ctx context.Context, query *Produc
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_product_attributes" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_product_attributes" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1357,7 +1357,7 @@ func (pq *ProductQuery) loadVariations(ctx context.Context, query *ProductVariat
 	}
 	query.withFKs = true
 	query.Where(predicate.ProductVariation(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.VariationsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.VariationsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1370,13 +1370,13 @@ func (pq *ProductQuery) loadVariations(ctx context.Context, query *ProductVariat
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_variations" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_variations" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (pq *ProductQuery) loadCommissionStructure(ctx context.Context, query *CommissionStructureQuery, nodes []*Product, init func(*Product), assign func(*Product, *CommissionStructure)) error {
+func (pq *ProductQuery) loadCommissionStructure(ctx context.Context, query *CommissionStructureSchemaQuery, nodes []*Product, init func(*Product), assign func(*Product, *CommissionStructureSchema)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Product)
 	for i := range nodes {
@@ -1387,8 +1387,8 @@ func (pq *ProductQuery) loadCommissionStructure(ctx context.Context, query *Comm
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.CommissionStructure(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.CommissionStructureColumn, fks...))
+	query.Where(predicate.CommissionStructureSchema(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(product.CommissionStructureColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1401,7 +1401,7 @@ func (pq *ProductQuery) loadCommissionStructure(ctx context.Context, query *Comm
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_commission_structure" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_commission_structure" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1419,7 +1419,7 @@ func (pq *ProductQuery) loadShop(ctx context.Context, query *ShopQuery, nodes []
 	}
 	query.withFKs = true
 	query.Where(predicate.Shop(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ShopColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ShopColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1432,7 +1432,7 @@ func (pq *ProductQuery) loadShop(ctx context.Context, query *ShopQuery, nodes []
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_shop" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_shop" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1450,7 +1450,7 @@ func (pq *ProductQuery) loadGroupBuys(ctx context.Context, query *GroupBuyQuery,
 	}
 	query.withFKs = true
 	query.Where(predicate.GroupBuy(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.GroupBuysColumn, fks...))
+		s.Where(sql.InValues(s.C(product.GroupBuysColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1463,7 +1463,7 @@ func (pq *ProductQuery) loadGroupBuys(ctx context.Context, query *GroupBuyQuery,
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_group_buys" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_group_buys" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1481,7 +1481,7 @@ func (pq *ProductQuery) loadProductPageViews(ctx context.Context, query *Product
 	}
 	query.withFKs = true
 	query.Where(predicate.ProductPageView(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ProductPageViewsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ProductPageViewsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1494,7 +1494,7 @@ func (pq *ProductQuery) loadProductPageViews(ctx context.Context, query *Product
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_product_page_views" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_product_page_views" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1512,7 +1512,7 @@ func (pq *ProductQuery) loadBlogPosts(ctx context.Context, query *BlogPostQuery,
 	}
 	query.withFKs = true
 	query.Where(predicate.BlogPost(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.BlogPostsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.BlogPostsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1525,7 +1525,7 @@ func (pq *ProductQuery) loadBlogPosts(ctx context.Context, query *BlogPostQuery,
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_blog_posts" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_blog_posts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1543,7 +1543,7 @@ func (pq *ProductQuery) loadMarketingCampaigns(ctx context.Context, query *Marke
 	}
 	query.withFKs = true
 	query.Where(predicate.MarketingCampaign(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.MarketingCampaignsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.MarketingCampaignsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1556,7 +1556,7 @@ func (pq *ProductQuery) loadMarketingCampaigns(ctx context.Context, query *Marke
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_marketing_campaigns" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_marketing_campaigns" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1574,7 +1574,7 @@ func (pq *ProductQuery) loadChats(ctx context.Context, query *ChatQuery, nodes [
 	}
 	query.withFKs = true
 	query.Where(predicate.Chat(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.ChatsColumn, fks...))
+		s.Where(sql.InValues(s.C(product.ChatsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1587,7 +1587,7 @@ func (pq *ProductQuery) loadChats(ctx context.Context, query *ChatQuery, nodes [
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_chats" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_chats" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1605,7 +1605,7 @@ func (pq *ProductQuery) loadEmailCampaign(ctx context.Context, query *EmailCampa
 	}
 	query.withFKs = true
 	query.Where(predicate.EmailCampaign(func(s *sql.Selector) {
-		s.Where(sql.InValues(product.EmailCampaignColumn, fks...))
+		s.Where(sql.InValues(s.C(product.EmailCampaignColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1618,7 +1618,7 @@ func (pq *ProductQuery) loadEmailCampaign(ctx context.Context, query *EmailCampa
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_email_campaign" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_email_campaign" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1809,13 +1809,13 @@ func (pq *ProductQuery) WithNamedVariations(name string, opts ...func(*ProductVa
 
 // WithNamedCommissionStructure tells the query-builder to eager-load the nodes that are connected to the "commissionStructure"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (pq *ProductQuery) WithNamedCommissionStructure(name string, opts ...func(*CommissionStructureQuery)) *ProductQuery {
-	query := (&CommissionStructureClient{config: pq.config}).Query()
+func (pq *ProductQuery) WithNamedCommissionStructure(name string, opts ...func(*CommissionStructureSchemaQuery)) *ProductQuery {
+	query := (&CommissionStructureSchemaClient{config: pq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
 	if pq.withNamedCommissionStructure == nil {
-		pq.withNamedCommissionStructure = make(map[string]*CommissionStructureQuery)
+		pq.withNamedCommissionStructure = make(map[string]*CommissionStructureSchemaQuery)
 	}
 	pq.withNamedCommissionStructure[name] = query
 	return pq

@@ -20,7 +20,7 @@ import (
 type RefundTransactionsQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []refundtransactions.Order
+	order                []refundtransactions.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.RefundTransactions
 	withTransaction      *TransactionQuery
@@ -58,7 +58,7 @@ func (rtq *RefundTransactionsQuery) Unique(unique bool) *RefundTransactionsQuery
 }
 
 // Order specifies how the records should be ordered.
-func (rtq *RefundTransactionsQuery) Order(o ...refundtransactions.Order) *RefundTransactionsQuery {
+func (rtq *RefundTransactionsQuery) Order(o ...refundtransactions.OrderOption) *RefundTransactionsQuery {
 	rtq.order = append(rtq.order, o...)
 	return rtq
 }
@@ -274,7 +274,7 @@ func (rtq *RefundTransactionsQuery) Clone() *RefundTransactionsQuery {
 	return &RefundTransactionsQuery{
 		config:          rtq.config,
 		ctx:             rtq.ctx.Clone(),
-		order:           append([]refundtransactions.Order{}, rtq.order...),
+		order:           append([]refundtransactions.OrderOption{}, rtq.order...),
 		inters:          append([]Interceptor{}, rtq.inters...),
 		predicates:      append([]predicate.RefundTransactions{}, rtq.predicates...),
 		withTransaction: rtq.withTransaction.Clone(),
@@ -432,7 +432,7 @@ func (rtq *RefundTransactionsQuery) loadTransaction(ctx context.Context, query *
 	}
 	query.withFKs = true
 	query.Where(predicate.Transaction(func(s *sql.Selector) {
-		s.Where(sql.InValues(refundtransactions.TransactionColumn, fks...))
+		s.Where(sql.InValues(s.C(refundtransactions.TransactionColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -445,7 +445,7 @@ func (rtq *RefundTransactionsQuery) loadTransaction(ctx context.Context, query *
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "refund_transactions_transaction" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "refund_transactions_transaction" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

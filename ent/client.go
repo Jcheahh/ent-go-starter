@@ -14,7 +14,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/contentblock"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
@@ -63,8 +63,8 @@ type Client struct {
 	Category *CategoryClient
 	// Chat is the client for interacting with the Chat builders.
 	Chat *ChatClient
-	// CommissionStructure is the client for interacting with the CommissionStructure builders.
-	CommissionStructure *CommissionStructureClient
+	// CommissionStructureSchema is the client for interacting with the CommissionStructureSchema builders.
+	CommissionStructureSchema *CommissionStructureSchemaClient
 	// ContentBlock is the client for interacting with the ContentBlock builders.
 	ContentBlock *ContentBlockClient
 	// EmailCampaign is the client for interacting with the EmailCampaign builders.
@@ -140,7 +140,7 @@ func (c *Client) init() {
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.Category = NewCategoryClient(c.config)
 	c.Chat = NewChatClient(c.config)
-	c.CommissionStructure = NewCommissionStructureClient(c.config)
+	c.CommissionStructureSchema = NewCommissionStructureSchemaClient(c.config)
 	c.ContentBlock = NewContentBlockClient(c.config)
 	c.EmailCampaign = NewEmailCampaignClient(c.config)
 	c.Group = NewGroupClient(c.config)
@@ -249,41 +249,41 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		BankAccount:         NewBankAccountClient(cfg),
-		BlogPost:            NewBlogPostClient(cfg),
-		Category:            NewCategoryClient(cfg),
-		Chat:                NewChatClient(cfg),
-		CommissionStructure: NewCommissionStructureClient(cfg),
-		ContentBlock:        NewContentBlockClient(cfg),
-		EmailCampaign:       NewEmailCampaignClient(cfg),
-		Group:               NewGroupClient(cfg),
-		GroupBuy:            NewGroupBuyClient(cfg),
-		HeroContent:         NewHeroContentClient(cfg),
-		Image:               NewImageClient(cfg),
-		LinkVisit:           NewLinkVisitClient(cfg),
-		MarketingCampaign:   NewMarketingCampaignClient(cfg),
-		Notification:        NewNotificationClient(cfg),
-		PaymentMethod:       NewPaymentMethodClient(cfg),
-		PrimaryContent:      NewPrimaryContentClient(cfg),
-		Product:             NewProductClient(cfg),
-		ProductAttribute:    NewProductAttributeClient(cfg),
-		ProductPageView:     NewProductPageViewClient(cfg),
-		ProductVariation:    NewProductVariationClient(cfg),
-		ReferralLink:        NewReferralLinkClient(cfg),
-		RefundTransactions:  NewRefundTransactionsClient(cfg),
-		Review:              NewReviewClient(cfg),
-		RewardType:          NewRewardTypeClient(cfg),
-		ShippingAddress:     NewShippingAddressClient(cfg),
-		Shop:                NewShopClient(cfg),
-		Tag:                 NewTagClient(cfg),
-		Transaction:         NewTransactionClient(cfg),
-		User:                NewUserClient(cfg),
-		UserBuyer:           NewUserBuyerClient(cfg),
-		UserInfluencer:      NewUserInfluencerClient(cfg),
-		UserSeller:          NewUserSellerClient(cfg),
-		ViewAnalytics:       NewViewAnalyticsClient(cfg),
+		ctx:                       ctx,
+		config:                    cfg,
+		BankAccount:               NewBankAccountClient(cfg),
+		BlogPost:                  NewBlogPostClient(cfg),
+		Category:                  NewCategoryClient(cfg),
+		Chat:                      NewChatClient(cfg),
+		CommissionStructureSchema: NewCommissionStructureSchemaClient(cfg),
+		ContentBlock:              NewContentBlockClient(cfg),
+		EmailCampaign:             NewEmailCampaignClient(cfg),
+		Group:                     NewGroupClient(cfg),
+		GroupBuy:                  NewGroupBuyClient(cfg),
+		HeroContent:               NewHeroContentClient(cfg),
+		Image:                     NewImageClient(cfg),
+		LinkVisit:                 NewLinkVisitClient(cfg),
+		MarketingCampaign:         NewMarketingCampaignClient(cfg),
+		Notification:              NewNotificationClient(cfg),
+		PaymentMethod:             NewPaymentMethodClient(cfg),
+		PrimaryContent:            NewPrimaryContentClient(cfg),
+		Product:                   NewProductClient(cfg),
+		ProductAttribute:          NewProductAttributeClient(cfg),
+		ProductPageView:           NewProductPageViewClient(cfg),
+		ProductVariation:          NewProductVariationClient(cfg),
+		ReferralLink:              NewReferralLinkClient(cfg),
+		RefundTransactions:        NewRefundTransactionsClient(cfg),
+		Review:                    NewReviewClient(cfg),
+		RewardType:                NewRewardTypeClient(cfg),
+		ShippingAddress:           NewShippingAddressClient(cfg),
+		Shop:                      NewShopClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Transaction:               NewTransactionClient(cfg),
+		User:                      NewUserClient(cfg),
+		UserBuyer:                 NewUserBuyerClient(cfg),
+		UserInfluencer:            NewUserInfluencerClient(cfg),
+		UserSeller:                NewUserSellerClient(cfg),
+		ViewAnalytics:             NewViewAnalyticsClient(cfg),
 	}, nil
 }
 
@@ -301,41 +301,41 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		BankAccount:         NewBankAccountClient(cfg),
-		BlogPost:            NewBlogPostClient(cfg),
-		Category:            NewCategoryClient(cfg),
-		Chat:                NewChatClient(cfg),
-		CommissionStructure: NewCommissionStructureClient(cfg),
-		ContentBlock:        NewContentBlockClient(cfg),
-		EmailCampaign:       NewEmailCampaignClient(cfg),
-		Group:               NewGroupClient(cfg),
-		GroupBuy:            NewGroupBuyClient(cfg),
-		HeroContent:         NewHeroContentClient(cfg),
-		Image:               NewImageClient(cfg),
-		LinkVisit:           NewLinkVisitClient(cfg),
-		MarketingCampaign:   NewMarketingCampaignClient(cfg),
-		Notification:        NewNotificationClient(cfg),
-		PaymentMethod:       NewPaymentMethodClient(cfg),
-		PrimaryContent:      NewPrimaryContentClient(cfg),
-		Product:             NewProductClient(cfg),
-		ProductAttribute:    NewProductAttributeClient(cfg),
-		ProductPageView:     NewProductPageViewClient(cfg),
-		ProductVariation:    NewProductVariationClient(cfg),
-		ReferralLink:        NewReferralLinkClient(cfg),
-		RefundTransactions:  NewRefundTransactionsClient(cfg),
-		Review:              NewReviewClient(cfg),
-		RewardType:          NewRewardTypeClient(cfg),
-		ShippingAddress:     NewShippingAddressClient(cfg),
-		Shop:                NewShopClient(cfg),
-		Tag:                 NewTagClient(cfg),
-		Transaction:         NewTransactionClient(cfg),
-		User:                NewUserClient(cfg),
-		UserBuyer:           NewUserBuyerClient(cfg),
-		UserInfluencer:      NewUserInfluencerClient(cfg),
-		UserSeller:          NewUserSellerClient(cfg),
-		ViewAnalytics:       NewViewAnalyticsClient(cfg),
+		ctx:                       ctx,
+		config:                    cfg,
+		BankAccount:               NewBankAccountClient(cfg),
+		BlogPost:                  NewBlogPostClient(cfg),
+		Category:                  NewCategoryClient(cfg),
+		Chat:                      NewChatClient(cfg),
+		CommissionStructureSchema: NewCommissionStructureSchemaClient(cfg),
+		ContentBlock:              NewContentBlockClient(cfg),
+		EmailCampaign:             NewEmailCampaignClient(cfg),
+		Group:                     NewGroupClient(cfg),
+		GroupBuy:                  NewGroupBuyClient(cfg),
+		HeroContent:               NewHeroContentClient(cfg),
+		Image:                     NewImageClient(cfg),
+		LinkVisit:                 NewLinkVisitClient(cfg),
+		MarketingCampaign:         NewMarketingCampaignClient(cfg),
+		Notification:              NewNotificationClient(cfg),
+		PaymentMethod:             NewPaymentMethodClient(cfg),
+		PrimaryContent:            NewPrimaryContentClient(cfg),
+		Product:                   NewProductClient(cfg),
+		ProductAttribute:          NewProductAttributeClient(cfg),
+		ProductPageView:           NewProductPageViewClient(cfg),
+		ProductVariation:          NewProductVariationClient(cfg),
+		ReferralLink:              NewReferralLinkClient(cfg),
+		RefundTransactions:        NewRefundTransactionsClient(cfg),
+		Review:                    NewReviewClient(cfg),
+		RewardType:                NewRewardTypeClient(cfg),
+		ShippingAddress:           NewShippingAddressClient(cfg),
+		Shop:                      NewShopClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Transaction:               NewTransactionClient(cfg),
+		User:                      NewUserClient(cfg),
+		UserBuyer:                 NewUserBuyerClient(cfg),
+		UserInfluencer:            NewUserInfluencerClient(cfg),
+		UserSeller:                NewUserSellerClient(cfg),
+		ViewAnalytics:             NewViewAnalyticsClient(cfg),
 	}, nil
 }
 
@@ -365,7 +365,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.BankAccount, c.BlogPost, c.Category, c.Chat, c.CommissionStructure,
+		c.BankAccount, c.BlogPost, c.Category, c.Chat, c.CommissionStructureSchema,
 		c.ContentBlock, c.EmailCampaign, c.Group, c.GroupBuy, c.HeroContent, c.Image,
 		c.LinkVisit, c.MarketingCampaign, c.Notification, c.PaymentMethod,
 		c.PrimaryContent, c.Product, c.ProductAttribute, c.ProductPageView,
@@ -381,7 +381,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.BankAccount, c.BlogPost, c.Category, c.Chat, c.CommissionStructure,
+		c.BankAccount, c.BlogPost, c.Category, c.Chat, c.CommissionStructureSchema,
 		c.ContentBlock, c.EmailCampaign, c.Group, c.GroupBuy, c.HeroContent, c.Image,
 		c.LinkVisit, c.MarketingCampaign, c.Notification, c.PaymentMethod,
 		c.PrimaryContent, c.Product, c.ProductAttribute, c.ProductPageView,
@@ -404,8 +404,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Category.mutate(ctx, m)
 	case *ChatMutation:
 		return c.Chat.mutate(ctx, m)
-	case *CommissionStructureMutation:
-		return c.CommissionStructure.mutate(ctx, m)
+	case *CommissionStructureSchemaMutation:
+		return c.CommissionStructureSchema.mutate(ctx, m)
 	case *ContentBlockMutation:
 		return c.ContentBlock.mutate(ctx, m)
 	case *EmailCampaignMutation:
@@ -971,92 +971,92 @@ func (c *ChatClient) mutate(ctx context.Context, m *ChatMutation) (Value, error)
 	}
 }
 
-// CommissionStructureClient is a client for the CommissionStructure schema.
-type CommissionStructureClient struct {
+// CommissionStructureSchemaClient is a client for the CommissionStructureSchema schema.
+type CommissionStructureSchemaClient struct {
 	config
 }
 
-// NewCommissionStructureClient returns a client for the CommissionStructure from the given config.
-func NewCommissionStructureClient(c config) *CommissionStructureClient {
-	return &CommissionStructureClient{config: c}
+// NewCommissionStructureSchemaClient returns a client for the CommissionStructureSchema from the given config.
+func NewCommissionStructureSchemaClient(c config) *CommissionStructureSchemaClient {
+	return &CommissionStructureSchemaClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `commissionstructure.Hooks(f(g(h())))`.
-func (c *CommissionStructureClient) Use(hooks ...Hook) {
-	c.hooks.CommissionStructure = append(c.hooks.CommissionStructure, hooks...)
+// A call to `Use(f, g, h)` equals to `commissionstructureschema.Hooks(f(g(h())))`.
+func (c *CommissionStructureSchemaClient) Use(hooks ...Hook) {
+	c.hooks.CommissionStructureSchema = append(c.hooks.CommissionStructureSchema, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `commissionstructure.Intercept(f(g(h())))`.
-func (c *CommissionStructureClient) Intercept(interceptors ...Interceptor) {
-	c.inters.CommissionStructure = append(c.inters.CommissionStructure, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `commissionstructureschema.Intercept(f(g(h())))`.
+func (c *CommissionStructureSchemaClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CommissionStructureSchema = append(c.inters.CommissionStructureSchema, interceptors...)
 }
 
-// Create returns a builder for creating a CommissionStructure entity.
-func (c *CommissionStructureClient) Create() *CommissionStructureCreate {
-	mutation := newCommissionStructureMutation(c.config, OpCreate)
-	return &CommissionStructureCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a CommissionStructureSchema entity.
+func (c *CommissionStructureSchemaClient) Create() *CommissionStructureSchemaCreate {
+	mutation := newCommissionStructureSchemaMutation(c.config, OpCreate)
+	return &CommissionStructureSchemaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of CommissionStructure entities.
-func (c *CommissionStructureClient) CreateBulk(builders ...*CommissionStructureCreate) *CommissionStructureCreateBulk {
-	return &CommissionStructureCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of CommissionStructureSchema entities.
+func (c *CommissionStructureSchemaClient) CreateBulk(builders ...*CommissionStructureSchemaCreate) *CommissionStructureSchemaCreateBulk {
+	return &CommissionStructureSchemaCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for CommissionStructure.
-func (c *CommissionStructureClient) Update() *CommissionStructureUpdate {
-	mutation := newCommissionStructureMutation(c.config, OpUpdate)
-	return &CommissionStructureUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for CommissionStructureSchema.
+func (c *CommissionStructureSchemaClient) Update() *CommissionStructureSchemaUpdate {
+	mutation := newCommissionStructureSchemaMutation(c.config, OpUpdate)
+	return &CommissionStructureSchemaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *CommissionStructureClient) UpdateOne(cs *CommissionStructure) *CommissionStructureUpdateOne {
-	mutation := newCommissionStructureMutation(c.config, OpUpdateOne, withCommissionStructure(cs))
-	return &CommissionStructureUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CommissionStructureSchemaClient) UpdateOne(css *CommissionStructureSchema) *CommissionStructureSchemaUpdateOne {
+	mutation := newCommissionStructureSchemaMutation(c.config, OpUpdateOne, withCommissionStructureSchema(css))
+	return &CommissionStructureSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *CommissionStructureClient) UpdateOneID(id int) *CommissionStructureUpdateOne {
-	mutation := newCommissionStructureMutation(c.config, OpUpdateOne, withCommissionStructureID(id))
-	return &CommissionStructureUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CommissionStructureSchemaClient) UpdateOneID(id int) *CommissionStructureSchemaUpdateOne {
+	mutation := newCommissionStructureSchemaMutation(c.config, OpUpdateOne, withCommissionStructureSchemaID(id))
+	return &CommissionStructureSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for CommissionStructure.
-func (c *CommissionStructureClient) Delete() *CommissionStructureDelete {
-	mutation := newCommissionStructureMutation(c.config, OpDelete)
-	return &CommissionStructureDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for CommissionStructureSchema.
+func (c *CommissionStructureSchemaClient) Delete() *CommissionStructureSchemaDelete {
+	mutation := newCommissionStructureSchemaMutation(c.config, OpDelete)
+	return &CommissionStructureSchemaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *CommissionStructureClient) DeleteOne(cs *CommissionStructure) *CommissionStructureDeleteOne {
-	return c.DeleteOneID(cs.ID)
+func (c *CommissionStructureSchemaClient) DeleteOne(css *CommissionStructureSchema) *CommissionStructureSchemaDeleteOne {
+	return c.DeleteOneID(css.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *CommissionStructureClient) DeleteOneID(id int) *CommissionStructureDeleteOne {
-	builder := c.Delete().Where(commissionstructure.ID(id))
+func (c *CommissionStructureSchemaClient) DeleteOneID(id int) *CommissionStructureSchemaDeleteOne {
+	builder := c.Delete().Where(commissionstructureschema.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &CommissionStructureDeleteOne{builder}
+	return &CommissionStructureSchemaDeleteOne{builder}
 }
 
-// Query returns a query builder for CommissionStructure.
-func (c *CommissionStructureClient) Query() *CommissionStructureQuery {
-	return &CommissionStructureQuery{
+// Query returns a query builder for CommissionStructureSchema.
+func (c *CommissionStructureSchemaClient) Query() *CommissionStructureSchemaQuery {
+	return &CommissionStructureSchemaQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeCommissionStructure},
+		ctx:    &QueryContext{Type: TypeCommissionStructureSchema},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a CommissionStructure entity by its id.
-func (c *CommissionStructureClient) Get(ctx context.Context, id int) (*CommissionStructure, error) {
-	return c.Query().Where(commissionstructure.ID(id)).Only(ctx)
+// Get returns a CommissionStructureSchema entity by its id.
+func (c *CommissionStructureSchemaClient) Get(ctx context.Context, id int) (*CommissionStructureSchema, error) {
+	return c.Query().Where(commissionstructureschema.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *CommissionStructureClient) GetX(ctx context.Context, id int) *CommissionStructure {
+func (c *CommissionStructureSchemaClient) GetX(ctx context.Context, id int) *CommissionStructureSchema {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1064,44 +1064,44 @@ func (c *CommissionStructureClient) GetX(ctx context.Context, id int) *Commissio
 	return obj
 }
 
-// QueryProductSeller queries the productSeller edge of a CommissionStructure.
-func (c *CommissionStructureClient) QueryProductSeller(cs *CommissionStructure) *UserSellerQuery {
+// QueryProductSeller queries the productSeller edge of a CommissionStructureSchema.
+func (c *CommissionStructureSchemaClient) QueryProductSeller(css *CommissionStructureSchema) *UserSellerQuery {
 	query := (&UserSellerClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := cs.ID
+		id := css.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(commissionstructure.Table, commissionstructure.FieldID, id),
+			sqlgraph.From(commissionstructureschema.Table, commissionstructureschema.FieldID, id),
 			sqlgraph.To(userseller.Table, userseller.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, commissionstructure.ProductSellerTable, commissionstructure.ProductSellerColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, commissionstructureschema.ProductSellerTable, commissionstructureschema.ProductSellerColumn),
 		)
-		fromV = sqlgraph.Neighbors(cs.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(css.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *CommissionStructureClient) Hooks() []Hook {
-	return c.hooks.CommissionStructure
+func (c *CommissionStructureSchemaClient) Hooks() []Hook {
+	return c.hooks.CommissionStructureSchema
 }
 
 // Interceptors returns the client interceptors.
-func (c *CommissionStructureClient) Interceptors() []Interceptor {
-	return c.inters.CommissionStructure
+func (c *CommissionStructureSchemaClient) Interceptors() []Interceptor {
+	return c.inters.CommissionStructureSchema
 }
 
-func (c *CommissionStructureClient) mutate(ctx context.Context, m *CommissionStructureMutation) (Value, error) {
+func (c *CommissionStructureSchemaClient) mutate(ctx context.Context, m *CommissionStructureSchemaMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&CommissionStructureCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CommissionStructureSchemaCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&CommissionStructureUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CommissionStructureSchemaUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&CommissionStructureUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CommissionStructureSchemaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&CommissionStructureDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&CommissionStructureSchemaDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown CommissionStructure mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown CommissionStructureSchema mutation op: %q", m.Op())
 	}
 }
 
@@ -2737,13 +2737,13 @@ func (c *ProductClient) QueryVariations(pr *Product) *ProductVariationQuery {
 }
 
 // QueryCommissionStructure queries the commissionStructure edge of a Product.
-func (c *ProductClient) QueryCommissionStructure(pr *Product) *CommissionStructureQuery {
-	query := (&CommissionStructureClient{config: c.config}).Query()
+func (c *ProductClient) QueryCommissionStructure(pr *Product) *CommissionStructureSchemaQuery {
+	query := (&CommissionStructureSchemaClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := pr.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(product.Table, product.FieldID, id),
-			sqlgraph.To(commissionstructure.Table, commissionstructure.FieldID),
+			sqlgraph.To(commissionstructureschema.Table, commissionstructureschema.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, product.CommissionStructureTable, product.CommissionStructureColumn),
 		)
 		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
@@ -5292,7 +5292,7 @@ func (c *ViewAnalyticsClient) mutate(ctx context.Context, m *ViewAnalyticsMutati
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		BankAccount, BlogPost, Category, Chat, CommissionStructure, ContentBlock,
+		BankAccount, BlogPost, Category, Chat, CommissionStructureSchema, ContentBlock,
 		EmailCampaign, Group, GroupBuy, HeroContent, Image, LinkVisit,
 		MarketingCampaign, Notification, PaymentMethod, PrimaryContent, Product,
 		ProductAttribute, ProductPageView, ProductVariation, ReferralLink,
@@ -5301,7 +5301,7 @@ type (
 		ViewAnalytics []ent.Hook
 	}
 	inters struct {
-		BankAccount, BlogPost, Category, Chat, CommissionStructure, ContentBlock,
+		BankAccount, BlogPost, Category, Chat, CommissionStructureSchema, ContentBlock,
 		EmailCampaign, Group, GroupBuy, HeroContent, Image, LinkVisit,
 		MarketingCampaign, Notification, PaymentMethod, PrimaryContent, Product,
 		ProductAttribute, ProductPageView, ProductVariation, ReferralLink,

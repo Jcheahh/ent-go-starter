@@ -14,10 +14,18 @@ type BlogPost struct {
 
 func (BlogPost) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("title"),
-		field.String("content"),
-		field.String("dateCreated"),
-		field.String("dateUpdated"),
+		field.String("title").Annotations(
+			entgql.OrderField("TITLE"),
+		),
+		field.String("content").Annotations(
+			entgql.OrderField("CONTENT"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		),
 	}
 }
 
@@ -30,6 +38,7 @@ func (BlogPost) Edges() []ent.Edge {
 func (BlogPost) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

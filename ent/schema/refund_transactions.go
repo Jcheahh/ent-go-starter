@@ -14,12 +14,24 @@ type RefundTransactions struct {
 
 func (RefundTransactions) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("refundAmount"),
-		field.String("refundCurrency"),
-		field.String("refundReason"),
-		field.String("refundStatus"),
-		field.String("dateCreated"),
-		field.String("dateUpdated"),
+		field.String("refundAmount").Annotations(
+			entgql.OrderField("REFUNDAMOUNT"),
+		),
+		field.String("refundCurrency").Annotations(
+			entgql.OrderField("REFUNDCURRENCY"),
+		),
+		field.String("refundReason").Annotations(
+			entgql.OrderField("REFUNDREASON"),
+		),
+		field.String("refundStatus").Annotations(
+			entgql.OrderField("REFUNDSTATUS"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		),
 	}
 }
 
@@ -32,6 +44,7 @@ func (RefundTransactions) Edges() []ent.Edge {
 func (RefundTransactions) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

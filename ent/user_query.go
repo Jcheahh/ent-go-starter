@@ -23,7 +23,7 @@ import (
 type UserQuery struct {
 	config
 	ctx                        *QueryContext
-	order                      []user.Order
+	order                      []user.OrderOption
 	inters                     []Interceptor
 	predicates                 []predicate.User
 	withNotifications          *NotificationQuery
@@ -68,7 +68,7 @@ func (uq *UserQuery) Unique(unique bool) *UserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uq *UserQuery) Order(o ...user.Order) *UserQuery {
+func (uq *UserQuery) Order(o ...user.OrderOption) *UserQuery {
 	uq.order = append(uq.order, o...)
 	return uq
 }
@@ -350,7 +350,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 	return &UserQuery{
 		config:                uq.config,
 		ctx:                   uq.ctx.Clone(),
-		order:                 append([]user.Order{}, uq.order...),
+		order:                 append([]user.OrderOption{}, uq.order...),
 		inters:                append([]Interceptor{}, uq.inters...),
 		predicates:            append([]predicate.User{}, uq.predicates...),
 		withNotifications:     uq.withNotifications.Clone(),
@@ -593,7 +593,7 @@ func (uq *UserQuery) loadNotifications(ctx context.Context, query *NotificationQ
 	}
 	query.withFKs = true
 	query.Where(predicate.Notification(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.NotificationsColumn, fks...))
+		s.Where(sql.InValues(s.C(user.NotificationsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -606,7 +606,7 @@ func (uq *UserQuery) loadNotifications(ctx context.Context, query *NotificationQ
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_notifications" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_notifications" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -624,7 +624,7 @@ func (uq *UserQuery) loadBankAccounts(ctx context.Context, query *BankAccountQue
 	}
 	query.withFKs = true
 	query.Where(predicate.BankAccount(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.BankAccountsColumn, fks...))
+		s.Where(sql.InValues(s.C(user.BankAccountsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -637,7 +637,7 @@ func (uq *UserQuery) loadBankAccounts(ctx context.Context, query *BankAccountQue
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_bank_accounts" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_bank_accounts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -655,7 +655,7 @@ func (uq *UserQuery) loadShippingAddresses(ctx context.Context, query *ShippingA
 	}
 	query.withFKs = true
 	query.Where(predicate.ShippingAddress(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.ShippingAddressesColumn, fks...))
+		s.Where(sql.InValues(s.C(user.ShippingAddressesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -668,7 +668,7 @@ func (uq *UserQuery) loadShippingAddresses(ctx context.Context, query *ShippingA
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_shipping_addresses" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_shipping_addresses" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -686,7 +686,7 @@ func (uq *UserQuery) loadPaymentMethods(ctx context.Context, query *PaymentMetho
 	}
 	query.withFKs = true
 	query.Where(predicate.PaymentMethod(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.PaymentMethodsColumn, fks...))
+		s.Where(sql.InValues(s.C(user.PaymentMethodsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -699,7 +699,7 @@ func (uq *UserQuery) loadPaymentMethods(ctx context.Context, query *PaymentMetho
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_payment_methods" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_payment_methods" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

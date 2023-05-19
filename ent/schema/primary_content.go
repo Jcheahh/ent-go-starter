@@ -16,7 +16,9 @@ type PrimaryContent struct {
 func (PrimaryContent) Fields() []ent.Field {
 	// return nil
 	return []ent.Field{
-		field.Int("placeholder").Optional(),
+		field.Int("placeholder").Annotations(
+			entgql.OrderField("PLACEHOLDER"),
+		).Optional(),
 	}
 }
 
@@ -29,6 +31,7 @@ func (PrimaryContent) Edges() []ent.Edge {
 func (PrimaryContent) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

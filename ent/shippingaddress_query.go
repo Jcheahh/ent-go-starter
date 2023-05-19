@@ -18,7 +18,7 @@ import (
 type ShippingAddressQuery struct {
 	config
 	ctx        *QueryContext
-	order      []shippingaddress.Order
+	order      []shippingaddress.OrderOption
 	inters     []Interceptor
 	predicates []predicate.ShippingAddress
 	withFKs    bool
@@ -55,7 +55,7 @@ func (saq *ShippingAddressQuery) Unique(unique bool) *ShippingAddressQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (saq *ShippingAddressQuery) Order(o ...shippingaddress.Order) *ShippingAddressQuery {
+func (saq *ShippingAddressQuery) Order(o ...shippingaddress.OrderOption) *ShippingAddressQuery {
 	saq.order = append(saq.order, o...)
 	return saq
 }
@@ -249,7 +249,7 @@ func (saq *ShippingAddressQuery) Clone() *ShippingAddressQuery {
 	return &ShippingAddressQuery{
 		config:     saq.config,
 		ctx:        saq.ctx.Clone(),
-		order:      append([]shippingaddress.Order{}, saq.order...),
+		order:      append([]shippingaddress.OrderOption{}, saq.order...),
 		inters:     append([]Interceptor{}, saq.inters...),
 		predicates: append([]predicate.ShippingAddress{}, saq.predicates...),
 		// clone intermediate query.

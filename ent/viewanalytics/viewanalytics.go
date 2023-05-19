@@ -63,43 +63,43 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the ViewAnalytics queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the ViewAnalytics queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByViews orders the results by the views field.
-func ByViews(opts ...sql.OrderTermOption) Order {
+func ByViews(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldViews, opts...).ToFunc()
 }
 
 // ByScrolls orders the results by the scrolls field.
-func ByScrolls(opts ...sql.OrderTermOption) Order {
+func ByScrolls(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldScrolls, opts...).ToFunc()
 }
 
 // ByExits orders the results by the exits field.
-func ByExits(opts ...sql.OrderTermOption) Order {
+func ByExits(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldExits, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByProductCount orders the results by product count.
-func ByProductCount(opts ...sql.OrderTermOption) Order {
+func ByProductCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductStep(), opts...)
 	}
 }
 
 // ByProduct orders the results by product terms.
-func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

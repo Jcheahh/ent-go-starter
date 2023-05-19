@@ -20,7 +20,7 @@ import (
 type BlogPostQuery struct {
 	config
 	ctx             *QueryContext
-	order           []blogpost.Order
+	order           []blogpost.OrderOption
 	inters          []Interceptor
 	predicates      []predicate.BlogPost
 	withAuthor      *UserSellerQuery
@@ -59,7 +59,7 @@ func (bpq *BlogPostQuery) Unique(unique bool) *BlogPostQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (bpq *BlogPostQuery) Order(o ...blogpost.Order) *BlogPostQuery {
+func (bpq *BlogPostQuery) Order(o ...blogpost.OrderOption) *BlogPostQuery {
 	bpq.order = append(bpq.order, o...)
 	return bpq
 }
@@ -275,7 +275,7 @@ func (bpq *BlogPostQuery) Clone() *BlogPostQuery {
 	return &BlogPostQuery{
 		config:     bpq.config,
 		ctx:        bpq.ctx.Clone(),
-		order:      append([]blogpost.Order{}, bpq.order...),
+		order:      append([]blogpost.OrderOption{}, bpq.order...),
 		inters:     append([]Interceptor{}, bpq.inters...),
 		predicates: append([]predicate.BlogPost{}, bpq.predicates...),
 		withAuthor: bpq.withAuthor.Clone(),
@@ -437,7 +437,7 @@ func (bpq *BlogPostQuery) loadAuthor(ctx context.Context, query *UserSellerQuery
 	}
 	query.withFKs = true
 	query.Where(predicate.UserSeller(func(s *sql.Selector) {
-		s.Where(sql.InValues(blogpost.AuthorColumn, fks...))
+		s.Where(sql.InValues(s.C(blogpost.AuthorColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (bpq *BlogPostQuery) loadAuthor(ctx context.Context, query *UserSellerQuery
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "blog_post_author" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "blog_post_author" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

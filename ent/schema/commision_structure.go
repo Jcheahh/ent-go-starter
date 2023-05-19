@@ -8,28 +8,37 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-type CommissionStructure struct {
+type CommissionStructureSchema struct {
 	ent.Schema
 }
 
-func (CommissionStructure) Fields() []ent.Field {
+func (CommissionStructureSchema) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
-		field.String("commissionValue"),
-		field.String("commissionPercentage"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("commissionValue").Annotations(
+			entgql.OrderField("COMMISSIONVALUE"),
+		),
+		field.String("commissionPercentage").Annotations(
+			entgql.OrderField("COMMISSIONPERCENTAGE"),
+		),
 	}
 }
 
-func (CommissionStructure) Edges() []ent.Edge {
+func (CommissionStructureSchema) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("productSeller", UserSeller.Type),
 	}
 }
 
-func (CommissionStructure) Annotations() []schema.Annotation {
+func (CommissionStructureSchema) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

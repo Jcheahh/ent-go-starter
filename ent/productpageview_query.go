@@ -22,7 +22,7 @@ import (
 type ProductPageViewQuery struct {
 	config
 	ctx                     *QueryContext
-	order                   []productpageview.Order
+	order                   []productpageview.OrderOption
 	inters                  []Interceptor
 	predicates              []predicate.ProductPageView
 	withHeroContent         *HeroContentQuery
@@ -65,7 +65,7 @@ func (ppvq *ProductPageViewQuery) Unique(unique bool) *ProductPageViewQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ppvq *ProductPageViewQuery) Order(o ...productpageview.Order) *ProductPageViewQuery {
+func (ppvq *ProductPageViewQuery) Order(o ...productpageview.OrderOption) *ProductPageViewQuery {
 	ppvq.order = append(ppvq.order, o...)
 	return ppvq
 }
@@ -325,7 +325,7 @@ func (ppvq *ProductPageViewQuery) Clone() *ProductPageViewQuery {
 	return &ProductPageViewQuery{
 		config:             ppvq.config,
 		ctx:                ppvq.ctx.Clone(),
-		order:              append([]productpageview.Order{}, ppvq.order...),
+		order:              append([]productpageview.OrderOption{}, ppvq.order...),
 		inters:             append([]Interceptor{}, ppvq.inters...),
 		predicates:         append([]predicate.ProductPageView{}, ppvq.predicates...),
 		withHeroContent:    ppvq.withHeroContent.Clone(),
@@ -543,7 +543,7 @@ func (ppvq *ProductPageViewQuery) loadHeroContent(ctx context.Context, query *He
 	}
 	query.withFKs = true
 	query.Where(predicate.HeroContent(func(s *sql.Selector) {
-		s.Where(sql.InValues(productpageview.HeroContentColumn, fks...))
+		s.Where(sql.InValues(s.C(productpageview.HeroContentColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -556,7 +556,7 @@ func (ppvq *ProductPageViewQuery) loadHeroContent(ctx context.Context, query *He
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_page_view_hero_content" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_page_view_hero_content" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -574,7 +574,7 @@ func (ppvq *ProductPageViewQuery) loadPrimaryContent(ctx context.Context, query 
 	}
 	query.withFKs = true
 	query.Where(predicate.PrimaryContent(func(s *sql.Selector) {
-		s.Where(sql.InValues(productpageview.PrimaryContentColumn, fks...))
+		s.Where(sql.InValues(s.C(productpageview.PrimaryContentColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -587,7 +587,7 @@ func (ppvq *ProductPageViewQuery) loadPrimaryContent(ctx context.Context, query 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_page_view_primary_content" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_page_view_primary_content" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -605,7 +605,7 @@ func (ppvq *ProductPageViewQuery) loadViewAnalytics(ctx context.Context, query *
 	}
 	query.withFKs = true
 	query.Where(predicate.ViewAnalytics(func(s *sql.Selector) {
-		s.Where(sql.InValues(productpageview.ViewAnalyticsColumn, fks...))
+		s.Where(sql.InValues(s.C(productpageview.ViewAnalyticsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -618,7 +618,7 @@ func (ppvq *ProductPageViewQuery) loadViewAnalytics(ctx context.Context, query *
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "product_page_view_view_analytics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "product_page_view_view_analytics" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

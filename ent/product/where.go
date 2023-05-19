@@ -577,7 +577,7 @@ func HasCommissionStructure() predicate.Product {
 }
 
 // HasCommissionStructureWith applies the HasEdge predicate on the "commissionStructure" edge with a given conditions (other predicates).
-func HasCommissionStructureWith(preds ...predicate.CommissionStructure) predicate.Product {
+func HasCommissionStructureWith(preds ...predicate.CommissionStructureSchema) predicate.Product {
 	return predicate.Product(func(s *sql.Selector) {
 		step := newCommissionStructureStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

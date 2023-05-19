@@ -14,9 +14,15 @@ type ProductVariation struct {
 
 func (ProductVariation) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
-		field.String("price"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("price").Annotations(
+			entgql.OrderField("PRICE"),
+		),
 	}
 }
 
@@ -29,6 +35,7 @@ func (ProductVariation) Edges() []ent.Edge {
 func (ProductVariation) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

@@ -99,8 +99,8 @@ var (
 			},
 		},
 	}
-	// CommissionStructuresColumns holds the columns for the "commission_structures" table.
-	CommissionStructuresColumns = []*schema.Column{
+	// CommissionStructureSchemasColumns holds the columns for the "commission_structure_schemas" table.
+	CommissionStructureSchemasColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
@@ -108,15 +108,15 @@ var (
 		{Name: "commission_percentage", Type: field.TypeString},
 		{Name: "product_commission_structure", Type: field.TypeInt, Nullable: true},
 	}
-	// CommissionStructuresTable holds the schema information for the "commission_structures" table.
-	CommissionStructuresTable = &schema.Table{
-		Name:       "commission_structures",
-		Columns:    CommissionStructuresColumns,
-		PrimaryKey: []*schema.Column{CommissionStructuresColumns[0]},
+	// CommissionStructureSchemasTable holds the schema information for the "commission_structure_schemas" table.
+	CommissionStructureSchemasTable = &schema.Table{
+		Name:       "commission_structure_schemas",
+		Columns:    CommissionStructureSchemasColumns,
+		PrimaryKey: []*schema.Column{CommissionStructureSchemasColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "commission_structures_products_commissionStructure",
-				Columns:    []*schema.Column{CommissionStructuresColumns[5]},
+				Symbol:     "commission_structure_schemas_products_commissionStructure",
+				Columns:    []*schema.Column{CommissionStructureSchemasColumns[5]},
 				RefColumns: []*schema.Column{ProductsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -325,8 +325,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
-		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
-		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
 		{Name: "read", Type: field.TypeBool},
 		{Name: "user_notifications", Type: field.TypeInt, Nullable: true},
 	}
@@ -634,8 +634,8 @@ var (
 		{Name: "state", Type: field.TypeString},
 		{Name: "zip", Type: field.TypeString},
 		{Name: "country", Type: field.TypeString},
-		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
-		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
 		{Name: "user_shipping_addresses", Type: field.TypeInt, Nullable: true},
 	}
 	// ShippingAddressesTable holds the schema information for the "shipping_addresses" table.
@@ -789,8 +789,8 @@ var (
 		{Name: "state", Type: field.TypeString},
 		{Name: "zip", Type: field.TypeString},
 		{Name: "country", Type: field.TypeString},
-		{Name: "date_created", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
-		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-17T14:09:26+08:00"},
+		{Name: "date_created", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
+		{Name: "date_updated", Type: field.TypeString, Default: "2023-05-19T16:36:06+08:00"},
 		{Name: "notification_recipient", Type: field.TypeInt, Nullable: true},
 		{Name: "user_buyer_user_profile", Type: field.TypeInt, Nullable: true},
 		{Name: "user_influencer_user_profile", Type: field.TypeInt, Nullable: true},
@@ -880,7 +880,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "brand_name", Type: field.TypeString},
 		{Name: "blog_post_author", Type: field.TypeInt, Nullable: true},
-		{Name: "commission_structure_product_seller", Type: field.TypeInt, Nullable: true},
+		{Name: "commission_structure_schema_product_seller", Type: field.TypeInt, Nullable: true},
 		{Name: "product_product_seller", Type: field.TypeInt, Nullable: true},
 	}
 	// UserSellersTable holds the schema information for the "user_sellers" table.
@@ -896,9 +896,9 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "user_sellers_commission_structures_productSeller",
+				Symbol:     "user_sellers_commission_structure_schemas_productSeller",
 				Columns:    []*schema.Column{UserSellersColumns[3]},
-				RefColumns: []*schema.Column{CommissionStructuresColumns[0]},
+				RefColumns: []*schema.Column{CommissionStructureSchemasColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
@@ -938,7 +938,7 @@ var (
 		BlogPostsTable,
 		CategoriesTable,
 		ChatsTable,
-		CommissionStructuresTable,
+		CommissionStructureSchemasTable,
 		ContentBlocksTable,
 		EmailCampaignsTable,
 		GroupsTable,
@@ -976,7 +976,7 @@ func init() {
 	BlogPostsTable.ForeignKeys[0].RefTable = ProductsTable
 	CategoriesTable.ForeignKeys[0].RefTable = ProductsTable
 	ChatsTable.ForeignKeys[0].RefTable = ProductsTable
-	CommissionStructuresTable.ForeignKeys[0].RefTable = ProductsTable
+	CommissionStructureSchemasTable.ForeignKeys[0].RefTable = ProductsTable
 	ContentBlocksTable.ForeignKeys[0].RefTable = PrimaryContentsTable
 	EmailCampaignsTable.ForeignKeys[0].RefTable = ProductsTable
 	GroupBuysTable.ForeignKeys[0].RefTable = ProductsTable
@@ -1026,7 +1026,7 @@ func init() {
 	UserBuyersTable.ForeignKeys[1].RefTable = TransactionsTable
 	UserInfluencersTable.ForeignKeys[0].RefTable = TransactionsTable
 	UserSellersTable.ForeignKeys[0].RefTable = BlogPostsTable
-	UserSellersTable.ForeignKeys[1].RefTable = CommissionStructuresTable
+	UserSellersTable.ForeignKeys[1].RefTable = CommissionStructureSchemasTable
 	UserSellersTable.ForeignKeys[2].RefTable = ProductsTable
 	ViewAnalyticsTable.ForeignKeys[0].RefTable = ProductPageViewsTable
 }

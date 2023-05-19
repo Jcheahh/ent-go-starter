@@ -15,13 +15,16 @@ type PaymentMethod struct {
 // Fields of the PaymentMethod.
 func (PaymentMethod) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("xid"),
+		field.Int("xid").Annotations(
+			entgql.OrderField("XID"),
+		),
 	}
 }
 
 func (PaymentMethod) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

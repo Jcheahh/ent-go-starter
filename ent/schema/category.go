@@ -14,8 +14,12 @@ type Category struct {
 
 func (Category) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
 	}
 }
 
@@ -28,6 +32,7 @@ func (Category) Edges() []ent.Edge {
 func (Category) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

@@ -74,57 +74,57 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the Review queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Review queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByType orders the results by the type field.
-func ByType(opts ...sql.OrderTermOption) Order {
+func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
 }
 
 // ByContent orders the results by the content field.
-func ByContent(opts ...sql.OrderTermOption) Order {
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
 // ByRating orders the results by the rating field.
-func ByRating(opts ...sql.OrderTermOption) Order {
+func ByRating(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRating, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByProductCount orders the results by product count.
-func ByProductCount(opts ...sql.OrderTermOption) Order {
+func ByProductCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductStep(), opts...)
 	}
 }
 
 // ByProduct orders the results by product terms.
-func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByProductCustomerCount orders the results by productCustomer count.
-func ByProductCustomerCount(opts ...sql.OrderTermOption) Order {
+func ByProductCustomerCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductCustomerStep(), opts...)
 	}
 }
 
 // ByProductCustomer orders the results by productCustomer terms.
-func ByProductCustomer(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProductCustomer(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductCustomerStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

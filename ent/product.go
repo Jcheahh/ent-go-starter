@@ -57,7 +57,7 @@ type ProductEdges struct {
 	// Variations holds the value of the variations edge.
 	Variations []*ProductVariation `json:"variations,omitempty"`
 	// CommissionStructure holds the value of the commissionStructure edge.
-	CommissionStructure []*CommissionStructure `json:"commissionStructure,omitempty"`
+	CommissionStructure []*CommissionStructureSchema `json:"commissionStructure,omitempty"`
 	// Shop holds the value of the shop edge.
 	Shop []*Shop `json:"shop,omitempty"`
 	// GroupBuys holds the value of the groupBuys edge.
@@ -85,7 +85,7 @@ type ProductEdges struct {
 	namedTags                map[string][]*Tag
 	namedProductAttributes   map[string][]*ProductAttribute
 	namedVariations          map[string][]*ProductVariation
-	namedCommissionStructure map[string][]*CommissionStructure
+	namedCommissionStructure map[string][]*CommissionStructureSchema
 	namedShop                map[string][]*Shop
 	namedGroupBuys           map[string][]*GroupBuy
 	namedProductPageViews    map[string][]*ProductPageView
@@ -160,7 +160,7 @@ func (e ProductEdges) VariationsOrErr() ([]*ProductVariation, error) {
 
 // CommissionStructureOrErr returns the CommissionStructure value or an error if the edge
 // was not loaded in eager-loading.
-func (e ProductEdges) CommissionStructureOrErr() ([]*CommissionStructure, error) {
+func (e ProductEdges) CommissionStructureOrErr() ([]*CommissionStructureSchema, error) {
 	if e.loadedTypes[7] {
 		return e.CommissionStructure, nil
 	}
@@ -411,7 +411,7 @@ func (pr *Product) QueryVariations() *ProductVariationQuery {
 }
 
 // QueryCommissionStructure queries the "commissionStructure" edge of the Product entity.
-func (pr *Product) QueryCommissionStructure() *CommissionStructureQuery {
+func (pr *Product) QueryCommissionStructure() *CommissionStructureSchemaQuery {
 	return NewProductClient(pr.config).QueryCommissionStructure(pr)
 }
 
@@ -661,7 +661,7 @@ func (pr *Product) appendNamedVariations(name string, edges ...*ProductVariation
 
 // NamedCommissionStructure returns the CommissionStructure named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (pr *Product) NamedCommissionStructure(name string) ([]*CommissionStructure, error) {
+func (pr *Product) NamedCommissionStructure(name string) ([]*CommissionStructureSchema, error) {
 	if pr.Edges.namedCommissionStructure == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
@@ -672,12 +672,12 @@ func (pr *Product) NamedCommissionStructure(name string) ([]*CommissionStructure
 	return nodes, nil
 }
 
-func (pr *Product) appendNamedCommissionStructure(name string, edges ...*CommissionStructure) {
+func (pr *Product) appendNamedCommissionStructure(name string, edges ...*CommissionStructureSchema) {
 	if pr.Edges.namedCommissionStructure == nil {
-		pr.Edges.namedCommissionStructure = make(map[string][]*CommissionStructure)
+		pr.Edges.namedCommissionStructure = make(map[string][]*CommissionStructureSchema)
 	}
 	if len(edges) == 0 {
-		pr.Edges.namedCommissionStructure[name] = []*CommissionStructure{}
+		pr.Edges.namedCommissionStructure[name] = []*CommissionStructureSchema{}
 	} else {
 		pr.Edges.namedCommissionStructure[name] = append(pr.Edges.namedCommissionStructure[name], edges...)
 	}

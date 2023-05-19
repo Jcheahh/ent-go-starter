@@ -7,7 +7,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/groupbuy"
 	"entdemo/ent/image"
@@ -177,14 +177,14 @@ func (pu *ProductUpdate) AddVariations(p ...*ProductVariation) *ProductUpdate {
 	return pu.AddVariationIDs(ids...)
 }
 
-// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructure entity by IDs.
+// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructureSchema entity by IDs.
 func (pu *ProductUpdate) AddCommissionStructureIDs(ids ...int) *ProductUpdate {
 	pu.mutation.AddCommissionStructureIDs(ids...)
 	return pu
 }
 
-// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructure entity.
-func (pu *ProductUpdate) AddCommissionStructure(c ...*CommissionStructure) *ProductUpdate {
+// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructureSchema entity.
+func (pu *ProductUpdate) AddCommissionStructure(c ...*CommissionStructureSchema) *ProductUpdate {
 	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -449,20 +449,20 @@ func (pu *ProductUpdate) RemoveVariations(p ...*ProductVariation) *ProductUpdate
 	return pu.RemoveVariationIDs(ids...)
 }
 
-// ClearCommissionStructure clears all "commissionStructure" edges to the CommissionStructure entity.
+// ClearCommissionStructure clears all "commissionStructure" edges to the CommissionStructureSchema entity.
 func (pu *ProductUpdate) ClearCommissionStructure() *ProductUpdate {
 	pu.mutation.ClearCommissionStructure()
 	return pu
 }
 
-// RemoveCommissionStructureIDs removes the "commissionStructure" edge to CommissionStructure entities by IDs.
+// RemoveCommissionStructureIDs removes the "commissionStructure" edge to CommissionStructureSchema entities by IDs.
 func (pu *ProductUpdate) RemoveCommissionStructureIDs(ids ...int) *ProductUpdate {
 	pu.mutation.RemoveCommissionStructureIDs(ids...)
 	return pu
 }
 
-// RemoveCommissionStructure removes "commissionStructure" edges to CommissionStructure entities.
-func (pu *ProductUpdate) RemoveCommissionStructure(c ...*CommissionStructure) *ProductUpdate {
+// RemoveCommissionStructure removes "commissionStructure" edges to CommissionStructureSchema entities.
+func (pu *ProductUpdate) RemoveCommissionStructure(c ...*CommissionStructureSchema) *ProductUpdate {
 	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -991,7 +991,7 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1004,7 +1004,7 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1020,7 +1020,7 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1498,14 +1498,14 @@ func (puo *ProductUpdateOne) AddVariations(p ...*ProductVariation) *ProductUpdat
 	return puo.AddVariationIDs(ids...)
 }
 
-// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructure entity by IDs.
+// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructureSchema entity by IDs.
 func (puo *ProductUpdateOne) AddCommissionStructureIDs(ids ...int) *ProductUpdateOne {
 	puo.mutation.AddCommissionStructureIDs(ids...)
 	return puo
 }
 
-// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructure entity.
-func (puo *ProductUpdateOne) AddCommissionStructure(c ...*CommissionStructure) *ProductUpdateOne {
+// AddCommissionStructure adds the "commissionStructure" edges to the CommissionStructureSchema entity.
+func (puo *ProductUpdateOne) AddCommissionStructure(c ...*CommissionStructureSchema) *ProductUpdateOne {
 	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -1770,20 +1770,20 @@ func (puo *ProductUpdateOne) RemoveVariations(p ...*ProductVariation) *ProductUp
 	return puo.RemoveVariationIDs(ids...)
 }
 
-// ClearCommissionStructure clears all "commissionStructure" edges to the CommissionStructure entity.
+// ClearCommissionStructure clears all "commissionStructure" edges to the CommissionStructureSchema entity.
 func (puo *ProductUpdateOne) ClearCommissionStructure() *ProductUpdateOne {
 	puo.mutation.ClearCommissionStructure()
 	return puo
 }
 
-// RemoveCommissionStructureIDs removes the "commissionStructure" edge to CommissionStructure entities by IDs.
+// RemoveCommissionStructureIDs removes the "commissionStructure" edge to CommissionStructureSchema entities by IDs.
 func (puo *ProductUpdateOne) RemoveCommissionStructureIDs(ids ...int) *ProductUpdateOne {
 	puo.mutation.RemoveCommissionStructureIDs(ids...)
 	return puo
 }
 
-// RemoveCommissionStructure removes "commissionStructure" edges to CommissionStructure entities.
-func (puo *ProductUpdateOne) RemoveCommissionStructure(c ...*CommissionStructure) *ProductUpdateOne {
+// RemoveCommissionStructure removes "commissionStructure" edges to CommissionStructureSchema entities.
+func (puo *ProductUpdateOne) RemoveCommissionStructure(c ...*CommissionStructureSchema) *ProductUpdateOne {
 	ids := make([]int, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -2342,7 +2342,7 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -2355,7 +2355,7 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -2371,7 +2371,7 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 			Columns: []string{product.CommissionStructureColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(commissionstructure.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(commissionstructureschema.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

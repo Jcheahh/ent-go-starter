@@ -14,10 +14,18 @@ type ViewAnalytics struct {
 
 func (ViewAnalytics) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("views"),
-		field.Int("scrolls"),
-		field.Int("exits"),
-		field.String("dateCreated"),
+		field.Int("views").Annotations(
+			entgql.OrderField("VIEWS"),
+		),
+		field.Int("scrolls").Annotations(
+			entgql.OrderField("SCROLLS"),
+		),
+		field.Int("exits").Annotations(
+			entgql.OrderField("EXITS"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
 	}
 }
 
@@ -30,6 +38,7 @@ func (ViewAnalytics) Edges() []ent.Edge {
 func (ViewAnalytics) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

@@ -56,16 +56,16 @@ func (f ChatFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ChatMutation", m)
 }
 
-// The CommissionStructureFunc type is an adapter to allow the use of ordinary
-// function as CommissionStructure mutator.
-type CommissionStructureFunc func(context.Context, *ent.CommissionStructureMutation) (ent.Value, error)
+// The CommissionStructureSchemaFunc type is an adapter to allow the use of ordinary
+// function as CommissionStructureSchema mutator.
+type CommissionStructureSchemaFunc func(context.Context, *ent.CommissionStructureSchemaMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f CommissionStructureFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.CommissionStructureMutation); ok {
+func (f CommissionStructureSchemaFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CommissionStructureSchemaMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CommissionStructureMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CommissionStructureSchemaMutation", m)
 }
 
 // The ContentBlockFunc type is an adapter to allow the use of ordinary

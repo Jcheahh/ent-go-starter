@@ -72,56 +72,56 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the ProductPageView queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the ProductPageView queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByVersion orders the results by the version field.
-func ByVersion(opts ...sql.OrderTermOption) Order {
+func ByVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVersion, opts...).ToFunc()
 }
 
 // ByHeroContentCount orders the results by heroContent count.
-func ByHeroContentCount(opts ...sql.OrderTermOption) Order {
+func ByHeroContentCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newHeroContentStep(), opts...)
 	}
 }
 
 // ByHeroContent orders the results by heroContent terms.
-func ByHeroContent(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByHeroContent(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newHeroContentStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByPrimaryContentCount orders the results by primaryContent count.
-func ByPrimaryContentCount(opts ...sql.OrderTermOption) Order {
+func ByPrimaryContentCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newPrimaryContentStep(), opts...)
 	}
 }
 
 // ByPrimaryContent orders the results by primaryContent terms.
-func ByPrimaryContent(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByPrimaryContent(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newPrimaryContentStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByViewAnalyticsCount orders the results by viewAnalytics count.
-func ByViewAnalyticsCount(opts ...sql.OrderTermOption) Order {
+func ByViewAnalyticsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newViewAnalyticsStep(), opts...)
 	}
 }
 
 // ByViewAnalytics orders the results by viewAnalytics terms.
-func ByViewAnalytics(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByViewAnalytics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newViewAnalyticsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

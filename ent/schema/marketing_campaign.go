@@ -14,18 +14,36 @@ type MarketingCampaign struct {
 
 func (MarketingCampaign) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
-		field.String("consumerPurchaseValue"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("consumerPurchaseValue").Annotations(
+			entgql.OrderField("CONSUMERPURCHASEVALUE"),
+		),
 		// TODO put logic
 		// (age > 25 & age < 30) & address == "Kuala Lumpur" else can be niil. This logic is applied to the customer
-		field.String("customerApplicationLogic"),
+		field.String("customerApplicationLogic").Annotations(
+			entgql.OrderField("CUSTOMERAPPLICATIONLOGIC"),
+		),
 		// # productSales > 20 & productReviews > 100, then start the campaign
-		field.String("initialisationLogic"),
-		field.String("startDate"),
-		field.String("endDate"),
-		field.String("dateCreated"),
-		field.String("dateUpdated"),
+		field.String("initialisationLogic").Annotations(
+			entgql.OrderField("INITIALISATIONLOGIC"),
+		),
+		field.String("startDate").Annotations(
+			entgql.OrderField("STARTDATE"),
+		),
+		field.String("endDate").Annotations(
+			entgql.OrderField("ENDDATE"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		),
 	}
 }
 
@@ -39,6 +57,7 @@ func (MarketingCampaign) Edges() []ent.Edge {
 func (MarketingCampaign) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

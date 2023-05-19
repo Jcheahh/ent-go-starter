@@ -18,7 +18,7 @@ import (
 type EmailCampaignQuery struct {
 	config
 	ctx        *QueryContext
-	order      []emailcampaign.Order
+	order      []emailcampaign.OrderOption
 	inters     []Interceptor
 	predicates []predicate.EmailCampaign
 	withFKs    bool
@@ -55,7 +55,7 @@ func (ecq *EmailCampaignQuery) Unique(unique bool) *EmailCampaignQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ecq *EmailCampaignQuery) Order(o ...emailcampaign.Order) *EmailCampaignQuery {
+func (ecq *EmailCampaignQuery) Order(o ...emailcampaign.OrderOption) *EmailCampaignQuery {
 	ecq.order = append(ecq.order, o...)
 	return ecq
 }
@@ -249,7 +249,7 @@ func (ecq *EmailCampaignQuery) Clone() *EmailCampaignQuery {
 	return &EmailCampaignQuery{
 		config:     ecq.config,
 		ctx:        ecq.ctx.Clone(),
-		order:      append([]emailcampaign.Order{}, ecq.order...),
+		order:      append([]emailcampaign.OrderOption{}, ecq.order...),
 		inters:     append([]Interceptor{}, ecq.inters...),
 		predicates: append([]predicate.EmailCampaign{}, ecq.predicates...),
 		// clone intermediate query.

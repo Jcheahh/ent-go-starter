@@ -20,7 +20,7 @@ import (
 type CategoryQuery struct {
 	config
 	ctx               *QueryContext
-	order             []category.Order
+	order             []category.OrderOption
 	inters            []Interceptor
 	predicates        []predicate.Category
 	withProducts      *ProductQuery
@@ -59,7 +59,7 @@ func (cq *CategoryQuery) Unique(unique bool) *CategoryQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (cq *CategoryQuery) Order(o ...category.Order) *CategoryQuery {
+func (cq *CategoryQuery) Order(o ...category.OrderOption) *CategoryQuery {
 	cq.order = append(cq.order, o...)
 	return cq
 }
@@ -275,7 +275,7 @@ func (cq *CategoryQuery) Clone() *CategoryQuery {
 	return &CategoryQuery{
 		config:       cq.config,
 		ctx:          cq.ctx.Clone(),
-		order:        append([]category.Order{}, cq.order...),
+		order:        append([]category.OrderOption{}, cq.order...),
 		inters:       append([]Interceptor{}, cq.inters...),
 		predicates:   append([]predicate.Category{}, cq.predicates...),
 		withProducts: cq.withProducts.Clone(),
@@ -437,7 +437,7 @@ func (cq *CategoryQuery) loadProducts(ctx context.Context, query *ProductQuery, 
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(category.ProductsColumn, fks...))
+		s.Where(sql.InValues(s.C(category.ProductsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (cq *CategoryQuery) loadProducts(ctx context.Context, query *ProductQuery, 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "category_products" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "category_products" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

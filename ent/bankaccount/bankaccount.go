@@ -45,15 +45,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the BankAccount queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the BankAccount queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) Order {
+func ByXid(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }

@@ -55,30 +55,30 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the LinkVisit queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the LinkVisit queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByIpAddress orders the results by the ipAddress field.
-func ByIpAddress(opts ...sql.OrderTermOption) Order {
+func ByIpAddress(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIpAddress, opts...).ToFunc()
 }
 
 // BySaleValue orders the results by the saleValue field.
-func BySaleValue(opts ...sql.OrderTermOption) Order {
+func BySaleValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSaleValue, opts...).ToFunc()
 }
 
 // ByCommissionEarned orders the results by the commissionEarned field.
-func ByCommissionEarned(opts ...sql.OrderTermOption) Order {
+func ByCommissionEarned(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCommissionEarned, opts...).ToFunc()
 }

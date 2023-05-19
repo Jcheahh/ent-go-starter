@@ -18,7 +18,7 @@ import (
 type LinkVisitQuery struct {
 	config
 	ctx        *QueryContext
-	order      []linkvisit.Order
+	order      []linkvisit.OrderOption
 	inters     []Interceptor
 	predicates []predicate.LinkVisit
 	withFKs    bool
@@ -55,7 +55,7 @@ func (lvq *LinkVisitQuery) Unique(unique bool) *LinkVisitQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (lvq *LinkVisitQuery) Order(o ...linkvisit.Order) *LinkVisitQuery {
+func (lvq *LinkVisitQuery) Order(o ...linkvisit.OrderOption) *LinkVisitQuery {
 	lvq.order = append(lvq.order, o...)
 	return lvq
 }
@@ -249,7 +249,7 @@ func (lvq *LinkVisitQuery) Clone() *LinkVisitQuery {
 	return &LinkVisitQuery{
 		config:     lvq.config,
 		ctx:        lvq.ctx.Clone(),
-		order:      append([]linkvisit.Order{}, lvq.order...),
+		order:      append([]linkvisit.OrderOption{}, lvq.order...),
 		inters:     append([]Interceptor{}, lvq.inters...),
 		predicates: append([]predicate.LinkVisit{}, lvq.predicates...),
 		// clone intermediate query.

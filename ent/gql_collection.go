@@ -8,7 +8,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/contentblock"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
@@ -38,6 +38,7 @@ import (
 	"entdemo/ent/userseller"
 	"entdemo/ent/viewanalytics"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -68,6 +69,8 @@ func (ba *BankAccountQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				selectedFields = append(selectedFields, bankaccount.FieldXid)
 				fieldSeen[bankaccount.FieldXid] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -84,7 +87,7 @@ type bankaccountPaginateArgs struct {
 	opts          []BankAccountPaginateOption
 }
 
-func newBankAccountPaginateArgs(rv map[string]interface{}) *bankaccountPaginateArgs {
+func newBankAccountPaginateArgs(rv map[string]any) *bankaccountPaginateArgs {
 	args := &bankaccountPaginateArgs{}
 	if rv == nil {
 		return args
@@ -100,6 +103,37 @@ func newBankAccountPaginateArgs(rv map[string]interface{}) *bankaccountPaginateA
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*BankAccountOrder:
+			args.opts = append(args.opts, WithBankAccountOrder(v))
+		case []any:
+			var orders []*BankAccountOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &BankAccountOrder{Field: &BankAccountOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithBankAccountOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*BankAccountWhereInput); ok {
+		args.opts = append(args.opts, WithBankAccountFilter(v.Filter))
 	}
 	return args
 }
@@ -131,7 +165,7 @@ func (bp *BlogPostQuery) collectField(ctx context.Context, opCtx *graphql.Operat
 				path  = append(path, alias)
 				query = (&UserSellerClient{config: bp.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, usersellerImplementors)...); err != nil {
 				return err
 			}
 			bp.WithNamedAuthor(alias, func(wq *UserSellerQuery) {
@@ -157,6 +191,8 @@ func (bp *BlogPostQuery) collectField(ctx context.Context, opCtx *graphql.Operat
 				selectedFields = append(selectedFields, blogpost.FieldDateUpdated)
 				fieldSeen[blogpost.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -173,7 +209,7 @@ type blogpostPaginateArgs struct {
 	opts          []BlogPostPaginateOption
 }
 
-func newBlogPostPaginateArgs(rv map[string]interface{}) *blogpostPaginateArgs {
+func newBlogPostPaginateArgs(rv map[string]any) *blogpostPaginateArgs {
 	args := &blogpostPaginateArgs{}
 	if rv == nil {
 		return args
@@ -189,6 +225,37 @@ func newBlogPostPaginateArgs(rv map[string]interface{}) *blogpostPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*BlogPostOrder:
+			args.opts = append(args.opts, WithBlogPostOrder(v))
+		case []any:
+			var orders []*BlogPostOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &BlogPostOrder{Field: &BlogPostOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithBlogPostOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*BlogPostWhereInput); ok {
+		args.opts = append(args.opts, WithBlogPostFilter(v.Filter))
 	}
 	return args
 }
@@ -220,7 +287,7 @@ func (c *CategoryQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ProductClient{config: c.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			c.WithNamedProducts(alias, func(wq *ProductQuery) {
@@ -236,6 +303,8 @@ func (c *CategoryQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, category.FieldDescription)
 				fieldSeen[category.FieldDescription] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -252,7 +321,7 @@ type categoryPaginateArgs struct {
 	opts          []CategoryPaginateOption
 }
 
-func newCategoryPaginateArgs(rv map[string]interface{}) *categoryPaginateArgs {
+func newCategoryPaginateArgs(rv map[string]any) *categoryPaginateArgs {
 	args := &categoryPaginateArgs{}
 	if rv == nil {
 		return args
@@ -268,6 +337,37 @@ func newCategoryPaginateArgs(rv map[string]interface{}) *categoryPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*CategoryOrder:
+			args.opts = append(args.opts, WithCategoryOrder(v))
+		case []any:
+			var orders []*CategoryOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &CategoryOrder{Field: &CategoryOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithCategoryOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*CategoryWhereInput); ok {
+		args.opts = append(args.opts, WithCategoryFilter(v.Filter))
 	}
 	return args
 }
@@ -298,6 +398,8 @@ func (c *ChatQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, chat.FieldXid)
 				fieldSeen[chat.FieldXid] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -314,7 +416,7 @@ type chatPaginateArgs struct {
 	opts          []ChatPaginateOption
 }
 
-func newChatPaginateArgs(rv map[string]interface{}) *chatPaginateArgs {
+func newChatPaginateArgs(rv map[string]any) *chatPaginateArgs {
 	args := &chatPaginateArgs{}
 	if rv == nil {
 		return args
@@ -331,27 +433,58 @@ func newChatPaginateArgs(rv map[string]interface{}) *chatPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ChatOrder:
+			args.opts = append(args.opts, WithChatOrder(v))
+		case []any:
+			var orders []*ChatOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ChatOrder{Field: &ChatOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithChatOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ChatWhereInput); ok {
+		args.opts = append(args.opts, WithChatFilter(v.Filter))
+	}
 	return args
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (cs *CommissionStructureQuery) CollectFields(ctx context.Context, satisfies ...string) (*CommissionStructureQuery, error) {
+func (css *CommissionStructureSchemaQuery) CollectFields(ctx context.Context, satisfies ...string) (*CommissionStructureSchemaQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return cs, nil
+		return css, nil
 	}
-	if err := cs.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := css.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return cs, nil
+	return css, nil
 }
 
-func (cs *CommissionStructureQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (css *CommissionStructureSchemaQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(commissionstructure.Columns))
-		selectedFields = []string{commissionstructure.FieldID}
+		fieldSeen      = make(map[string]struct{}, len(commissionstructureschema.Columns))
+		selectedFields = []string{commissionstructureschema.FieldID}
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
@@ -359,52 +492,54 @@ func (cs *CommissionStructureQuery) collectField(ctx context.Context, opCtx *gra
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&UserSellerClient{config: cs.config}).Query()
+				query = (&UserSellerClient{config: css.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, usersellerImplementors)...); err != nil {
 				return err
 			}
-			cs.WithNamedProductSeller(alias, func(wq *UserSellerQuery) {
+			css.WithNamedProductSeller(alias, func(wq *UserSellerQuery) {
 				*wq = *query
 			})
 		case "name":
-			if _, ok := fieldSeen[commissionstructure.FieldName]; !ok {
-				selectedFields = append(selectedFields, commissionstructure.FieldName)
-				fieldSeen[commissionstructure.FieldName] = struct{}{}
+			if _, ok := fieldSeen[commissionstructureschema.FieldName]; !ok {
+				selectedFields = append(selectedFields, commissionstructureschema.FieldName)
+				fieldSeen[commissionstructureschema.FieldName] = struct{}{}
 			}
 		case "description":
-			if _, ok := fieldSeen[commissionstructure.FieldDescription]; !ok {
-				selectedFields = append(selectedFields, commissionstructure.FieldDescription)
-				fieldSeen[commissionstructure.FieldDescription] = struct{}{}
+			if _, ok := fieldSeen[commissionstructureschema.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, commissionstructureschema.FieldDescription)
+				fieldSeen[commissionstructureschema.FieldDescription] = struct{}{}
 			}
 		case "commissionvalue":
-			if _, ok := fieldSeen[commissionstructure.FieldCommissionValue]; !ok {
-				selectedFields = append(selectedFields, commissionstructure.FieldCommissionValue)
-				fieldSeen[commissionstructure.FieldCommissionValue] = struct{}{}
+			if _, ok := fieldSeen[commissionstructureschema.FieldCommissionValue]; !ok {
+				selectedFields = append(selectedFields, commissionstructureschema.FieldCommissionValue)
+				fieldSeen[commissionstructureschema.FieldCommissionValue] = struct{}{}
 			}
 		case "commissionpercentage":
-			if _, ok := fieldSeen[commissionstructure.FieldCommissionPercentage]; !ok {
-				selectedFields = append(selectedFields, commissionstructure.FieldCommissionPercentage)
-				fieldSeen[commissionstructure.FieldCommissionPercentage] = struct{}{}
+			if _, ok := fieldSeen[commissionstructureschema.FieldCommissionPercentage]; !ok {
+				selectedFields = append(selectedFields, commissionstructureschema.FieldCommissionPercentage)
+				fieldSeen[commissionstructureschema.FieldCommissionPercentage] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
 	}
 	if !unknownSeen {
-		cs.Select(selectedFields...)
+		css.Select(selectedFields...)
 	}
 	return nil
 }
 
-type commissionstructurePaginateArgs struct {
+type commissionstructureschemaPaginateArgs struct {
 	first, last   *int
 	after, before *Cursor
-	opts          []CommissionStructurePaginateOption
+	opts          []CommissionStructureSchemaPaginateOption
 }
 
-func newCommissionStructurePaginateArgs(rv map[string]interface{}) *commissionstructurePaginateArgs {
-	args := &commissionstructurePaginateArgs{}
+func newCommissionStructureSchemaPaginateArgs(rv map[string]any) *commissionstructureschemaPaginateArgs {
+	args := &commissionstructureschemaPaginateArgs{}
 	if rv == nil {
 		return args
 	}
@@ -419,6 +554,37 @@ func newCommissionStructurePaginateArgs(rv map[string]interface{}) *commissionst
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*CommissionStructureSchemaOrder:
+			args.opts = append(args.opts, WithCommissionStructureSchemaOrder(v))
+		case []any:
+			var orders []*CommissionStructureSchemaOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &CommissionStructureSchemaOrder{Field: &CommissionStructureSchemaOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithCommissionStructureSchemaOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*CommissionStructureSchemaWhereInput); ok {
+		args.opts = append(args.opts, WithCommissionStructureSchemaFilter(v.Filter))
 	}
 	return args
 }
@@ -450,7 +616,7 @@ func (cb *ContentBlockQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&ImageClient{config: cb.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, imageImplementors)...); err != nil {
 				return err
 			}
 			cb.WithNamedImage(alias, func(wq *ImageQuery) {
@@ -466,6 +632,8 @@ func (cb *ContentBlockQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, contentblock.FieldSecondaryMessage)
 				fieldSeen[contentblock.FieldSecondaryMessage] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -482,7 +650,7 @@ type contentblockPaginateArgs struct {
 	opts          []ContentBlockPaginateOption
 }
 
-func newContentBlockPaginateArgs(rv map[string]interface{}) *contentblockPaginateArgs {
+func newContentBlockPaginateArgs(rv map[string]any) *contentblockPaginateArgs {
 	args := &contentblockPaginateArgs{}
 	if rv == nil {
 		return args
@@ -498,6 +666,37 @@ func newContentBlockPaginateArgs(rv map[string]interface{}) *contentblockPaginat
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ContentBlockOrder:
+			args.opts = append(args.opts, WithContentBlockOrder(v))
+		case []any:
+			var orders []*ContentBlockOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ContentBlockOrder{Field: &ContentBlockOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithContentBlockOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ContentBlockWhereInput); ok {
+		args.opts = append(args.opts, WithContentBlockFilter(v.Filter))
 	}
 	return args
 }
@@ -528,6 +727,8 @@ func (ec *EmailCampaignQuery) collectField(ctx context.Context, opCtx *graphql.O
 				selectedFields = append(selectedFields, emailcampaign.FieldXid)
 				fieldSeen[emailcampaign.FieldXid] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -544,7 +745,7 @@ type emailcampaignPaginateArgs struct {
 	opts          []EmailCampaignPaginateOption
 }
 
-func newEmailCampaignPaginateArgs(rv map[string]interface{}) *emailcampaignPaginateArgs {
+func newEmailCampaignPaginateArgs(rv map[string]any) *emailcampaignPaginateArgs {
 	args := &emailcampaignPaginateArgs{}
 	if rv == nil {
 		return args
@@ -560,6 +761,37 @@ func newEmailCampaignPaginateArgs(rv map[string]interface{}) *emailcampaignPagin
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*EmailCampaignOrder:
+			args.opts = append(args.opts, WithEmailCampaignOrder(v))
+		case []any:
+			var orders []*EmailCampaignOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &EmailCampaignOrder{Field: &EmailCampaignOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithEmailCampaignOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*EmailCampaignWhereInput); ok {
+		args.opts = append(args.opts, WithEmailCampaignFilter(v.Filter))
 	}
 	return args
 }
@@ -590,6 +822,8 @@ func (gr *GroupQuery) collectField(ctx context.Context, opCtx *graphql.Operation
 				selectedFields = append(selectedFields, group.FieldName)
 				fieldSeen[group.FieldName] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -606,7 +840,7 @@ type groupPaginateArgs struct {
 	opts          []GroupPaginateOption
 }
 
-func newGroupPaginateArgs(rv map[string]interface{}) *groupPaginateArgs {
+func newGroupPaginateArgs(rv map[string]any) *groupPaginateArgs {
 	args := &groupPaginateArgs{}
 	if rv == nil {
 		return args
@@ -622,6 +856,37 @@ func newGroupPaginateArgs(rv map[string]interface{}) *groupPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*GroupOrder:
+			args.opts = append(args.opts, WithGroupOrder(v))
+		case []any:
+			var orders []*GroupOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &GroupOrder{Field: &GroupOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithGroupOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*GroupWhereInput); ok {
+		args.opts = append(args.opts, WithGroupFilter(v.Filter))
 	}
 	return args
 }
@@ -653,7 +918,7 @@ func (gb *GroupBuyQuery) collectField(ctx context.Context, opCtx *graphql.Operat
 				path  = append(path, alias)
 				query = (&ProductClient{config: gb.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			gb.WithNamedProduct(alias, func(wq *ProductQuery) {
@@ -665,7 +930,7 @@ func (gb *GroupBuyQuery) collectField(ctx context.Context, opCtx *graphql.Operat
 				path  = append(path, alias)
 				query = (&TransactionClient{config: gb.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, transactionImplementors)...); err != nil {
 				return err
 			}
 			gb.WithNamedTransaction(alias, func(wq *TransactionQuery) {
@@ -696,6 +961,8 @@ func (gb *GroupBuyQuery) collectField(ctx context.Context, opCtx *graphql.Operat
 				selectedFields = append(selectedFields, groupbuy.FieldEndDate)
 				fieldSeen[groupbuy.FieldEndDate] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -712,7 +979,7 @@ type groupbuyPaginateArgs struct {
 	opts          []GroupBuyPaginateOption
 }
 
-func newGroupBuyPaginateArgs(rv map[string]interface{}) *groupbuyPaginateArgs {
+func newGroupBuyPaginateArgs(rv map[string]any) *groupbuyPaginateArgs {
 	args := &groupbuyPaginateArgs{}
 	if rv == nil {
 		return args
@@ -728,6 +995,37 @@ func newGroupBuyPaginateArgs(rv map[string]interface{}) *groupbuyPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*GroupBuyOrder:
+			args.opts = append(args.opts, WithGroupBuyOrder(v))
+		case []any:
+			var orders []*GroupBuyOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &GroupBuyOrder{Field: &GroupBuyOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithGroupBuyOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*GroupBuyWhereInput); ok {
+		args.opts = append(args.opts, WithGroupBuyFilter(v.Filter))
 	}
 	return args
 }
@@ -759,7 +1057,7 @@ func (hc *HeroContentQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				path  = append(path, alias)
 				query = (&ImageClient{config: hc.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, imageImplementors)...); err != nil {
 				return err
 			}
 			hc.WithNamedImage(alias, func(wq *ImageQuery) {
@@ -775,6 +1073,8 @@ func (hc *HeroContentQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				selectedFields = append(selectedFields, herocontent.FieldSecondaryMessage)
 				fieldSeen[herocontent.FieldSecondaryMessage] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -791,7 +1091,7 @@ type herocontentPaginateArgs struct {
 	opts          []HeroContentPaginateOption
 }
 
-func newHeroContentPaginateArgs(rv map[string]interface{}) *herocontentPaginateArgs {
+func newHeroContentPaginateArgs(rv map[string]any) *herocontentPaginateArgs {
 	args := &herocontentPaginateArgs{}
 	if rv == nil {
 		return args
@@ -807,6 +1107,37 @@ func newHeroContentPaginateArgs(rv map[string]interface{}) *herocontentPaginateA
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*HeroContentOrder:
+			args.opts = append(args.opts, WithHeroContentOrder(v))
+		case []any:
+			var orders []*HeroContentOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &HeroContentOrder{Field: &HeroContentOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithHeroContentOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*HeroContentWhereInput); ok {
+		args.opts = append(args.opts, WithHeroContentFilter(v.Filter))
 	}
 	return args
 }
@@ -847,6 +1178,8 @@ func (i *ImageQuery) collectField(ctx context.Context, opCtx *graphql.OperationC
 				selectedFields = append(selectedFields, image.FieldURL)
 				fieldSeen[image.FieldURL] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -863,7 +1196,7 @@ type imagePaginateArgs struct {
 	opts          []ImagePaginateOption
 }
 
-func newImagePaginateArgs(rv map[string]interface{}) *imagePaginateArgs {
+func newImagePaginateArgs(rv map[string]any) *imagePaginateArgs {
 	args := &imagePaginateArgs{}
 	if rv == nil {
 		return args
@@ -879,6 +1212,37 @@ func newImagePaginateArgs(rv map[string]interface{}) *imagePaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ImageOrder:
+			args.opts = append(args.opts, WithImageOrder(v))
+		case []any:
+			var orders []*ImageOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ImageOrder{Field: &ImageOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithImageOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ImageWhereInput); ok {
+		args.opts = append(args.opts, WithImageFilter(v.Filter))
 	}
 	return args
 }
@@ -924,6 +1288,8 @@ func (lv *LinkVisitQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, linkvisit.FieldCommissionEarned)
 				fieldSeen[linkvisit.FieldCommissionEarned] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -940,7 +1306,7 @@ type linkvisitPaginateArgs struct {
 	opts          []LinkVisitPaginateOption
 }
 
-func newLinkVisitPaginateArgs(rv map[string]interface{}) *linkvisitPaginateArgs {
+func newLinkVisitPaginateArgs(rv map[string]any) *linkvisitPaginateArgs {
 	args := &linkvisitPaginateArgs{}
 	if rv == nil {
 		return args
@@ -956,6 +1322,37 @@ func newLinkVisitPaginateArgs(rv map[string]interface{}) *linkvisitPaginateArgs 
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*LinkVisitOrder:
+			args.opts = append(args.opts, WithLinkVisitOrder(v))
+		case []any:
+			var orders []*LinkVisitOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &LinkVisitOrder{Field: &LinkVisitOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithLinkVisitOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*LinkVisitWhereInput); ok {
+		args.opts = append(args.opts, WithLinkVisitFilter(v.Filter))
 	}
 	return args
 }
@@ -987,7 +1384,7 @@ func (mc *MarketingCampaignQuery) collectField(ctx context.Context, opCtx *graph
 				path  = append(path, alias)
 				query = (&ProductClient{config: mc.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			mc.WithNamedProduct(alias, func(wq *ProductQuery) {
@@ -999,7 +1396,7 @@ func (mc *MarketingCampaignQuery) collectField(ctx context.Context, opCtx *graph
 				path  = append(path, alias)
 				query = (&RewardTypeClient{config: mc.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, rewardtypeImplementors)...); err != nil {
 				return err
 			}
 			mc.WithNamedConsumerReward(alias, func(wq *RewardTypeQuery) {
@@ -1050,6 +1447,8 @@ func (mc *MarketingCampaignQuery) collectField(ctx context.Context, opCtx *graph
 				selectedFields = append(selectedFields, marketingcampaign.FieldDateUpdated)
 				fieldSeen[marketingcampaign.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1066,7 +1465,7 @@ type marketingcampaignPaginateArgs struct {
 	opts          []MarketingCampaignPaginateOption
 }
 
-func newMarketingCampaignPaginateArgs(rv map[string]interface{}) *marketingcampaignPaginateArgs {
+func newMarketingCampaignPaginateArgs(rv map[string]any) *marketingcampaignPaginateArgs {
 	args := &marketingcampaignPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1082,6 +1481,37 @@ func newMarketingCampaignPaginateArgs(rv map[string]interface{}) *marketingcampa
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*MarketingCampaignOrder:
+			args.opts = append(args.opts, WithMarketingCampaignOrder(v))
+		case []any:
+			var orders []*MarketingCampaignOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &MarketingCampaignOrder{Field: &MarketingCampaignOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithMarketingCampaignOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*MarketingCampaignWhereInput); ok {
+		args.opts = append(args.opts, WithMarketingCampaignFilter(v.Filter))
 	}
 	return args
 }
@@ -1113,7 +1543,7 @@ func (n *NotificationQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				path  = append(path, alias)
 				query = (&UserClient{config: n.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			n.WithNamedRecipient(alias, func(wq *UserQuery) {
@@ -1144,6 +1574,8 @@ func (n *NotificationQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				selectedFields = append(selectedFields, notification.FieldRead)
 				fieldSeen[notification.FieldRead] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1160,7 +1592,7 @@ type notificationPaginateArgs struct {
 	opts          []NotificationPaginateOption
 }
 
-func newNotificationPaginateArgs(rv map[string]interface{}) *notificationPaginateArgs {
+func newNotificationPaginateArgs(rv map[string]any) *notificationPaginateArgs {
 	args := &notificationPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1176,6 +1608,37 @@ func newNotificationPaginateArgs(rv map[string]interface{}) *notificationPaginat
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*NotificationOrder:
+			args.opts = append(args.opts, WithNotificationOrder(v))
+		case []any:
+			var orders []*NotificationOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &NotificationOrder{Field: &NotificationOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithNotificationOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*NotificationWhereInput); ok {
+		args.opts = append(args.opts, WithNotificationFilter(v.Filter))
 	}
 	return args
 }
@@ -1206,6 +1669,8 @@ func (pm *PaymentMethodQuery) collectField(ctx context.Context, opCtx *graphql.O
 				selectedFields = append(selectedFields, paymentmethod.FieldXid)
 				fieldSeen[paymentmethod.FieldXid] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1222,7 +1687,7 @@ type paymentmethodPaginateArgs struct {
 	opts          []PaymentMethodPaginateOption
 }
 
-func newPaymentMethodPaginateArgs(rv map[string]interface{}) *paymentmethodPaginateArgs {
+func newPaymentMethodPaginateArgs(rv map[string]any) *paymentmethodPaginateArgs {
 	args := &paymentmethodPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1238,6 +1703,37 @@ func newPaymentMethodPaginateArgs(rv map[string]interface{}) *paymentmethodPagin
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*PaymentMethodOrder:
+			args.opts = append(args.opts, WithPaymentMethodOrder(v))
+		case []any:
+			var orders []*PaymentMethodOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &PaymentMethodOrder{Field: &PaymentMethodOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithPaymentMethodOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*PaymentMethodWhereInput); ok {
+		args.opts = append(args.opts, WithPaymentMethodFilter(v.Filter))
 	}
 	return args
 }
@@ -1269,7 +1765,7 @@ func (pc *PrimaryContentQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&ContentBlockClient{config: pc.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, contentblockImplementors)...); err != nil {
 				return err
 			}
 			pc.WithNamedContentBlock(alias, func(wq *ContentBlockQuery) {
@@ -1280,6 +1776,8 @@ func (pc *PrimaryContentQuery) collectField(ctx context.Context, opCtx *graphql.
 				selectedFields = append(selectedFields, primarycontent.FieldPlaceholder)
 				fieldSeen[primarycontent.FieldPlaceholder] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1296,7 +1794,7 @@ type primarycontentPaginateArgs struct {
 	opts          []PrimaryContentPaginateOption
 }
 
-func newPrimaryContentPaginateArgs(rv map[string]interface{}) *primarycontentPaginateArgs {
+func newPrimaryContentPaginateArgs(rv map[string]any) *primarycontentPaginateArgs {
 	args := &primarycontentPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1312,6 +1810,37 @@ func newPrimaryContentPaginateArgs(rv map[string]interface{}) *primarycontentPag
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*PrimaryContentOrder:
+			args.opts = append(args.opts, WithPrimaryContentOrder(v))
+		case []any:
+			var orders []*PrimaryContentOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &PrimaryContentOrder{Field: &PrimaryContentOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithPrimaryContentOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*PrimaryContentWhereInput); ok {
+		args.opts = append(args.opts, WithPrimaryContentFilter(v.Filter))
 	}
 	return args
 }
@@ -1343,7 +1872,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&UserSellerClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, usersellerImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedProductSeller(alias, func(wq *UserSellerQuery) {
@@ -1355,7 +1884,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ReviewClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, reviewImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedReviews(alias, func(wq *ReviewQuery) {
@@ -1367,7 +1896,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ImageClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, imageImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedImages(alias, func(wq *ImageQuery) {
@@ -1379,7 +1908,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&CategoryClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, categoryImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedCategories(alias, func(wq *CategoryQuery) {
@@ -1391,7 +1920,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&TagClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, tagImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedTags(alias, func(wq *TagQuery) {
@@ -1403,7 +1932,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ProductAttributeClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productattributeImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedProductAttributes(alias, func(wq *ProductAttributeQuery) {
@@ -1415,7 +1944,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ProductVariationClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productvariationImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedVariations(alias, func(wq *ProductVariationQuery) {
@@ -1425,12 +1954,12 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&CommissionStructureClient{config: pr.config}).Query()
+				query = (&CommissionStructureSchemaClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, commissionstructureschemaImplementors)...); err != nil {
 				return err
 			}
-			pr.WithNamedCommissionStructure(alias, func(wq *CommissionStructureQuery) {
+			pr.WithNamedCommissionStructure(alias, func(wq *CommissionStructureSchemaQuery) {
 				*wq = *query
 			})
 		case "shop":
@@ -1439,7 +1968,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ShopClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, shopImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedShop(alias, func(wq *ShopQuery) {
@@ -1451,7 +1980,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&GroupBuyClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, groupbuyImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedGroupBuys(alias, func(wq *GroupBuyQuery) {
@@ -1463,7 +1992,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ProductPageViewClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productpageviewImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedProductPageViews(alias, func(wq *ProductPageViewQuery) {
@@ -1475,7 +2004,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&BlogPostClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, blogpostImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedBlogPosts(alias, func(wq *BlogPostQuery) {
@@ -1487,7 +2016,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&MarketingCampaignClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, marketingcampaignImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedMarketingCampaigns(alias, func(wq *MarketingCampaignQuery) {
@@ -1499,7 +2028,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&ChatClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, chatImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedChats(alias, func(wq *ChatQuery) {
@@ -1511,7 +2040,7 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&EmailCampaignClient{config: pr.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, emailcampaignImplementors)...); err != nil {
 				return err
 			}
 			pr.WithNamedEmailCampaign(alias, func(wq *EmailCampaignQuery) {
@@ -1542,6 +2071,8 @@ func (pr *ProductQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, product.FieldDateUpdated)
 				fieldSeen[product.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1558,7 +2089,7 @@ type productPaginateArgs struct {
 	opts          []ProductPaginateOption
 }
 
-func newProductPaginateArgs(rv map[string]interface{}) *productPaginateArgs {
+func newProductPaginateArgs(rv map[string]any) *productPaginateArgs {
 	args := &productPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1574,6 +2105,37 @@ func newProductPaginateArgs(rv map[string]interface{}) *productPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ProductOrder:
+			args.opts = append(args.opts, WithProductOrder(v))
+		case []any:
+			var orders []*ProductOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ProductOrder{Field: &ProductOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithProductOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ProductWhereInput); ok {
+		args.opts = append(args.opts, WithProductFilter(v.Filter))
 	}
 	return args
 }
@@ -1614,6 +2176,8 @@ func (pa *ProductAttributeQuery) collectField(ctx context.Context, opCtx *graphq
 				selectedFields = append(selectedFields, productattribute.FieldValue)
 				fieldSeen[productattribute.FieldValue] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1630,7 +2194,7 @@ type productattributePaginateArgs struct {
 	opts          []ProductAttributePaginateOption
 }
 
-func newProductAttributePaginateArgs(rv map[string]interface{}) *productattributePaginateArgs {
+func newProductAttributePaginateArgs(rv map[string]any) *productattributePaginateArgs {
 	args := &productattributePaginateArgs{}
 	if rv == nil {
 		return args
@@ -1646,6 +2210,37 @@ func newProductAttributePaginateArgs(rv map[string]interface{}) *productattribut
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ProductAttributeOrder:
+			args.opts = append(args.opts, WithProductAttributeOrder(v))
+		case []any:
+			var orders []*ProductAttributeOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ProductAttributeOrder{Field: &ProductAttributeOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithProductAttributeOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ProductAttributeWhereInput); ok {
+		args.opts = append(args.opts, WithProductAttributeFilter(v.Filter))
 	}
 	return args
 }
@@ -1677,7 +2272,7 @@ func (ppv *ProductPageViewQuery) collectField(ctx context.Context, opCtx *graphq
 				path  = append(path, alias)
 				query = (&HeroContentClient{config: ppv.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, herocontentImplementors)...); err != nil {
 				return err
 			}
 			ppv.WithNamedHeroContent(alias, func(wq *HeroContentQuery) {
@@ -1689,7 +2284,7 @@ func (ppv *ProductPageViewQuery) collectField(ctx context.Context, opCtx *graphq
 				path  = append(path, alias)
 				query = (&PrimaryContentClient{config: ppv.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, primarycontentImplementors)...); err != nil {
 				return err
 			}
 			ppv.WithNamedPrimaryContent(alias, func(wq *PrimaryContentQuery) {
@@ -1701,7 +2296,7 @@ func (ppv *ProductPageViewQuery) collectField(ctx context.Context, opCtx *graphq
 				path  = append(path, alias)
 				query = (&ViewAnalyticsClient{config: ppv.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, viewanalyticsImplementors)...); err != nil {
 				return err
 			}
 			ppv.WithNamedViewAnalytics(alias, func(wq *ViewAnalyticsQuery) {
@@ -1712,6 +2307,8 @@ func (ppv *ProductPageViewQuery) collectField(ctx context.Context, opCtx *graphq
 				selectedFields = append(selectedFields, productpageview.FieldVersion)
 				fieldSeen[productpageview.FieldVersion] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1728,7 +2325,7 @@ type productpageviewPaginateArgs struct {
 	opts          []ProductPageViewPaginateOption
 }
 
-func newProductPageViewPaginateArgs(rv map[string]interface{}) *productpageviewPaginateArgs {
+func newProductPageViewPaginateArgs(rv map[string]any) *productpageviewPaginateArgs {
 	args := &productpageviewPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1744,6 +2341,37 @@ func newProductPageViewPaginateArgs(rv map[string]interface{}) *productpageviewP
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ProductPageViewOrder:
+			args.opts = append(args.opts, WithProductPageViewOrder(v))
+		case []any:
+			var orders []*ProductPageViewOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ProductPageViewOrder{Field: &ProductPageViewOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithProductPageViewOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ProductPageViewWhereInput); ok {
+		args.opts = append(args.opts, WithProductPageViewFilter(v.Filter))
 	}
 	return args
 }
@@ -1775,7 +2403,7 @@ func (pv *ProductVariationQuery) collectField(ctx context.Context, opCtx *graphq
 				path  = append(path, alias)
 				query = (&ProductAttributeClient{config: pv.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productattributeImplementors)...); err != nil {
 				return err
 			}
 			pv.WithNamedProductAttributes(alias, func(wq *ProductAttributeQuery) {
@@ -1796,6 +2424,8 @@ func (pv *ProductVariationQuery) collectField(ctx context.Context, opCtx *graphq
 				selectedFields = append(selectedFields, productvariation.FieldPrice)
 				fieldSeen[productvariation.FieldPrice] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1812,7 +2442,7 @@ type productvariationPaginateArgs struct {
 	opts          []ProductVariationPaginateOption
 }
 
-func newProductVariationPaginateArgs(rv map[string]interface{}) *productvariationPaginateArgs {
+func newProductVariationPaginateArgs(rv map[string]any) *productvariationPaginateArgs {
 	args := &productvariationPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1828,6 +2458,37 @@ func newProductVariationPaginateArgs(rv map[string]interface{}) *productvariatio
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ProductVariationOrder:
+			args.opts = append(args.opts, WithProductVariationOrder(v))
+		case []any:
+			var orders []*ProductVariationOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ProductVariationOrder{Field: &ProductVariationOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithProductVariationOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ProductVariationWhereInput); ok {
+		args.opts = append(args.opts, WithProductVariationFilter(v.Filter))
 	}
 	return args
 }
@@ -1859,7 +2520,7 @@ func (rl *ReferralLinkQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&LinkVisitClient{config: rl.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, linkvisitImplementors)...); err != nil {
 				return err
 			}
 			rl.WithNamedVisits(alias, func(wq *LinkVisitQuery) {
@@ -1885,6 +2546,8 @@ func (rl *ReferralLinkQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, referrallink.FieldLink)
 				fieldSeen[referrallink.FieldLink] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1901,7 +2564,7 @@ type referrallinkPaginateArgs struct {
 	opts          []ReferralLinkPaginateOption
 }
 
-func newReferralLinkPaginateArgs(rv map[string]interface{}) *referrallinkPaginateArgs {
+func newReferralLinkPaginateArgs(rv map[string]any) *referrallinkPaginateArgs {
 	args := &referrallinkPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1917,6 +2580,37 @@ func newReferralLinkPaginateArgs(rv map[string]interface{}) *referrallinkPaginat
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ReferralLinkOrder:
+			args.opts = append(args.opts, WithReferralLinkOrder(v))
+		case []any:
+			var orders []*ReferralLinkOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ReferralLinkOrder{Field: &ReferralLinkOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithReferralLinkOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ReferralLinkWhereInput); ok {
+		args.opts = append(args.opts, WithReferralLinkFilter(v.Filter))
 	}
 	return args
 }
@@ -1948,7 +2642,7 @@ func (rt *RefundTransactionsQuery) collectField(ctx context.Context, opCtx *grap
 				path  = append(path, alias)
 				query = (&TransactionClient{config: rt.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, transactionImplementors)...); err != nil {
 				return err
 			}
 			rt.WithNamedTransaction(alias, func(wq *TransactionQuery) {
@@ -1984,6 +2678,8 @@ func (rt *RefundTransactionsQuery) collectField(ctx context.Context, opCtx *grap
 				selectedFields = append(selectedFields, refundtransactions.FieldDateUpdated)
 				fieldSeen[refundtransactions.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2000,7 +2696,7 @@ type refundtransactionsPaginateArgs struct {
 	opts          []RefundTransactionsPaginateOption
 }
 
-func newRefundTransactionsPaginateArgs(rv map[string]interface{}) *refundtransactionsPaginateArgs {
+func newRefundTransactionsPaginateArgs(rv map[string]any) *refundtransactionsPaginateArgs {
 	args := &refundtransactionsPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2016,6 +2712,37 @@ func newRefundTransactionsPaginateArgs(rv map[string]interface{}) *refundtransac
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*RefundTransactionsOrder:
+			args.opts = append(args.opts, WithRefundTransactionsOrder(v))
+		case []any:
+			var orders []*RefundTransactionsOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &RefundTransactionsOrder{Field: &RefundTransactionsOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithRefundTransactionsOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*RefundTransactionsWhereInput); ok {
+		args.opts = append(args.opts, WithRefundTransactionsFilter(v.Filter))
 	}
 	return args
 }
@@ -2047,7 +2774,7 @@ func (r *ReviewQuery) collectField(ctx context.Context, opCtx *graphql.Operation
 				path  = append(path, alias)
 				query = (&ProductClient{config: r.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			r.WithNamedProduct(alias, func(wq *ProductQuery) {
@@ -2059,7 +2786,7 @@ func (r *ReviewQuery) collectField(ctx context.Context, opCtx *graphql.Operation
 				path  = append(path, alias)
 				query = (&UserBuyerClient{config: r.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userbuyerImplementors)...); err != nil {
 				return err
 			}
 			r.WithNamedProductCustomer(alias, func(wq *UserBuyerQuery) {
@@ -2085,6 +2812,8 @@ func (r *ReviewQuery) collectField(ctx context.Context, opCtx *graphql.Operation
 				selectedFields = append(selectedFields, review.FieldDateCreated)
 				fieldSeen[review.FieldDateCreated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2101,7 +2830,7 @@ type reviewPaginateArgs struct {
 	opts          []ReviewPaginateOption
 }
 
-func newReviewPaginateArgs(rv map[string]interface{}) *reviewPaginateArgs {
+func newReviewPaginateArgs(rv map[string]any) *reviewPaginateArgs {
 	args := &reviewPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2117,6 +2846,37 @@ func newReviewPaginateArgs(rv map[string]interface{}) *reviewPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ReviewOrder:
+			args.opts = append(args.opts, WithReviewOrder(v))
+		case []any:
+			var orders []*ReviewOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ReviewOrder{Field: &ReviewOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithReviewOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ReviewWhereInput); ok {
+		args.opts = append(args.opts, WithReviewFilter(v.Filter))
 	}
 	return args
 }
@@ -2152,6 +2912,8 @@ func (rt *RewardTypeQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, rewardtype.FieldVal)
 				fieldSeen[rewardtype.FieldVal] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2168,7 +2930,7 @@ type rewardtypePaginateArgs struct {
 	opts          []RewardTypePaginateOption
 }
 
-func newRewardTypePaginateArgs(rv map[string]interface{}) *rewardtypePaginateArgs {
+func newRewardTypePaginateArgs(rv map[string]any) *rewardtypePaginateArgs {
 	args := &rewardtypePaginateArgs{}
 	if rv == nil {
 		return args
@@ -2184,6 +2946,37 @@ func newRewardTypePaginateArgs(rv map[string]interface{}) *rewardtypePaginateArg
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*RewardTypeOrder:
+			args.opts = append(args.opts, WithRewardTypeOrder(v))
+		case []any:
+			var orders []*RewardTypeOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &RewardTypeOrder{Field: &RewardTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithRewardTypeOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*RewardTypeWhereInput); ok {
+		args.opts = append(args.opts, WithRewardTypeFilter(v.Filter))
 	}
 	return args
 }
@@ -2249,6 +3042,8 @@ func (sa *ShippingAddressQuery) collectField(ctx context.Context, opCtx *graphql
 				selectedFields = append(selectedFields, shippingaddress.FieldDateUpdated)
 				fieldSeen[shippingaddress.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2265,7 +3060,7 @@ type shippingaddressPaginateArgs struct {
 	opts          []ShippingAddressPaginateOption
 }
 
-func newShippingAddressPaginateArgs(rv map[string]interface{}) *shippingaddressPaginateArgs {
+func newShippingAddressPaginateArgs(rv map[string]any) *shippingaddressPaginateArgs {
 	args := &shippingaddressPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2281,6 +3076,37 @@ func newShippingAddressPaginateArgs(rv map[string]interface{}) *shippingaddressP
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ShippingAddressOrder:
+			args.opts = append(args.opts, WithShippingAddressOrder(v))
+		case []any:
+			var orders []*ShippingAddressOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ShippingAddressOrder{Field: &ShippingAddressOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithShippingAddressOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ShippingAddressWhereInput); ok {
+		args.opts = append(args.opts, WithShippingAddressFilter(v.Filter))
 	}
 	return args
 }
@@ -2312,7 +3138,7 @@ func (s *ShopQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&ProductClient{config: s.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			s.WithNamedProducts(alias, func(wq *ProductQuery) {
@@ -2324,7 +3150,7 @@ func (s *ShopQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&TransactionClient{config: s.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, transactionImplementors)...); err != nil {
 				return err
 			}
 			s.WithNamedTransactions(alias, func(wq *TransactionQuery) {
@@ -2336,7 +3162,7 @@ func (s *ShopQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&BankAccountClient{config: s.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, bankaccountImplementors)...); err != nil {
 				return err
 			}
 			s.WithNamedBankAccounts(alias, func(wq *BankAccountQuery) {
@@ -2352,6 +3178,8 @@ func (s *ShopQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, shop.FieldDescription)
 				fieldSeen[shop.FieldDescription] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2368,7 +3196,7 @@ type shopPaginateArgs struct {
 	opts          []ShopPaginateOption
 }
 
-func newShopPaginateArgs(rv map[string]interface{}) *shopPaginateArgs {
+func newShopPaginateArgs(rv map[string]any) *shopPaginateArgs {
 	args := &shopPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2384,6 +3212,37 @@ func newShopPaginateArgs(rv map[string]interface{}) *shopPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ShopOrder:
+			args.opts = append(args.opts, WithShopOrder(v))
+		case []any:
+			var orders []*ShopOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ShopOrder{Field: &ShopOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithShopOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ShopWhereInput); ok {
+		args.opts = append(args.opts, WithShopFilter(v.Filter))
 	}
 	return args
 }
@@ -2419,6 +3278,8 @@ func (t *TagQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, tag.FieldDescription)
 				fieldSeen[tag.FieldDescription] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2435,7 +3296,7 @@ type tagPaginateArgs struct {
 	opts          []TagPaginateOption
 }
 
-func newTagPaginateArgs(rv map[string]interface{}) *tagPaginateArgs {
+func newTagPaginateArgs(rv map[string]any) *tagPaginateArgs {
 	args := &tagPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2451,6 +3312,37 @@ func newTagPaginateArgs(rv map[string]interface{}) *tagPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*TagOrder:
+			args.opts = append(args.opts, WithTagOrder(v))
+		case []any:
+			var orders []*TagOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &TagOrder{Field: &TagOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithTagOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*TagWhereInput); ok {
+		args.opts = append(args.opts, WithTagFilter(v.Filter))
 	}
 	return args
 }
@@ -2482,7 +3374,7 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&ProductClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			t.WithNamedProduct(alias, func(wq *ProductQuery) {
@@ -2494,7 +3386,7 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&LinkVisitClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, linkvisitImplementors)...); err != nil {
 				return err
 			}
 			t.WithNamedOriginLink(alias, func(wq *LinkVisitQuery) {
@@ -2506,7 +3398,7 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserBuyerClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userbuyerImplementors)...); err != nil {
 				return err
 			}
 			t.WithNamedProductCustomer(alias, func(wq *UserBuyerQuery) {
@@ -2518,7 +3410,7 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&ShopClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, shopImplementors)...); err != nil {
 				return err
 			}
 			t.WithNamedShop(alias, func(wq *ShopQuery) {
@@ -2530,7 +3422,7 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserInfluencerClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userinfluencerImplementors)...); err != nil {
 				return err
 			}
 			t.WithNamedProductInfluencer(alias, func(wq *UserInfluencerQuery) {
@@ -2651,6 +3543,8 @@ func (t *TransactionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, transaction.FieldPaymentReasonCode)
 				fieldSeen[transaction.FieldPaymentReasonCode] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2667,7 +3561,7 @@ type transactionPaginateArgs struct {
 	opts          []TransactionPaginateOption
 }
 
-func newTransactionPaginateArgs(rv map[string]interface{}) *transactionPaginateArgs {
+func newTransactionPaginateArgs(rv map[string]any) *transactionPaginateArgs {
 	args := &transactionPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2683,6 +3577,37 @@ func newTransactionPaginateArgs(rv map[string]interface{}) *transactionPaginateA
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*TransactionOrder:
+			args.opts = append(args.opts, WithTransactionOrder(v))
+		case []any:
+			var orders []*TransactionOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &TransactionOrder{Field: &TransactionOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithTransactionOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*TransactionWhereInput); ok {
+		args.opts = append(args.opts, WithTransactionFilter(v.Filter))
 	}
 	return args
 }
@@ -2714,7 +3639,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&NotificationClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, notificationImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedNotifications(alias, func(wq *NotificationQuery) {
@@ -2726,7 +3651,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&BankAccountClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, bankaccountImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedBankAccounts(alias, func(wq *BankAccountQuery) {
@@ -2738,7 +3663,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&ShippingAddressClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, shippingaddressImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedShippingAddresses(alias, func(wq *ShippingAddressQuery) {
@@ -2750,7 +3675,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&PaymentMethodClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, paymentmethodImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedPaymentMethods(alias, func(wq *PaymentMethodQuery) {
@@ -2806,6 +3731,8 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, user.FieldDateUpdated)
 				fieldSeen[user.FieldDateUpdated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2822,7 +3749,7 @@ type userPaginateArgs struct {
 	opts          []UserPaginateOption
 }
 
-func newUserPaginateArgs(rv map[string]interface{}) *userPaginateArgs {
+func newUserPaginateArgs(rv map[string]any) *userPaginateArgs {
 	args := &userPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2838,6 +3765,37 @@ func newUserPaginateArgs(rv map[string]interface{}) *userPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*UserOrder:
+			args.opts = append(args.opts, WithUserOrder(v))
+		case []any:
+			var orders []*UserOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &UserOrder{Field: &UserOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithUserOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*UserWhereInput); ok {
+		args.opts = append(args.opts, WithUserFilter(v.Filter))
 	}
 	return args
 }
@@ -2869,7 +3827,7 @@ func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&UserClient{config: ub.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			ub.WithNamedUserProfile(alias, func(wq *UserQuery) {
@@ -2881,7 +3839,7 @@ func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&ReviewClient{config: ub.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, reviewImplementors)...); err != nil {
 				return err
 			}
 			ub.WithNamedReviews(alias, func(wq *ReviewQuery) {
@@ -2893,7 +3851,7 @@ func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&TransactionClient{config: ub.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, transactionImplementors)...); err != nil {
 				return err
 			}
 			ub.WithNamedTransactions(alias, func(wq *TransactionQuery) {
@@ -2905,7 +3863,7 @@ func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&LinkVisitClient{config: ub.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, linkvisitImplementors)...); err != nil {
 				return err
 			}
 			ub.WithNamedLinksClicked(alias, func(wq *LinkVisitQuery) {
@@ -2916,6 +3874,8 @@ func (ub *UserBuyerQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, userbuyer.FieldPlaceholder)
 				fieldSeen[userbuyer.FieldPlaceholder] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2932,7 +3892,7 @@ type userbuyerPaginateArgs struct {
 	opts          []UserBuyerPaginateOption
 }
 
-func newUserBuyerPaginateArgs(rv map[string]interface{}) *userbuyerPaginateArgs {
+func newUserBuyerPaginateArgs(rv map[string]any) *userbuyerPaginateArgs {
 	args := &userbuyerPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2948,6 +3908,37 @@ func newUserBuyerPaginateArgs(rv map[string]interface{}) *userbuyerPaginateArgs 
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*UserBuyerOrder:
+			args.opts = append(args.opts, WithUserBuyerOrder(v))
+		case []any:
+			var orders []*UserBuyerOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &UserBuyerOrder{Field: &UserBuyerOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithUserBuyerOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*UserBuyerWhereInput); ok {
+		args.opts = append(args.opts, WithUserBuyerFilter(v.Filter))
 	}
 	return args
 }
@@ -2979,7 +3970,7 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&UserClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			ui.WithNamedUserProfile(alias, func(wq *UserQuery) {
@@ -2991,7 +3982,7 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&ReferralLinkClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, referrallinkImplementors)...); err != nil {
 				return err
 			}
 			ui.WithNamedReferralLinks(alias, func(wq *ReferralLinkQuery) {
@@ -3003,7 +3994,7 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&ReviewClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, reviewImplementors)...); err != nil {
 				return err
 			}
 			ui.WithNamedReviews(alias, func(wq *ReviewQuery) {
@@ -3015,7 +4006,7 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&ProductClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			ui.WithNamedProducts(alias, func(wq *ProductQuery) {
@@ -3027,7 +4018,7 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				path  = append(path, alias)
 				query = (&TagClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, tagImplementors)...); err != nil {
 				return err
 			}
 			ui.WithNamedTags(alias, func(wq *TagQuery) {
@@ -3038,6 +4029,8 @@ func (ui *UserInfluencerQuery) collectField(ctx context.Context, opCtx *graphql.
 				selectedFields = append(selectedFields, userinfluencer.FieldPlaceholder)
 				fieldSeen[userinfluencer.FieldPlaceholder] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3054,7 +4047,7 @@ type userinfluencerPaginateArgs struct {
 	opts          []UserInfluencerPaginateOption
 }
 
-func newUserInfluencerPaginateArgs(rv map[string]interface{}) *userinfluencerPaginateArgs {
+func newUserInfluencerPaginateArgs(rv map[string]any) *userinfluencerPaginateArgs {
 	args := &userinfluencerPaginateArgs{}
 	if rv == nil {
 		return args
@@ -3070,6 +4063,37 @@ func newUserInfluencerPaginateArgs(rv map[string]interface{}) *userinfluencerPag
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*UserInfluencerOrder:
+			args.opts = append(args.opts, WithUserInfluencerOrder(v))
+		case []any:
+			var orders []*UserInfluencerOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &UserInfluencerOrder{Field: &UserInfluencerOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithUserInfluencerOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*UserInfluencerWhereInput); ok {
+		args.opts = append(args.opts, WithUserInfluencerFilter(v.Filter))
 	}
 	return args
 }
@@ -3101,7 +4125,7 @@ func (us *UserSellerQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserClient{config: us.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			us.WithNamedUserProfile(alias, func(wq *UserQuery) {
@@ -3113,7 +4137,7 @@ func (us *UserSellerQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&ShopClient{config: us.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, shopImplementors)...); err != nil {
 				return err
 			}
 			us.WithNamedShops(alias, func(wq *ShopQuery) {
@@ -3124,6 +4148,8 @@ func (us *UserSellerQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, userseller.FieldBrandName)
 				fieldSeen[userseller.FieldBrandName] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3140,7 +4166,7 @@ type usersellerPaginateArgs struct {
 	opts          []UserSellerPaginateOption
 }
 
-func newUserSellerPaginateArgs(rv map[string]interface{}) *usersellerPaginateArgs {
+func newUserSellerPaginateArgs(rv map[string]any) *usersellerPaginateArgs {
 	args := &usersellerPaginateArgs{}
 	if rv == nil {
 		return args
@@ -3156,6 +4182,37 @@ func newUserSellerPaginateArgs(rv map[string]interface{}) *usersellerPaginateArg
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*UserSellerOrder:
+			args.opts = append(args.opts, WithUserSellerOrder(v))
+		case []any:
+			var orders []*UserSellerOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &UserSellerOrder{Field: &UserSellerOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithUserSellerOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*UserSellerWhereInput); ok {
+		args.opts = append(args.opts, WithUserSellerFilter(v.Filter))
 	}
 	return args
 }
@@ -3187,7 +4244,7 @@ func (va *ViewAnalyticsQuery) collectField(ctx context.Context, opCtx *graphql.O
 				path  = append(path, alias)
 				query = (&ProductClient{config: va.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, productImplementors)...); err != nil {
 				return err
 			}
 			va.WithNamedProduct(alias, func(wq *ProductQuery) {
@@ -3213,6 +4270,8 @@ func (va *ViewAnalyticsQuery) collectField(ctx context.Context, opCtx *graphql.O
 				selectedFields = append(selectedFields, viewanalytics.FieldDateCreated)
 				fieldSeen[viewanalytics.FieldDateCreated] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3229,7 +4288,7 @@ type viewanalyticsPaginateArgs struct {
 	opts          []ViewAnalyticsPaginateOption
 }
 
-func newViewAnalyticsPaginateArgs(rv map[string]interface{}) *viewanalyticsPaginateArgs {
+func newViewAnalyticsPaginateArgs(rv map[string]any) *viewanalyticsPaginateArgs {
 	args := &viewanalyticsPaginateArgs{}
 	if rv == nil {
 		return args
@@ -3246,6 +4305,37 @@ func newViewAnalyticsPaginateArgs(rv map[string]interface{}) *viewanalyticsPagin
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*ViewAnalyticsOrder:
+			args.opts = append(args.opts, WithViewAnalyticsOrder(v))
+		case []any:
+			var orders []*ViewAnalyticsOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &ViewAnalyticsOrder{Field: &ViewAnalyticsOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithViewAnalyticsOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*ViewAnalyticsWhereInput); ok {
+		args.opts = append(args.opts, WithViewAnalyticsFilter(v.Filter))
+	}
 	return args
 }
 
@@ -3260,35 +4350,18 @@ const (
 	whereField     = "where"
 )
 
-func fieldArgs(ctx context.Context, whereInput interface{}, path ...string) map[string]interface{} {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
+func fieldArgs(ctx context.Context, whereInput any, path ...string) map[string]any {
+	field := collectedField(ctx, path...)
+	if field == nil || field.Arguments == nil {
 		return nil
 	}
 	oc := graphql.GetOperationContext(ctx)
-	for _, name := range path {
-		var field *graphql.CollectedField
-		for _, f := range graphql.CollectFields(oc, fc.Field.Selections, nil) {
-			if f.Alias == name {
-				field = &f
-				break
-			}
-		}
-		if field == nil {
-			return nil
-		}
-		cf, err := fc.Child(ctx, *field)
-		if err != nil {
-			args := field.ArgumentMap(oc.Variables)
-			return unmarshalArgs(ctx, whereInput, args)
-		}
-		fc = cf
-	}
-	return fc.Args
+	args := field.ArgumentMap(oc.Variables)
+	return unmarshalArgs(ctx, whereInput, args)
 }
 
 // unmarshalArgs allows extracting the field arguments from their raw representation.
-func unmarshalArgs(ctx context.Context, whereInput interface{}, args map[string]interface{}) map[string]interface{} {
+func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map[string]any {
 	for _, k := range []string{firstField, lastField} {
 		v, ok := args[k]
 		if !ok {
@@ -3339,4 +4412,19 @@ func limitRows(partitionBy string, limit int, orderBy ...sql.Querier) func(s *sq
 			Where(sql.LTE(t.C("row_number"), limit)).
 			Prefix(with)
 	}
+}
+
+// mayAddCondition appends another type condition to the satisfies list
+// if it does not exist in the list.
+func mayAddCondition(satisfies []string, typeCond []string) []string {
+Cond:
+	for _, c := range typeCond {
+		for _, s := range satisfies {
+			if c == s {
+				continue Cond
+			}
+		}
+		satisfies = append(satisfies, c)
+	}
+	return satisfies
 }

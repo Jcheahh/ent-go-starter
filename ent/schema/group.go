@@ -17,7 +17,9 @@ type Group struct {
 // Fields of the Group.
 func (Group) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").Match(regexp.MustCompile(`[a-zA-Z_]+$`)),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		).Match(regexp.MustCompile(`[a-zA-Z_]+$`)),
 	}
 }
 
@@ -29,6 +31,7 @@ func (Group) Edges() []ent.Edge {
 func (Group) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

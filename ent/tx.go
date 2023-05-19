@@ -20,8 +20,8 @@ type Tx struct {
 	Category *CategoryClient
 	// Chat is the client for interacting with the Chat builders.
 	Chat *ChatClient
-	// CommissionStructure is the client for interacting with the CommissionStructure builders.
-	CommissionStructure *CommissionStructureClient
+	// CommissionStructureSchema is the client for interacting with the CommissionStructureSchema builders.
+	CommissionStructureSchema *CommissionStructureSchemaClient
 	// ContentBlock is the client for interacting with the ContentBlock builders.
 	ContentBlock *ContentBlockClient
 	// EmailCampaign is the client for interacting with the EmailCampaign builders.
@@ -213,7 +213,7 @@ func (tx *Tx) init() {
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.Category = NewCategoryClient(tx.config)
 	tx.Chat = NewChatClient(tx.config)
-	tx.CommissionStructure = NewCommissionStructureClient(tx.config)
+	tx.CommissionStructureSchema = NewCommissionStructureSchemaClient(tx.config)
 	tx.ContentBlock = NewContentBlockClient(tx.config)
 	tx.EmailCampaign = NewEmailCampaignClient(tx.config)
 	tx.Group = NewGroupClient(tx.config)

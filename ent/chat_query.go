@@ -18,7 +18,7 @@ import (
 type ChatQuery struct {
 	config
 	ctx        *QueryContext
-	order      []chat.Order
+	order      []chat.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Chat
 	withFKs    bool
@@ -55,7 +55,7 @@ func (cq *ChatQuery) Unique(unique bool) *ChatQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (cq *ChatQuery) Order(o ...chat.Order) *ChatQuery {
+func (cq *ChatQuery) Order(o ...chat.OrderOption) *ChatQuery {
 	cq.order = append(cq.order, o...)
 	return cq
 }
@@ -249,7 +249,7 @@ func (cq *ChatQuery) Clone() *ChatQuery {
 	return &ChatQuery{
 		config:     cq.config,
 		ctx:        cq.ctx.Clone(),
-		order:      append([]chat.Order{}, cq.order...),
+		order:      append([]chat.OrderOption{}, cq.order...),
 		inters:     append([]Interceptor{}, cq.inters...),
 		predicates: append([]predicate.Chat{}, cq.predicates...),
 		// clone intermediate query.

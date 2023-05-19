@@ -60,38 +60,38 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the ProductVariation queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the ProductVariation queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
-func ByDescription(opts ...sql.OrderTermOption) Order {
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
 // ByPrice orders the results by the price field.
-func ByPrice(opts ...sql.OrderTermOption) Order {
+func ByPrice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPrice, opts...).ToFunc()
 }
 
 // ByProductAttributesCount orders the results by productAttributes count.
-func ByProductAttributesCount(opts ...sql.OrderTermOption) Order {
+func ByProductAttributesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductAttributesStep(), opts...)
 	}
 }
 
 // ByProductAttributes orders the results by productAttributes terms.
-func ByProductAttributes(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProductAttributes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductAttributesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

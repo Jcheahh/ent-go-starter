@@ -18,7 +18,7 @@ import (
 type PaymentMethodQuery struct {
 	config
 	ctx        *QueryContext
-	order      []paymentmethod.Order
+	order      []paymentmethod.OrderOption
 	inters     []Interceptor
 	predicates []predicate.PaymentMethod
 	withFKs    bool
@@ -55,7 +55,7 @@ func (pmq *PaymentMethodQuery) Unique(unique bool) *PaymentMethodQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pmq *PaymentMethodQuery) Order(o ...paymentmethod.Order) *PaymentMethodQuery {
+func (pmq *PaymentMethodQuery) Order(o ...paymentmethod.OrderOption) *PaymentMethodQuery {
 	pmq.order = append(pmq.order, o...)
 	return pmq
 }
@@ -249,7 +249,7 @@ func (pmq *PaymentMethodQuery) Clone() *PaymentMethodQuery {
 	return &PaymentMethodQuery{
 		config:     pmq.config,
 		ctx:        pmq.ctx.Clone(),
-		order:      append([]paymentmethod.Order{}, pmq.order...),
+		order:      append([]paymentmethod.OrderOption{}, pmq.order...),
 		inters:     append([]Interceptor{}, pmq.inters...),
 		predicates: append([]predicate.PaymentMethod{}, pmq.predicates...),
 		// clone intermediate query.

@@ -1,0 +1,53 @@
+type Mutation {
+  CreateBankAccount(input: CreateBankAccountInput!): BankAccount!
+  UpdateBankAccount(id: ID!, input: UpdateBankAccountInput!): BankAccount!
+
+  CreateBlogPost(input: CreateBlogPostInput!): BlogPost!
+  UpdateBlogPost(id: ID!, input: UpdateBlogPostInput!): BlogPost!
+
+  CreateCategory(input: CreateCategoryInput!): Category!
+  UpdateCategory(id: ID!, input: UpdateCategoryInput!): Category!
+
+  CreateChat(input: CreateChatInput!): Chat!
+  UpdateChat(id: ID!, input: UpdateChatInput!): Chat!
+
+  CreateCommissionStructureSchema(
+    input: CreateCommissionStructureSchemaInput!
+  ): CommissionStructureSchema!
+  UpdateCommissionStructureSchema(
+    id: ID!
+    input: UpdateCommissionStructureSchemaInput!
+  ): CommissionStructureSchema!
+
+  CreateContentBlock(input: CreateContentBlockInput!): ContentBlock!
+  UpdateContentBlock(id: ID!, input: UpdateContentBlockInput!): ContentBlock!
+
+  CreateEmailCampaign(input: CreateEmailCampaignInput!): EmailCampaign!
+  UpdateEmailCampaign(id: ID!, input: UpdateEmailCampaignInput!): EmailCampaign!
+
+  CreateGroup(input: CreateGroupInput!): Group!
+  UpdateGroup(id: ID!, input: UpdateGroupInput!): Group!
+
+  CreateGroupBuy(input: CreateGroupBuyInput!): GroupBuy!
+  UpdateGroupBuy(id: ID!, input: UpdateGroupBuyInput!): GroupBuy!
+
+  CreateHeroContent(input: CreateHeroContentInput!): HeroContent!
+  UpdateHeroContent(id: ID!, input: UpdateHeroContentInput!): HeroContent!
+
+  CreateImage(input: CreateImageInput!): Image!
+  UpdateImage(id: ID!, input: UpdateImageInput!): Image!
+
+  CreateLinkVisit(input: CreateLinkVisitInput!): LinkVisit!
+  UpdateLinkVisit(id: ID!, input: UpdateLinkVisitInput!): LinkVisit!
+
+  CreateMarketingCampaign(
+    input: CreateMarketingCampaignInput!
+  ): MarketingCampaign!
+  UpdateMarketingCampaign(
+    id: ID!
+    input: UpdateMarketingCampaignInput!
+  ): MarketingCampaign!
+
+  CreateNotification(input: CreateNotificationInput!): Notification!
+  UpdateNotification(id: ID!, input: UpdateNotificationInput!): Notification!
+}

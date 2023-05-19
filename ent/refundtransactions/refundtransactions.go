@@ -58,53 +58,53 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the RefundTransactions queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the RefundTransactions queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByRefundAmount orders the results by the refundAmount field.
-func ByRefundAmount(opts ...sql.OrderTermOption) Order {
+func ByRefundAmount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefundAmount, opts...).ToFunc()
 }
 
 // ByRefundCurrency orders the results by the refundCurrency field.
-func ByRefundCurrency(opts ...sql.OrderTermOption) Order {
+func ByRefundCurrency(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefundCurrency, opts...).ToFunc()
 }
 
 // ByRefundReason orders the results by the refundReason field.
-func ByRefundReason(opts ...sql.OrderTermOption) Order {
+func ByRefundReason(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefundReason, opts...).ToFunc()
 }
 
 // ByRefundStatus orders the results by the refundStatus field.
-func ByRefundStatus(opts ...sql.OrderTermOption) Order {
+func ByRefundStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefundStatus, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByTransactionCount orders the results by transaction count.
-func ByTransactionCount(opts ...sql.OrderTermOption) Order {
+func ByTransactionCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newTransactionStep(), opts...)
 	}
 }
 
 // ByTransaction orders the results by transaction terms.
-func ByTransaction(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByTransaction(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newTransactionStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

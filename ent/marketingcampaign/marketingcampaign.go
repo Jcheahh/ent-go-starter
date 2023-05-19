@@ -87,82 +87,82 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the MarketingCampaign queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the MarketingCampaign queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
-func ByDescription(opts ...sql.OrderTermOption) Order {
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
 // ByConsumerPurchaseValue orders the results by the consumerPurchaseValue field.
-func ByConsumerPurchaseValue(opts ...sql.OrderTermOption) Order {
+func ByConsumerPurchaseValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConsumerPurchaseValue, opts...).ToFunc()
 }
 
 // ByCustomerApplicationLogic orders the results by the customerApplicationLogic field.
-func ByCustomerApplicationLogic(opts ...sql.OrderTermOption) Order {
+func ByCustomerApplicationLogic(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCustomerApplicationLogic, opts...).ToFunc()
 }
 
 // ByInitialisationLogic orders the results by the initialisationLogic field.
-func ByInitialisationLogic(opts ...sql.OrderTermOption) Order {
+func ByInitialisationLogic(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldInitialisationLogic, opts...).ToFunc()
 }
 
 // ByStartDate orders the results by the startDate field.
-func ByStartDate(opts ...sql.OrderTermOption) Order {
+func ByStartDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStartDate, opts...).ToFunc()
 }
 
 // ByEndDate orders the results by the endDate field.
-func ByEndDate(opts ...sql.OrderTermOption) Order {
+func ByEndDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndDate, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByProductCount orders the results by product count.
-func ByProductCount(opts ...sql.OrderTermOption) Order {
+func ByProductCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductStep(), opts...)
 	}
 }
 
 // ByProduct orders the results by product terms.
-func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByConsumerRewardCount orders the results by consumerReward count.
-func ByConsumerRewardCount(opts ...sql.OrderTermOption) Order {
+func ByConsumerRewardCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newConsumerRewardStep(), opts...)
 	}
 }
 
 // ByConsumerReward orders the results by consumerReward terms.
-func ByConsumerReward(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByConsumerReward(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newConsumerRewardStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

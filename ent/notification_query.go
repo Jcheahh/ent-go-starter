@@ -20,7 +20,7 @@ import (
 type NotificationQuery struct {
 	config
 	ctx                *QueryContext
-	order              []notification.Order
+	order              []notification.OrderOption
 	inters             []Interceptor
 	predicates         []predicate.Notification
 	withRecipient      *UserQuery
@@ -59,7 +59,7 @@ func (nq *NotificationQuery) Unique(unique bool) *NotificationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (nq *NotificationQuery) Order(o ...notification.Order) *NotificationQuery {
+func (nq *NotificationQuery) Order(o ...notification.OrderOption) *NotificationQuery {
 	nq.order = append(nq.order, o...)
 	return nq
 }
@@ -275,7 +275,7 @@ func (nq *NotificationQuery) Clone() *NotificationQuery {
 	return &NotificationQuery{
 		config:        nq.config,
 		ctx:           nq.ctx.Clone(),
-		order:         append([]notification.Order{}, nq.order...),
+		order:         append([]notification.OrderOption{}, nq.order...),
 		inters:        append([]Interceptor{}, nq.inters...),
 		predicates:    append([]predicate.Notification{}, nq.predicates...),
 		withRecipient: nq.withRecipient.Clone(),
@@ -437,7 +437,7 @@ func (nq *NotificationQuery) loadRecipient(ctx context.Context, query *UserQuery
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(notification.RecipientColumn, fks...))
+		s.Where(sql.InValues(s.C(notification.RecipientColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (nq *NotificationQuery) loadRecipient(ctx context.Context, query *UserQuery
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "notification_recipient" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "notification_recipient" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

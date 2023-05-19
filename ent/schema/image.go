@@ -13,15 +13,22 @@ type Image struct {
 
 func (Image) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
-		field.String("url"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("url").Annotations(
+			entgql.OrderField("URL"),
+		),
 	}
 }
 
 func (Image) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

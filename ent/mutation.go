@@ -8,7 +8,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/contentblock"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
@@ -55,39 +55,39 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeBankAccount         = "BankAccount"
-	TypeBlogPost            = "BlogPost"
-	TypeCategory            = "Category"
-	TypeChat                = "Chat"
-	TypeCommissionStructure = "CommissionStructure"
-	TypeContentBlock        = "ContentBlock"
-	TypeEmailCampaign       = "EmailCampaign"
-	TypeGroup               = "Group"
-	TypeGroupBuy            = "GroupBuy"
-	TypeHeroContent         = "HeroContent"
-	TypeImage               = "Image"
-	TypeLinkVisit           = "LinkVisit"
-	TypeMarketingCampaign   = "MarketingCampaign"
-	TypeNotification        = "Notification"
-	TypePaymentMethod       = "PaymentMethod"
-	TypePrimaryContent      = "PrimaryContent"
-	TypeProduct             = "Product"
-	TypeProductAttribute    = "ProductAttribute"
-	TypeProductPageView     = "ProductPageView"
-	TypeProductVariation    = "ProductVariation"
-	TypeReferralLink        = "ReferralLink"
-	TypeRefundTransactions  = "RefundTransactions"
-	TypeReview              = "Review"
-	TypeRewardType          = "RewardType"
-	TypeShippingAddress     = "ShippingAddress"
-	TypeShop                = "Shop"
-	TypeTag                 = "Tag"
-	TypeTransaction         = "Transaction"
-	TypeUser                = "User"
-	TypeUserBuyer           = "UserBuyer"
-	TypeUserInfluencer      = "UserInfluencer"
-	TypeUserSeller          = "UserSeller"
-	TypeViewAnalytics       = "ViewAnalytics"
+	TypeBankAccount               = "BankAccount"
+	TypeBlogPost                  = "BlogPost"
+	TypeCategory                  = "Category"
+	TypeChat                      = "Chat"
+	TypeCommissionStructureSchema = "CommissionStructureSchema"
+	TypeContentBlock              = "ContentBlock"
+	TypeEmailCampaign             = "EmailCampaign"
+	TypeGroup                     = "Group"
+	TypeGroupBuy                  = "GroupBuy"
+	TypeHeroContent               = "HeroContent"
+	TypeImage                     = "Image"
+	TypeLinkVisit                 = "LinkVisit"
+	TypeMarketingCampaign         = "MarketingCampaign"
+	TypeNotification              = "Notification"
+	TypePaymentMethod             = "PaymentMethod"
+	TypePrimaryContent            = "PrimaryContent"
+	TypeProduct                   = "Product"
+	TypeProductAttribute          = "ProductAttribute"
+	TypeProductPageView           = "ProductPageView"
+	TypeProductVariation          = "ProductVariation"
+	TypeReferralLink              = "ReferralLink"
+	TypeRefundTransactions        = "RefundTransactions"
+	TypeReview                    = "Review"
+	TypeRewardType                = "RewardType"
+	TypeShippingAddress           = "ShippingAddress"
+	TypeShop                      = "Shop"
+	TypeTag                       = "Tag"
+	TypeTransaction               = "Transaction"
+	TypeUser                      = "User"
+	TypeUserBuyer                 = "UserBuyer"
+	TypeUserInfluencer            = "UserInfluencer"
+	TypeUserSeller                = "UserSeller"
+	TypeViewAnalytics             = "ViewAnalytics"
 )
 
 // BankAccountMutation represents an operation that mutates the BankAccount nodes in the graph.
@@ -1868,8 +1868,8 @@ func (m *ChatMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Chat edge %s", name)
 }
 
-// CommissionStructureMutation represents an operation that mutates the CommissionStructure nodes in the graph.
-type CommissionStructureMutation struct {
+// CommissionStructureSchemaMutation represents an operation that mutates the CommissionStructureSchema nodes in the graph.
+type CommissionStructureSchemaMutation struct {
 	config
 	op                   Op
 	typ                  string
@@ -1883,21 +1883,21 @@ type CommissionStructureMutation struct {
 	removedproductSeller map[int]struct{}
 	clearedproductSeller bool
 	done                 bool
-	oldValue             func(context.Context) (*CommissionStructure, error)
-	predicates           []predicate.CommissionStructure
+	oldValue             func(context.Context) (*CommissionStructureSchema, error)
+	predicates           []predicate.CommissionStructureSchema
 }
 
-var _ ent.Mutation = (*CommissionStructureMutation)(nil)
+var _ ent.Mutation = (*CommissionStructureSchemaMutation)(nil)
 
-// commissionstructureOption allows management of the mutation configuration using functional options.
-type commissionstructureOption func(*CommissionStructureMutation)
+// commissionstructureschemaOption allows management of the mutation configuration using functional options.
+type commissionstructureschemaOption func(*CommissionStructureSchemaMutation)
 
-// newCommissionStructureMutation creates new mutation for the CommissionStructure entity.
-func newCommissionStructureMutation(c config, op Op, opts ...commissionstructureOption) *CommissionStructureMutation {
-	m := &CommissionStructureMutation{
+// newCommissionStructureSchemaMutation creates new mutation for the CommissionStructureSchema entity.
+func newCommissionStructureSchemaMutation(c config, op Op, opts ...commissionstructureschemaOption) *CommissionStructureSchemaMutation {
+	m := &CommissionStructureSchemaMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeCommissionStructure,
+		typ:           TypeCommissionStructureSchema,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -1906,20 +1906,20 @@ func newCommissionStructureMutation(c config, op Op, opts ...commissionstructure
 	return m
 }
 
-// withCommissionStructureID sets the ID field of the mutation.
-func withCommissionStructureID(id int) commissionstructureOption {
-	return func(m *CommissionStructureMutation) {
+// withCommissionStructureSchemaID sets the ID field of the mutation.
+func withCommissionStructureSchemaID(id int) commissionstructureschemaOption {
+	return func(m *CommissionStructureSchemaMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *CommissionStructure
+			value *CommissionStructureSchema
 		)
-		m.oldValue = func(ctx context.Context) (*CommissionStructure, error) {
+		m.oldValue = func(ctx context.Context) (*CommissionStructureSchema, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().CommissionStructure.Get(ctx, id)
+					value, err = m.Client().CommissionStructureSchema.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -1928,10 +1928,10 @@ func withCommissionStructureID(id int) commissionstructureOption {
 	}
 }
 
-// withCommissionStructure sets the old CommissionStructure of the mutation.
-func withCommissionStructure(node *CommissionStructure) commissionstructureOption {
-	return func(m *CommissionStructureMutation) {
-		m.oldValue = func(context.Context) (*CommissionStructure, error) {
+// withCommissionStructureSchema sets the old CommissionStructureSchema of the mutation.
+func withCommissionStructureSchema(node *CommissionStructureSchema) commissionstructureschemaOption {
+	return func(m *CommissionStructureSchemaMutation) {
+		m.oldValue = func(context.Context) (*CommissionStructureSchema, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -1940,7 +1940,7 @@ func withCommissionStructure(node *CommissionStructure) commissionstructureOptio
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m CommissionStructureMutation) Client() *Client {
+func (m CommissionStructureSchemaMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -1948,7 +1948,7 @@ func (m CommissionStructureMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m CommissionStructureMutation) Tx() (*Tx, error) {
+func (m CommissionStructureSchemaMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -1959,7 +1959,7 @@ func (m CommissionStructureMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *CommissionStructureMutation) ID() (id int, exists bool) {
+func (m *CommissionStructureSchemaMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1970,7 +1970,7 @@ func (m *CommissionStructureMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *CommissionStructureMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *CommissionStructureSchemaMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -1979,19 +1979,19 @@ func (m *CommissionStructureMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().CommissionStructure.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().CommissionStructureSchema.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetName sets the "name" field.
-func (m *CommissionStructureMutation) SetName(s string) {
+func (m *CommissionStructureSchemaMutation) SetName(s string) {
 	m.name = &s
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *CommissionStructureMutation) Name() (r string, exists bool) {
+func (m *CommissionStructureSchemaMutation) Name() (r string, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -1999,10 +1999,10 @@ func (m *CommissionStructureMutation) Name() (r string, exists bool) {
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the CommissionStructure entity.
-// If the CommissionStructure object wasn't provided to the builder, the object is fetched from the database.
+// OldName returns the old "name" field's value of the CommissionStructureSchema entity.
+// If the CommissionStructureSchema object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommissionStructureMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *CommissionStructureSchemaMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -2017,17 +2017,17 @@ func (m *CommissionStructureMutation) OldName(ctx context.Context) (v string, er
 }
 
 // ResetName resets all changes to the "name" field.
-func (m *CommissionStructureMutation) ResetName() {
+func (m *CommissionStructureSchemaMutation) ResetName() {
 	m.name = nil
 }
 
 // SetDescription sets the "description" field.
-func (m *CommissionStructureMutation) SetDescription(s string) {
+func (m *CommissionStructureSchemaMutation) SetDescription(s string) {
 	m.description = &s
 }
 
 // Description returns the value of the "description" field in the mutation.
-func (m *CommissionStructureMutation) Description() (r string, exists bool) {
+func (m *CommissionStructureSchemaMutation) Description() (r string, exists bool) {
 	v := m.description
 	if v == nil {
 		return
@@ -2035,10 +2035,10 @@ func (m *CommissionStructureMutation) Description() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDescription returns the old "description" field's value of the CommissionStructure entity.
-// If the CommissionStructure object wasn't provided to the builder, the object is fetched from the database.
+// OldDescription returns the old "description" field's value of the CommissionStructureSchema entity.
+// If the CommissionStructureSchema object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommissionStructureMutation) OldDescription(ctx context.Context) (v string, err error) {
+func (m *CommissionStructureSchemaMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -2053,17 +2053,17 @@ func (m *CommissionStructureMutation) OldDescription(ctx context.Context) (v str
 }
 
 // ResetDescription resets all changes to the "description" field.
-func (m *CommissionStructureMutation) ResetDescription() {
+func (m *CommissionStructureSchemaMutation) ResetDescription() {
 	m.description = nil
 }
 
 // SetCommissionValue sets the "commissionValue" field.
-func (m *CommissionStructureMutation) SetCommissionValue(s string) {
+func (m *CommissionStructureSchemaMutation) SetCommissionValue(s string) {
 	m.commissionValue = &s
 }
 
 // CommissionValue returns the value of the "commissionValue" field in the mutation.
-func (m *CommissionStructureMutation) CommissionValue() (r string, exists bool) {
+func (m *CommissionStructureSchemaMutation) CommissionValue() (r string, exists bool) {
 	v := m.commissionValue
 	if v == nil {
 		return
@@ -2071,10 +2071,10 @@ func (m *CommissionStructureMutation) CommissionValue() (r string, exists bool) 
 	return *v, true
 }
 
-// OldCommissionValue returns the old "commissionValue" field's value of the CommissionStructure entity.
-// If the CommissionStructure object wasn't provided to the builder, the object is fetched from the database.
+// OldCommissionValue returns the old "commissionValue" field's value of the CommissionStructureSchema entity.
+// If the CommissionStructureSchema object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommissionStructureMutation) OldCommissionValue(ctx context.Context) (v string, err error) {
+func (m *CommissionStructureSchemaMutation) OldCommissionValue(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCommissionValue is only allowed on UpdateOne operations")
 	}
@@ -2089,17 +2089,17 @@ func (m *CommissionStructureMutation) OldCommissionValue(ctx context.Context) (v
 }
 
 // ResetCommissionValue resets all changes to the "commissionValue" field.
-func (m *CommissionStructureMutation) ResetCommissionValue() {
+func (m *CommissionStructureSchemaMutation) ResetCommissionValue() {
 	m.commissionValue = nil
 }
 
 // SetCommissionPercentage sets the "commissionPercentage" field.
-func (m *CommissionStructureMutation) SetCommissionPercentage(s string) {
+func (m *CommissionStructureSchemaMutation) SetCommissionPercentage(s string) {
 	m.commissionPercentage = &s
 }
 
 // CommissionPercentage returns the value of the "commissionPercentage" field in the mutation.
-func (m *CommissionStructureMutation) CommissionPercentage() (r string, exists bool) {
+func (m *CommissionStructureSchemaMutation) CommissionPercentage() (r string, exists bool) {
 	v := m.commissionPercentage
 	if v == nil {
 		return
@@ -2107,10 +2107,10 @@ func (m *CommissionStructureMutation) CommissionPercentage() (r string, exists b
 	return *v, true
 }
 
-// OldCommissionPercentage returns the old "commissionPercentage" field's value of the CommissionStructure entity.
-// If the CommissionStructure object wasn't provided to the builder, the object is fetched from the database.
+// OldCommissionPercentage returns the old "commissionPercentage" field's value of the CommissionStructureSchema entity.
+// If the CommissionStructureSchema object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommissionStructureMutation) OldCommissionPercentage(ctx context.Context) (v string, err error) {
+func (m *CommissionStructureSchemaMutation) OldCommissionPercentage(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCommissionPercentage is only allowed on UpdateOne operations")
 	}
@@ -2125,12 +2125,12 @@ func (m *CommissionStructureMutation) OldCommissionPercentage(ctx context.Contex
 }
 
 // ResetCommissionPercentage resets all changes to the "commissionPercentage" field.
-func (m *CommissionStructureMutation) ResetCommissionPercentage() {
+func (m *CommissionStructureSchemaMutation) ResetCommissionPercentage() {
 	m.commissionPercentage = nil
 }
 
 // AddProductSellerIDs adds the "productSeller" edge to the UserSeller entity by ids.
-func (m *CommissionStructureMutation) AddProductSellerIDs(ids ...int) {
+func (m *CommissionStructureSchemaMutation) AddProductSellerIDs(ids ...int) {
 	if m.productSeller == nil {
 		m.productSeller = make(map[int]struct{})
 	}
@@ -2140,17 +2140,17 @@ func (m *CommissionStructureMutation) AddProductSellerIDs(ids ...int) {
 }
 
 // ClearProductSeller clears the "productSeller" edge to the UserSeller entity.
-func (m *CommissionStructureMutation) ClearProductSeller() {
+func (m *CommissionStructureSchemaMutation) ClearProductSeller() {
 	m.clearedproductSeller = true
 }
 
 // ProductSellerCleared reports if the "productSeller" edge to the UserSeller entity was cleared.
-func (m *CommissionStructureMutation) ProductSellerCleared() bool {
+func (m *CommissionStructureSchemaMutation) ProductSellerCleared() bool {
 	return m.clearedproductSeller
 }
 
 // RemoveProductSellerIDs removes the "productSeller" edge to the UserSeller entity by IDs.
-func (m *CommissionStructureMutation) RemoveProductSellerIDs(ids ...int) {
+func (m *CommissionStructureSchemaMutation) RemoveProductSellerIDs(ids ...int) {
 	if m.removedproductSeller == nil {
 		m.removedproductSeller = make(map[int]struct{})
 	}
@@ -2161,7 +2161,7 @@ func (m *CommissionStructureMutation) RemoveProductSellerIDs(ids ...int) {
 }
 
 // RemovedProductSeller returns the removed IDs of the "productSeller" edge to the UserSeller entity.
-func (m *CommissionStructureMutation) RemovedProductSellerIDs() (ids []int) {
+func (m *CommissionStructureSchemaMutation) RemovedProductSellerIDs() (ids []int) {
 	for id := range m.removedproductSeller {
 		ids = append(ids, id)
 	}
@@ -2169,7 +2169,7 @@ func (m *CommissionStructureMutation) RemovedProductSellerIDs() (ids []int) {
 }
 
 // ProductSellerIDs returns the "productSeller" edge IDs in the mutation.
-func (m *CommissionStructureMutation) ProductSellerIDs() (ids []int) {
+func (m *CommissionStructureSchemaMutation) ProductSellerIDs() (ids []int) {
 	for id := range m.productSeller {
 		ids = append(ids, id)
 	}
@@ -2177,21 +2177,21 @@ func (m *CommissionStructureMutation) ProductSellerIDs() (ids []int) {
 }
 
 // ResetProductSeller resets all changes to the "productSeller" edge.
-func (m *CommissionStructureMutation) ResetProductSeller() {
+func (m *CommissionStructureSchemaMutation) ResetProductSeller() {
 	m.productSeller = nil
 	m.clearedproductSeller = false
 	m.removedproductSeller = nil
 }
 
-// Where appends a list predicates to the CommissionStructureMutation builder.
-func (m *CommissionStructureMutation) Where(ps ...predicate.CommissionStructure) {
+// Where appends a list predicates to the CommissionStructureSchemaMutation builder.
+func (m *CommissionStructureSchemaMutation) Where(ps ...predicate.CommissionStructureSchema) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the CommissionStructureMutation builder. Using this method,
+// WhereP appends storage-level predicates to the CommissionStructureSchemaMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *CommissionStructureMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.CommissionStructure, len(ps))
+func (m *CommissionStructureSchemaMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CommissionStructureSchema, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -2199,36 +2199,36 @@ func (m *CommissionStructureMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *CommissionStructureMutation) Op() Op {
+func (m *CommissionStructureSchemaMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *CommissionStructureMutation) SetOp(op Op) {
+func (m *CommissionStructureSchemaMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (CommissionStructure).
-func (m *CommissionStructureMutation) Type() string {
+// Type returns the node type of this mutation (CommissionStructureSchema).
+func (m *CommissionStructureSchemaMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *CommissionStructureMutation) Fields() []string {
+func (m *CommissionStructureSchemaMutation) Fields() []string {
 	fields := make([]string, 0, 4)
 	if m.name != nil {
-		fields = append(fields, commissionstructure.FieldName)
+		fields = append(fields, commissionstructureschema.FieldName)
 	}
 	if m.description != nil {
-		fields = append(fields, commissionstructure.FieldDescription)
+		fields = append(fields, commissionstructureschema.FieldDescription)
 	}
 	if m.commissionValue != nil {
-		fields = append(fields, commissionstructure.FieldCommissionValue)
+		fields = append(fields, commissionstructureschema.FieldCommissionValue)
 	}
 	if m.commissionPercentage != nil {
-		fields = append(fields, commissionstructure.FieldCommissionPercentage)
+		fields = append(fields, commissionstructureschema.FieldCommissionPercentage)
 	}
 	return fields
 }
@@ -2236,15 +2236,15 @@ func (m *CommissionStructureMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *CommissionStructureMutation) Field(name string) (ent.Value, bool) {
+func (m *CommissionStructureSchemaMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case commissionstructure.FieldName:
+	case commissionstructureschema.FieldName:
 		return m.Name()
-	case commissionstructure.FieldDescription:
+	case commissionstructureschema.FieldDescription:
 		return m.Description()
-	case commissionstructure.FieldCommissionValue:
+	case commissionstructureschema.FieldCommissionValue:
 		return m.CommissionValue()
-	case commissionstructure.FieldCommissionPercentage:
+	case commissionstructureschema.FieldCommissionPercentage:
 		return m.CommissionPercentage()
 	}
 	return nil, false
@@ -2253,47 +2253,47 @@ func (m *CommissionStructureMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *CommissionStructureMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *CommissionStructureSchemaMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case commissionstructure.FieldName:
+	case commissionstructureschema.FieldName:
 		return m.OldName(ctx)
-	case commissionstructure.FieldDescription:
+	case commissionstructureschema.FieldDescription:
 		return m.OldDescription(ctx)
-	case commissionstructure.FieldCommissionValue:
+	case commissionstructureschema.FieldCommissionValue:
 		return m.OldCommissionValue(ctx)
-	case commissionstructure.FieldCommissionPercentage:
+	case commissionstructureschema.FieldCommissionPercentage:
 		return m.OldCommissionPercentage(ctx)
 	}
-	return nil, fmt.Errorf("unknown CommissionStructure field %s", name)
+	return nil, fmt.Errorf("unknown CommissionStructureSchema field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *CommissionStructureMutation) SetField(name string, value ent.Value) error {
+func (m *CommissionStructureSchemaMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case commissionstructure.FieldName:
+	case commissionstructureschema.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
 		return nil
-	case commissionstructure.FieldDescription:
+	case commissionstructureschema.FieldDescription:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
 		return nil
-	case commissionstructure.FieldCommissionValue:
+	case commissionstructureschema.FieldCommissionValue:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCommissionValue(v)
 		return nil
-	case commissionstructure.FieldCommissionPercentage:
+	case commissionstructureschema.FieldCommissionPercentage:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -2301,84 +2301,84 @@ func (m *CommissionStructureMutation) SetField(name string, value ent.Value) err
 		m.SetCommissionPercentage(v)
 		return nil
 	}
-	return fmt.Errorf("unknown CommissionStructure field %s", name)
+	return fmt.Errorf("unknown CommissionStructureSchema field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *CommissionStructureMutation) AddedFields() []string {
+func (m *CommissionStructureSchemaMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *CommissionStructureMutation) AddedField(name string) (ent.Value, bool) {
+func (m *CommissionStructureSchemaMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *CommissionStructureMutation) AddField(name string, value ent.Value) error {
+func (m *CommissionStructureSchemaMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown CommissionStructure numeric field %s", name)
+	return fmt.Errorf("unknown CommissionStructureSchema numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *CommissionStructureMutation) ClearedFields() []string {
+func (m *CommissionStructureSchemaMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *CommissionStructureMutation) FieldCleared(name string) bool {
+func (m *CommissionStructureSchemaMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *CommissionStructureMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown CommissionStructure nullable field %s", name)
+func (m *CommissionStructureSchemaMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown CommissionStructureSchema nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *CommissionStructureMutation) ResetField(name string) error {
+func (m *CommissionStructureSchemaMutation) ResetField(name string) error {
 	switch name {
-	case commissionstructure.FieldName:
+	case commissionstructureschema.FieldName:
 		m.ResetName()
 		return nil
-	case commissionstructure.FieldDescription:
+	case commissionstructureschema.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case commissionstructure.FieldCommissionValue:
+	case commissionstructureschema.FieldCommissionValue:
 		m.ResetCommissionValue()
 		return nil
-	case commissionstructure.FieldCommissionPercentage:
+	case commissionstructureschema.FieldCommissionPercentage:
 		m.ResetCommissionPercentage()
 		return nil
 	}
-	return fmt.Errorf("unknown CommissionStructure field %s", name)
+	return fmt.Errorf("unknown CommissionStructureSchema field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *CommissionStructureMutation) AddedEdges() []string {
+func (m *CommissionStructureSchemaMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.productSeller != nil {
-		edges = append(edges, commissionstructure.EdgeProductSeller)
+		edges = append(edges, commissionstructureschema.EdgeProductSeller)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *CommissionStructureMutation) AddedIDs(name string) []ent.Value {
+func (m *CommissionStructureSchemaMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case commissionstructure.EdgeProductSeller:
+	case commissionstructureschema.EdgeProductSeller:
 		ids := make([]ent.Value, 0, len(m.productSeller))
 		for id := range m.productSeller {
 			ids = append(ids, id)
@@ -2389,19 +2389,19 @@ func (m *CommissionStructureMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *CommissionStructureMutation) RemovedEdges() []string {
+func (m *CommissionStructureSchemaMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.removedproductSeller != nil {
-		edges = append(edges, commissionstructure.EdgeProductSeller)
+		edges = append(edges, commissionstructureschema.EdgeProductSeller)
 	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *CommissionStructureMutation) RemovedIDs(name string) []ent.Value {
+func (m *CommissionStructureSchemaMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case commissionstructure.EdgeProductSeller:
+	case commissionstructureschema.EdgeProductSeller:
 		ids := make([]ent.Value, 0, len(m.removedproductSeller))
 		for id := range m.removedproductSeller {
 			ids = append(ids, id)
@@ -2412,19 +2412,19 @@ func (m *CommissionStructureMutation) RemovedIDs(name string) []ent.Value {
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *CommissionStructureMutation) ClearedEdges() []string {
+func (m *CommissionStructureSchemaMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
 	if m.clearedproductSeller {
-		edges = append(edges, commissionstructure.EdgeProductSeller)
+		edges = append(edges, commissionstructureschema.EdgeProductSeller)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *CommissionStructureMutation) EdgeCleared(name string) bool {
+func (m *CommissionStructureSchemaMutation) EdgeCleared(name string) bool {
 	switch name {
-	case commissionstructure.EdgeProductSeller:
+	case commissionstructureschema.EdgeProductSeller:
 		return m.clearedproductSeller
 	}
 	return false
@@ -2432,21 +2432,21 @@ func (m *CommissionStructureMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *CommissionStructureMutation) ClearEdge(name string) error {
+func (m *CommissionStructureSchemaMutation) ClearEdge(name string) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown CommissionStructure unique edge %s", name)
+	return fmt.Errorf("unknown CommissionStructureSchema unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *CommissionStructureMutation) ResetEdge(name string) error {
+func (m *CommissionStructureSchemaMutation) ResetEdge(name string) error {
 	switch name {
-	case commissionstructure.EdgeProductSeller:
+	case commissionstructureschema.EdgeProductSeller:
 		m.ResetProductSeller()
 		return nil
 	}
-	return fmt.Errorf("unknown CommissionStructure edge %s", name)
+	return fmt.Errorf("unknown CommissionStructureSchema edge %s", name)
 }
 
 // ContentBlockMutation represents an operation that mutates the ContentBlock nodes in the graph.
@@ -8988,7 +8988,7 @@ func (m *ProductMutation) ResetVariations() {
 	m.removedvariations = nil
 }
 
-// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructure entity by ids.
+// AddCommissionStructureIDs adds the "commissionStructure" edge to the CommissionStructureSchema entity by ids.
 func (m *ProductMutation) AddCommissionStructureIDs(ids ...int) {
 	if m.commissionStructure == nil {
 		m.commissionStructure = make(map[int]struct{})
@@ -8998,17 +8998,17 @@ func (m *ProductMutation) AddCommissionStructureIDs(ids ...int) {
 	}
 }
 
-// ClearCommissionStructure clears the "commissionStructure" edge to the CommissionStructure entity.
+// ClearCommissionStructure clears the "commissionStructure" edge to the CommissionStructureSchema entity.
 func (m *ProductMutation) ClearCommissionStructure() {
 	m.clearedcommissionStructure = true
 }
 
-// CommissionStructureCleared reports if the "commissionStructure" edge to the CommissionStructure entity was cleared.
+// CommissionStructureCleared reports if the "commissionStructure" edge to the CommissionStructureSchema entity was cleared.
 func (m *ProductMutation) CommissionStructureCleared() bool {
 	return m.clearedcommissionStructure
 }
 
-// RemoveCommissionStructureIDs removes the "commissionStructure" edge to the CommissionStructure entity by IDs.
+// RemoveCommissionStructureIDs removes the "commissionStructure" edge to the CommissionStructureSchema entity by IDs.
 func (m *ProductMutation) RemoveCommissionStructureIDs(ids ...int) {
 	if m.removedcommissionStructure == nil {
 		m.removedcommissionStructure = make(map[int]struct{})
@@ -9019,7 +9019,7 @@ func (m *ProductMutation) RemoveCommissionStructureIDs(ids ...int) {
 	}
 }
 
-// RemovedCommissionStructure returns the removed IDs of the "commissionStructure" edge to the CommissionStructure entity.
+// RemovedCommissionStructure returns the removed IDs of the "commissionStructure" edge to the CommissionStructureSchema entity.
 func (m *ProductMutation) RemovedCommissionStructureIDs() (ids []int) {
 	for id := range m.removedcommissionStructure {
 		ids = append(ids, id)

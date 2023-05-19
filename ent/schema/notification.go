@@ -18,14 +18,24 @@ type Notification struct {
 // Fields of the Notification.
 func (Notification) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("title"),
-		field.String("content"),
-		field.String("dateCreated").
+		field.String("title").Annotations(
+			entgql.OrderField("TITLE"),
+		),
+		field.String("content").Annotations(
+			entgql.OrderField("CONTENT"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		).
 			Immutable().
 			Default(time.Now().Format(time.RFC3339)),
-		field.String("dateUpdated").
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		).
 			Default(time.Now().Format(time.RFC3339)),
-		field.Bool("read"),
+		field.Bool("read").Annotations(
+			entgql.OrderField("READ"),
+		),
 	}
 }
 
@@ -39,6 +49,7 @@ func (Notification) Edges() []ent.Edge {
 func (Notification) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

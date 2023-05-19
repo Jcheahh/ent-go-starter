@@ -18,18 +18,38 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("email"),
-		field.String("phone"),
-		field.String("address"),
-		field.String("city"),
-		field.String("state"),
-		field.String("zip"),
-		field.String("country"),
-		field.String("dateCreated").
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("email").Annotations(
+			entgql.OrderField("EMAIL"),
+		),
+		field.String("phone").Annotations(
+			entgql.OrderField("PHONE"),
+		),
+		field.String("address").Annotations(
+			entgql.OrderField("ADDRESS"),
+		),
+		field.String("city").Annotations(
+			entgql.OrderField("CITY"),
+		),
+		field.String("state").Annotations(
+			entgql.OrderField("STATE"),
+		),
+		field.String("zip").Annotations(
+			entgql.OrderField("ZIP"),
+		),
+		field.String("country").Annotations(
+			entgql.OrderField("COUNTRY"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		).
 			Immutable().
 			Default(time.Now().Format(time.RFC3339)),
-		field.String("dateUpdated").
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		).
 			Default(time.Now().Format(time.RFC3339)),
 	}
 }
@@ -47,6 +67,7 @@ func (User) Edges() []ent.Edge {
 func (User) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

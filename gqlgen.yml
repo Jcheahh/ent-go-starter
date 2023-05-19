@@ -1,6 +1,7 @@
 # schema tells gqlgen where the GraphQL schema is located.
 schema:
   - ent.graphql
+  - schema.graphql
 
 # resolver reports where the resolver implementations go.
 resolver:
@@ -14,7 +15,36 @@ resolver:
 # provided package. If they match it will use them, otherwise it will generate new.
 autobind:
   - entdemo/ent
-  # - entdemo/ent/entdemo
+  - entdemo/ent/bankaccount
+  - entdemo/ent/blogpost
+  - entdemo/ent/category
+  - entdemo/ent/emailcampaign
+  - entdemo/ent/group
+  - entdemo/ent/groupbuy
+  - entdemo/ent/herocontent
+  - entdemo/ent/image
+  - entdemo/ent/linkvisit
+  - entdemo/ent/marketingcampaign
+  - entdemo/ent/notification
+  - entdemo/ent/paymentmethod
+  - entdemo/ent/primarycontent
+  - entdemo/ent/product
+  - entdemo/ent/productattribute
+  - entdemo/ent/productpageview
+  - entdemo/ent/productvariation
+  - entdemo/ent/referrallink
+  - entdemo/ent/refundtransactions
+  - entdemo/ent/review
+  - entdemo/ent/rewardtype
+  - entdemo/ent/shippingaddress
+  - entdemo/ent/shop
+  - entdemo/ent/tag
+  - entdemo/ent/transaction
+  - entdemo/ent/user
+  - entdemo/ent/userbuyer
+  - entdemo/ent/userinfluencer
+  - entdemo/ent/userseller
+  - entdemo/ent/viewanalytics
 
 # This section declares type mapping between the GraphQL and Go type systems.
 models:

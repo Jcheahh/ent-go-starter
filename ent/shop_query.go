@@ -22,7 +22,7 @@ import (
 type ShopQuery struct {
 	config
 	ctx                   *QueryContext
-	order                 []shop.Order
+	order                 []shop.OrderOption
 	inters                []Interceptor
 	predicates            []predicate.Shop
 	withProducts          *ProductQuery
@@ -65,7 +65,7 @@ func (sq *ShopQuery) Unique(unique bool) *ShopQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (sq *ShopQuery) Order(o ...shop.Order) *ShopQuery {
+func (sq *ShopQuery) Order(o ...shop.OrderOption) *ShopQuery {
 	sq.order = append(sq.order, o...)
 	return sq
 }
@@ -325,7 +325,7 @@ func (sq *ShopQuery) Clone() *ShopQuery {
 	return &ShopQuery{
 		config:           sq.config,
 		ctx:              sq.ctx.Clone(),
-		order:            append([]shop.Order{}, sq.order...),
+		order:            append([]shop.OrderOption{}, sq.order...),
 		inters:           append([]Interceptor{}, sq.inters...),
 		predicates:       append([]predicate.Shop{}, sq.predicates...),
 		withProducts:     sq.withProducts.Clone(),
@@ -541,7 +541,7 @@ func (sq *ShopQuery) loadProducts(ctx context.Context, query *ProductQuery, node
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(shop.ProductsColumn, fks...))
+		s.Where(sql.InValues(s.C(shop.ProductsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -554,7 +554,7 @@ func (sq *ShopQuery) loadProducts(ctx context.Context, query *ProductQuery, node
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "shop_products" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "shop_products" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -572,7 +572,7 @@ func (sq *ShopQuery) loadTransactions(ctx context.Context, query *TransactionQue
 	}
 	query.withFKs = true
 	query.Where(predicate.Transaction(func(s *sql.Selector) {
-		s.Where(sql.InValues(shop.TransactionsColumn, fks...))
+		s.Where(sql.InValues(s.C(shop.TransactionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -585,7 +585,7 @@ func (sq *ShopQuery) loadTransactions(ctx context.Context, query *TransactionQue
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "shop_transactions" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "shop_transactions" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -603,7 +603,7 @@ func (sq *ShopQuery) loadBankAccounts(ctx context.Context, query *BankAccountQue
 	}
 	query.withFKs = true
 	query.Where(predicate.BankAccount(func(s *sql.Selector) {
-		s.Where(sql.InValues(shop.BankAccountsColumn, fks...))
+		s.Where(sql.InValues(s.C(shop.BankAccountsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -616,7 +616,7 @@ func (sq *ShopQuery) loadBankAccounts(ctx context.Context, query *BankAccountQue
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "shop_bank_accounts" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "shop_bank_accounts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

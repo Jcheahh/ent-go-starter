@@ -14,8 +14,12 @@ type HeroContent struct {
 
 func (HeroContent) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("primaryMessage"),
-		field.String("secondaryMessage"),
+		field.String("primaryMessage").Annotations(
+			entgql.OrderField("PRIMARYMESSAGE"),
+		),
+		field.String("secondaryMessage").Annotations(
+			entgql.OrderField("SECONDARYMESSAGE"),
+		),
 	}
 }
 
@@ -28,6 +32,7 @@ func (HeroContent) Edges() []ent.Edge {
 func (HeroContent) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

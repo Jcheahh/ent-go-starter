@@ -206,194 +206,194 @@ func StatusValidator(s Status) error {
 	}
 }
 
-// Order defines the ordering method for the Transaction queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Transaction queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByDateCreated orders the results by the dateCreated field.
-func ByDateCreated(opts ...sql.OrderTermOption) Order {
+func ByDateCreated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateCreated, opts...).ToFunc()
 }
 
 // ByDateUpdated orders the results by the dateUpdated field.
-func ByDateUpdated(opts ...sql.OrderTermOption) Order {
+func ByDateUpdated(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDateUpdated, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
-func ByStatus(opts ...sql.OrderTermOption) Order {
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByPaymentMethod orders the results by the paymentMethod field.
-func ByPaymentMethod(opts ...sql.OrderTermOption) Order {
+func ByPaymentMethod(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentMethod, opts...).ToFunc()
 }
 
 // ByPaymentStatus orders the results by the paymentStatus field.
-func ByPaymentStatus(opts ...sql.OrderTermOption) Order {
+func ByPaymentStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentStatus, opts...).ToFunc()
 }
 
 // ByPaymentId orders the results by the paymentId field.
-func ByPaymentId(opts ...sql.OrderTermOption) Order {
+func ByPaymentId(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentId, opts...).ToFunc()
 }
 
 // ByPaymentAmount orders the results by the paymentAmount field.
-func ByPaymentAmount(opts ...sql.OrderTermOption) Order {
+func ByPaymentAmount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentAmount, opts...).ToFunc()
 }
 
 // ByPaymentCurrency orders the results by the paymentCurrency field.
-func ByPaymentCurrency(opts ...sql.OrderTermOption) Order {
+func ByPaymentCurrency(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentCurrency, opts...).ToFunc()
 }
 
 // ByPaymentDate orders the results by the paymentDate field.
-func ByPaymentDate(opts ...sql.OrderTermOption) Order {
+func ByPaymentDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentDate, opts...).ToFunc()
 }
 
 // ByPaymentFee orders the results by the paymentFee field.
-func ByPaymentFee(opts ...sql.OrderTermOption) Order {
+func ByPaymentFee(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentFee, opts...).ToFunc()
 }
 
 // ByPaymentNet orders the results by the paymentNet field.
-func ByPaymentNet(opts ...sql.OrderTermOption) Order {
+func ByPaymentNet(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentNet, opts...).ToFunc()
 }
 
 // ByPaymentPayerEmail orders the results by the paymentPayerEmail field.
-func ByPaymentPayerEmail(opts ...sql.OrderTermOption) Order {
+func ByPaymentPayerEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPayerEmail, opts...).ToFunc()
 }
 
 // ByPaymentPayerFirstName orders the results by the paymentPayerFirstName field.
-func ByPaymentPayerFirstName(opts ...sql.OrderTermOption) Order {
+func ByPaymentPayerFirstName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPayerFirstName, opts...).ToFunc()
 }
 
 // ByPaymentPayerLastName orders the results by the paymentPayerLastName field.
-func ByPaymentPayerLastName(opts ...sql.OrderTermOption) Order {
+func ByPaymentPayerLastName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPayerLastName, opts...).ToFunc()
 }
 
 // ByPaymentPayerId orders the results by the paymentPayerId field.
-func ByPaymentPayerId(opts ...sql.OrderTermOption) Order {
+func ByPaymentPayerId(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPayerId, opts...).ToFunc()
 }
 
 // ByPaymentPayerStatus orders the results by the paymentPayerStatus field.
-func ByPaymentPayerStatus(opts ...sql.OrderTermOption) Order {
+func ByPaymentPayerStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPayerStatus, opts...).ToFunc()
 }
 
 // ByPaymentReceiverEmail orders the results by the paymentReceiverEmail field.
-func ByPaymentReceiverEmail(opts ...sql.OrderTermOption) Order {
+func ByPaymentReceiverEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentReceiverEmail, opts...).ToFunc()
 }
 
 // ByPaymentReceiverId orders the results by the paymentReceiverId field.
-func ByPaymentReceiverId(opts ...sql.OrderTermOption) Order {
+func ByPaymentReceiverId(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentReceiverId, opts...).ToFunc()
 }
 
 // ByPaymentTax orders the results by the paymentTax field.
-func ByPaymentTax(opts ...sql.OrderTermOption) Order {
+func ByPaymentTax(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentTax, opts...).ToFunc()
 }
 
 // ByPaymentTransactionId orders the results by the paymentTransactionId field.
-func ByPaymentTransactionId(opts ...sql.OrderTermOption) Order {
+func ByPaymentTransactionId(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentTransactionId, opts...).ToFunc()
 }
 
 // ByPaymentTransactionType orders the results by the paymentTransactionType field.
-func ByPaymentTransactionType(opts ...sql.OrderTermOption) Order {
+func ByPaymentTransactionType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentTransactionType, opts...).ToFunc()
 }
 
 // ByPaymentPendingReason orders the results by the paymentPendingReason field.
-func ByPaymentPendingReason(opts ...sql.OrderTermOption) Order {
+func ByPaymentPendingReason(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentPendingReason, opts...).ToFunc()
 }
 
 // ByPaymentReasonCode orders the results by the paymentReasonCode field.
-func ByPaymentReasonCode(opts ...sql.OrderTermOption) Order {
+func ByPaymentReasonCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPaymentReasonCode, opts...).ToFunc()
 }
 
 // ByProductCount orders the results by product count.
-func ByProductCount(opts ...sql.OrderTermOption) Order {
+func ByProductCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductStep(), opts...)
 	}
 }
 
 // ByProduct orders the results by product terms.
-func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProduct(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByOriginLinkCount orders the results by originLink count.
-func ByOriginLinkCount(opts ...sql.OrderTermOption) Order {
+func ByOriginLinkCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newOriginLinkStep(), opts...)
 	}
 }
 
 // ByOriginLink orders the results by originLink terms.
-func ByOriginLink(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByOriginLink(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOriginLinkStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByProductCustomerCount orders the results by productCustomer count.
-func ByProductCustomerCount(opts ...sql.OrderTermOption) Order {
+func ByProductCustomerCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductCustomerStep(), opts...)
 	}
 }
 
 // ByProductCustomer orders the results by productCustomer terms.
-func ByProductCustomer(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProductCustomer(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductCustomerStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByShopCount orders the results by shop count.
-func ByShopCount(opts ...sql.OrderTermOption) Order {
+func ByShopCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newShopStep(), opts...)
 	}
 }
 
 // ByShop orders the results by shop terms.
-func ByShop(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByShop(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newShopStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByProductInfluencerCount orders the results by productInfluencer count.
-func ByProductInfluencerCount(opts ...sql.OrderTermOption) Order {
+func ByProductInfluencerCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newProductInfluencerStep(), opts...)
 	}
 }
 
 // ByProductInfluencer orders the results by productInfluencer terms.
-func ByProductInfluencer(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByProductInfluencer(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newProductInfluencerStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

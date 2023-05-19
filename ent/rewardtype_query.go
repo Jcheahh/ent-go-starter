@@ -18,7 +18,7 @@ import (
 type RewardTypeQuery struct {
 	config
 	ctx        *QueryContext
-	order      []rewardtype.Order
+	order      []rewardtype.OrderOption
 	inters     []Interceptor
 	predicates []predicate.RewardType
 	withFKs    bool
@@ -55,7 +55,7 @@ func (rtq *RewardTypeQuery) Unique(unique bool) *RewardTypeQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (rtq *RewardTypeQuery) Order(o ...rewardtype.Order) *RewardTypeQuery {
+func (rtq *RewardTypeQuery) Order(o ...rewardtype.OrderOption) *RewardTypeQuery {
 	rtq.order = append(rtq.order, o...)
 	return rtq
 }
@@ -249,7 +249,7 @@ func (rtq *RewardTypeQuery) Clone() *RewardTypeQuery {
 	return &RewardTypeQuery{
 		config:     rtq.config,
 		ctx:        rtq.ctx.Clone(),
-		order:      append([]rewardtype.Order{}, rtq.order...),
+		order:      append([]rewardtype.OrderOption{}, rtq.order...),
 		inters:     append([]Interceptor{}, rtq.inters...),
 		predicates: append([]predicate.RewardType{}, rtq.predicates...),
 		// clone intermediate query.

@@ -20,7 +20,7 @@ import (
 type ReferralLinkQuery struct {
 	config
 	ctx             *QueryContext
-	order           []referrallink.Order
+	order           []referrallink.OrderOption
 	inters          []Interceptor
 	predicates      []predicate.ReferralLink
 	withVisits      *LinkVisitQuery
@@ -59,7 +59,7 @@ func (rlq *ReferralLinkQuery) Unique(unique bool) *ReferralLinkQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (rlq *ReferralLinkQuery) Order(o ...referrallink.Order) *ReferralLinkQuery {
+func (rlq *ReferralLinkQuery) Order(o ...referrallink.OrderOption) *ReferralLinkQuery {
 	rlq.order = append(rlq.order, o...)
 	return rlq
 }
@@ -275,7 +275,7 @@ func (rlq *ReferralLinkQuery) Clone() *ReferralLinkQuery {
 	return &ReferralLinkQuery{
 		config:     rlq.config,
 		ctx:        rlq.ctx.Clone(),
-		order:      append([]referrallink.Order{}, rlq.order...),
+		order:      append([]referrallink.OrderOption{}, rlq.order...),
 		inters:     append([]Interceptor{}, rlq.inters...),
 		predicates: append([]predicate.ReferralLink{}, rlq.predicates...),
 		withVisits: rlq.withVisits.Clone(),
@@ -437,7 +437,7 @@ func (rlq *ReferralLinkQuery) loadVisits(ctx context.Context, query *LinkVisitQu
 	}
 	query.withFKs = true
 	query.Where(predicate.LinkVisit(func(s *sql.Selector) {
-		s.Where(sql.InValues(referrallink.VisitsColumn, fks...))
+		s.Where(sql.InValues(s.C(referrallink.VisitsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -450,7 +450,7 @@ func (rlq *ReferralLinkQuery) loadVisits(ctx context.Context, query *LinkVisitQu
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "referral_link_visits" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "referral_link_visits" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

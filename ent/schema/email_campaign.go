@@ -14,13 +14,16 @@ type EmailCampaign struct {
 
 func (EmailCampaign) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("xid"),
+		field.Int("xid").Annotations(
+			entgql.OrderField("XID"),
+		),
 	}
 }
 
 func (EmailCampaign) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

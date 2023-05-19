@@ -14,11 +14,21 @@ type Product struct {
 
 func (Product) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
-		field.String("description"),
-		field.String("price"),
-		field.String("dateCreated"),
-		field.String("dateUpdated"),
+		field.String("name").Annotations(
+			entgql.OrderField("NAME"),
+		),
+		field.String("description").Annotations(
+			entgql.OrderField("DESCRIPTION"),
+		),
+		field.String("price").Annotations(
+			entgql.OrderField("PRICE"),
+		),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.String("dateUpdated").Annotations(
+			entgql.OrderField("DATEUPDATED"),
+		),
 	}
 }
 
@@ -31,7 +41,7 @@ func (Product) Edges() []ent.Edge {
 		edge.To("tags", Tag.Type),
 		edge.To("productAttributes", ProductAttribute.Type),
 		edge.To("variations", ProductVariation.Type),
-		edge.To("commissionStructure", CommissionStructure.Type),
+		edge.To("commissionStructure", CommissionStructureSchema.Type),
 		edge.To("shop", Shop.Type).Required(),
 		edge.To("groupBuys", GroupBuy.Type),
 		edge.To("productPageViews", ProductPageView.Type),
@@ -45,6 +55,7 @@ func (Product) Edges() []ent.Edge {
 func (Product) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

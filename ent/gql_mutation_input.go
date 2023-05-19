@@ -223,8 +223,8 @@ func (c *ChatUpdateOne) SetInput(i UpdateChatInput) *ChatUpdateOne {
 	return c
 }
 
-// CreateCommissionStructureInput represents a mutation input for creating commissionstructures.
-type CreateCommissionStructureInput struct {
+// CreateCommissionStructureSchemaInput represents a mutation input for creating commissionstructureschemas.
+type CreateCommissionStructureSchemaInput struct {
 	Name                 string
 	Description          string
 	CommissionValue      string
@@ -232,8 +232,8 @@ type CreateCommissionStructureInput struct {
 	ProductSellerIDs     []int
 }
 
-// Mutate applies the CreateCommissionStructureInput on the CommissionStructureMutation builder.
-func (i *CreateCommissionStructureInput) Mutate(m *CommissionStructureMutation) {
+// Mutate applies the CreateCommissionStructureSchemaInput on the CommissionStructureSchemaMutation builder.
+func (i *CreateCommissionStructureSchemaInput) Mutate(m *CommissionStructureSchemaMutation) {
 	m.SetName(i.Name)
 	m.SetDescription(i.Description)
 	m.SetCommissionValue(i.CommissionValue)
@@ -243,14 +243,14 @@ func (i *CreateCommissionStructureInput) Mutate(m *CommissionStructureMutation) 
 	}
 }
 
-// SetInput applies the change-set in the CreateCommissionStructureInput on the CommissionStructureCreate builder.
-func (c *CommissionStructureCreate) SetInput(i CreateCommissionStructureInput) *CommissionStructureCreate {
+// SetInput applies the change-set in the CreateCommissionStructureSchemaInput on the CommissionStructureSchemaCreate builder.
+func (c *CommissionStructureSchemaCreate) SetInput(i CreateCommissionStructureSchemaInput) *CommissionStructureSchemaCreate {
 	i.Mutate(c.Mutation())
 	return c
 }
 
-// UpdateCommissionStructureInput represents a mutation input for updating commissionstructures.
-type UpdateCommissionStructureInput struct {
+// UpdateCommissionStructureSchemaInput represents a mutation input for updating commissionstructureschemas.
+type UpdateCommissionStructureSchemaInput struct {
 	Name                   *string
 	Description            *string
 	CommissionValue        *string
@@ -260,8 +260,8 @@ type UpdateCommissionStructureInput struct {
 	RemoveProductSellerIDs []int
 }
 
-// Mutate applies the UpdateCommissionStructureInput on the CommissionStructureMutation builder.
-func (i *UpdateCommissionStructureInput) Mutate(m *CommissionStructureMutation) {
+// Mutate applies the UpdateCommissionStructureSchemaInput on the CommissionStructureSchemaMutation builder.
+func (i *UpdateCommissionStructureSchemaInput) Mutate(m *CommissionStructureSchemaMutation) {
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
@@ -285,14 +285,14 @@ func (i *UpdateCommissionStructureInput) Mutate(m *CommissionStructureMutation) 
 	}
 }
 
-// SetInput applies the change-set in the UpdateCommissionStructureInput on the CommissionStructureUpdate builder.
-func (c *CommissionStructureUpdate) SetInput(i UpdateCommissionStructureInput) *CommissionStructureUpdate {
+// SetInput applies the change-set in the UpdateCommissionStructureSchemaInput on the CommissionStructureSchemaUpdate builder.
+func (c *CommissionStructureSchemaUpdate) SetInput(i UpdateCommissionStructureSchemaInput) *CommissionStructureSchemaUpdate {
 	i.Mutate(c.Mutation())
 	return c
 }
 
-// SetInput applies the change-set in the UpdateCommissionStructureInput on the CommissionStructureUpdateOne builder.
-func (c *CommissionStructureUpdateOne) SetInput(i UpdateCommissionStructureInput) *CommissionStructureUpdateOne {
+// SetInput applies the change-set in the UpdateCommissionStructureSchemaInput on the CommissionStructureSchemaUpdateOne builder.
+func (c *CommissionStructureSchemaUpdateOne) SetInput(i UpdateCommissionStructureSchemaInput) *CommissionStructureSchemaUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

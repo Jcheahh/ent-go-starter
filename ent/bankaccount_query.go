@@ -18,7 +18,7 @@ import (
 type BankAccountQuery struct {
 	config
 	ctx        *QueryContext
-	order      []bankaccount.Order
+	order      []bankaccount.OrderOption
 	inters     []Interceptor
 	predicates []predicate.BankAccount
 	withFKs    bool
@@ -55,7 +55,7 @@ func (baq *BankAccountQuery) Unique(unique bool) *BankAccountQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (baq *BankAccountQuery) Order(o ...bankaccount.Order) *BankAccountQuery {
+func (baq *BankAccountQuery) Order(o ...bankaccount.OrderOption) *BankAccountQuery {
 	baq.order = append(baq.order, o...)
 	return baq
 }
@@ -249,7 +249,7 @@ func (baq *BankAccountQuery) Clone() *BankAccountQuery {
 	return &BankAccountQuery{
 		config:     baq.config,
 		ctx:        baq.ctx.Clone(),
-		order:      append([]bankaccount.Order{}, baq.order...),
+		order:      append([]bankaccount.OrderOption{}, baq.order...),
 		inters:     append([]Interceptor{}, baq.inters...),
 		predicates: append([]predicate.BankAccount{}, baq.predicates...),
 		// clone intermediate query.

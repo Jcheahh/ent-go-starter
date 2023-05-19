@@ -13,16 +13,25 @@ type LinkVisit struct {
 
 func (LinkVisit) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("dateCreated"),
-		field.String("ipAddress"),
-		field.Int("saleValue"),
-		field.Int("commissionEarned"),
+		field.String("dateCreated").Annotations(
+			entgql.OrderField("DATECREATED"),
+		),
+		field.String("ipAddress").Annotations(
+			entgql.OrderField("IPADDRESS"),
+		),
+		field.Int("saleValue").Annotations(
+			entgql.OrderField("SALEVALUE"),
+		),
+		field.Int("commissionEarned").Annotations(
+			entgql.OrderField("COMMISSIONEARNED"),
+		),
 	}
 }
 
 func (LinkVisit) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

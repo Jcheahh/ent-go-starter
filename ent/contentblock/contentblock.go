@@ -57,33 +57,33 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the ContentBlock queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the ContentBlock queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByPrimaryMessage orders the results by the primaryMessage field.
-func ByPrimaryMessage(opts ...sql.OrderTermOption) Order {
+func ByPrimaryMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPrimaryMessage, opts...).ToFunc()
 }
 
 // BySecondaryMessage orders the results by the secondaryMessage field.
-func BySecondaryMessage(opts ...sql.OrderTermOption) Order {
+func BySecondaryMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSecondaryMessage, opts...).ToFunc()
 }
 
 // ByImageCount orders the results by image count.
-func ByImageCount(opts ...sql.OrderTermOption) Order {
+func ByImageCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newImageStep(), opts...)
 	}
 }
 
 // ByImage orders the results by image terms.
-func ByImage(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByImage(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newImageStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

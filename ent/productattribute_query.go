@@ -18,7 +18,7 @@ import (
 type ProductAttributeQuery struct {
 	config
 	ctx        *QueryContext
-	order      []productattribute.Order
+	order      []productattribute.OrderOption
 	inters     []Interceptor
 	predicates []predicate.ProductAttribute
 	withFKs    bool
@@ -55,7 +55,7 @@ func (paq *ProductAttributeQuery) Unique(unique bool) *ProductAttributeQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (paq *ProductAttributeQuery) Order(o ...productattribute.Order) *ProductAttributeQuery {
+func (paq *ProductAttributeQuery) Order(o ...productattribute.OrderOption) *ProductAttributeQuery {
 	paq.order = append(paq.order, o...)
 	return paq
 }
@@ -249,7 +249,7 @@ func (paq *ProductAttributeQuery) Clone() *ProductAttributeQuery {
 	return &ProductAttributeQuery{
 		config:     paq.config,
 		ctx:        paq.ctx.Clone(),
-		order:      append([]productattribute.Order{}, paq.order...),
+		order:      append([]productattribute.OrderOption{}, paq.order...),
 		inters:     append([]Interceptor{}, paq.inters...),
 		predicates: append([]predicate.ProductAttribute{}, paq.predicates...),
 		// clone intermediate query.

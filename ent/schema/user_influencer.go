@@ -17,7 +17,9 @@ type UserInfluencer struct {
 func (UserInfluencer) Fields() []ent.Field {
 	// return []ent.Field{}
 	return []ent.Field{
-		field.Int("placeholder").Optional(),
+		field.Int("placeholder").Annotations(
+			entgql.OrderField("PLACEHOLDER"),
+		).Optional(),
 	}
 }
 
@@ -35,6 +37,7 @@ func (UserInfluencer) Edges() []ent.Edge {
 func (UserInfluencer) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

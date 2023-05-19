@@ -21,7 +21,7 @@ import (
 type GroupBuyQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []groupbuy.Order
+	order                []groupbuy.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.GroupBuy
 	withProduct          *ProductQuery
@@ -62,7 +62,7 @@ func (gbq *GroupBuyQuery) Unique(unique bool) *GroupBuyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (gbq *GroupBuyQuery) Order(o ...groupbuy.Order) *GroupBuyQuery {
+func (gbq *GroupBuyQuery) Order(o ...groupbuy.OrderOption) *GroupBuyQuery {
 	gbq.order = append(gbq.order, o...)
 	return gbq
 }
@@ -300,7 +300,7 @@ func (gbq *GroupBuyQuery) Clone() *GroupBuyQuery {
 	return &GroupBuyQuery{
 		config:          gbq.config,
 		ctx:             gbq.ctx.Clone(),
-		order:           append([]groupbuy.Order{}, gbq.order...),
+		order:           append([]groupbuy.OrderOption{}, gbq.order...),
 		inters:          append([]Interceptor{}, gbq.inters...),
 		predicates:      append([]predicate.GroupBuy{}, gbq.predicates...),
 		withProduct:     gbq.withProduct.Clone(),
@@ -489,7 +489,7 @@ func (gbq *GroupBuyQuery) loadProduct(ctx context.Context, query *ProductQuery, 
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(groupbuy.ProductColumn, fks...))
+		s.Where(sql.InValues(s.C(groupbuy.ProductColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -502,7 +502,7 @@ func (gbq *GroupBuyQuery) loadProduct(ctx context.Context, query *ProductQuery, 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "group_buy_product" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "group_buy_product" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -520,7 +520,7 @@ func (gbq *GroupBuyQuery) loadTransaction(ctx context.Context, query *Transactio
 	}
 	query.withFKs = true
 	query.Where(predicate.Transaction(func(s *sql.Selector) {
-		s.Where(sql.InValues(groupbuy.TransactionColumn, fks...))
+		s.Where(sql.InValues(s.C(groupbuy.TransactionColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -533,7 +533,7 @@ func (gbq *GroupBuyQuery) loadTransaction(ctx context.Context, query *Transactio
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "group_buy_transaction" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "group_buy_transaction" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -75,21 +75,21 @@ func TypeValidator(_type Type) error {
 	}
 }
 
-// Order defines the ordering method for the RewardType queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the RewardType queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByType orders the results by the type field.
-func ByType(opts ...sql.OrderTermOption) Order {
+func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
 }
 
 // ByVal orders the results by the val field.
-func ByVal(opts ...sql.OrderTermOption) Order {
+func ByVal(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVal, opts...).ToFunc()
 }
 

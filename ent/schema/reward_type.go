@@ -15,13 +15,17 @@ type RewardType struct {
 // Fields of the RewardType.
 func (RewardType) Fields() []ent.Field {
 	return []ent.Field{
-		field.Enum("type").
+		field.Enum("type").Annotations(
+			entgql.OrderField("TYPE"),
+		).
 			Values(
 				"DISCOUNT",
 				"FREE_PRODUCT",
 				"SHIPPING_DISCOUNT",
 			),
-		field.Int("val"),
+		field.Int("val").Annotations(
+			entgql.OrderField("VAL"),
+		),
 	}
 }
 
@@ -33,6 +37,7 @@ func (RewardType) Edges() []ent.Edge {
 func (RewardType) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

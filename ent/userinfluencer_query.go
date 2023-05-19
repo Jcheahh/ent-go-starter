@@ -24,7 +24,7 @@ import (
 type UserInfluencerQuery struct {
 	config
 	ctx                    *QueryContext
-	order                  []userinfluencer.Order
+	order                  []userinfluencer.OrderOption
 	inters                 []Interceptor
 	predicates             []predicate.UserInfluencer
 	withUserProfile        *UserQuery
@@ -71,7 +71,7 @@ func (uiq *UserInfluencerQuery) Unique(unique bool) *UserInfluencerQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uiq *UserInfluencerQuery) Order(o ...userinfluencer.Order) *UserInfluencerQuery {
+func (uiq *UserInfluencerQuery) Order(o ...userinfluencer.OrderOption) *UserInfluencerQuery {
 	uiq.order = append(uiq.order, o...)
 	return uiq
 }
@@ -375,7 +375,7 @@ func (uiq *UserInfluencerQuery) Clone() *UserInfluencerQuery {
 	return &UserInfluencerQuery{
 		config:            uiq.config,
 		ctx:               uiq.ctx.Clone(),
-		order:             append([]userinfluencer.Order{}, uiq.order...),
+		order:             append([]userinfluencer.OrderOption{}, uiq.order...),
 		inters:            append([]Interceptor{}, uiq.inters...),
 		predicates:        append([]predicate.UserInfluencer{}, uiq.predicates...),
 		withUserProfile:   uiq.withUserProfile.Clone(),
@@ -645,7 +645,7 @@ func (uiq *UserInfluencerQuery) loadUserProfile(ctx context.Context, query *User
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(userinfluencer.UserProfileColumn, fks...))
+		s.Where(sql.InValues(s.C(userinfluencer.UserProfileColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -658,7 +658,7 @@ func (uiq *UserInfluencerQuery) loadUserProfile(ctx context.Context, query *User
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_influencer_user_profile" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_influencer_user_profile" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -676,7 +676,7 @@ func (uiq *UserInfluencerQuery) loadReferralLinks(ctx context.Context, query *Re
 	}
 	query.withFKs = true
 	query.Where(predicate.ReferralLink(func(s *sql.Selector) {
-		s.Where(sql.InValues(userinfluencer.ReferralLinksColumn, fks...))
+		s.Where(sql.InValues(s.C(userinfluencer.ReferralLinksColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -689,7 +689,7 @@ func (uiq *UserInfluencerQuery) loadReferralLinks(ctx context.Context, query *Re
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_influencer_referral_links" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_influencer_referral_links" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -707,7 +707,7 @@ func (uiq *UserInfluencerQuery) loadReviews(ctx context.Context, query *ReviewQu
 	}
 	query.withFKs = true
 	query.Where(predicate.Review(func(s *sql.Selector) {
-		s.Where(sql.InValues(userinfluencer.ReviewsColumn, fks...))
+		s.Where(sql.InValues(s.C(userinfluencer.ReviewsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -720,7 +720,7 @@ func (uiq *UserInfluencerQuery) loadReviews(ctx context.Context, query *ReviewQu
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_influencer_reviews" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_influencer_reviews" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -738,7 +738,7 @@ func (uiq *UserInfluencerQuery) loadProducts(ctx context.Context, query *Product
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(userinfluencer.ProductsColumn, fks...))
+		s.Where(sql.InValues(s.C(userinfluencer.ProductsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -751,7 +751,7 @@ func (uiq *UserInfluencerQuery) loadProducts(ctx context.Context, query *Product
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_influencer_products" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_influencer_products" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -769,7 +769,7 @@ func (uiq *UserInfluencerQuery) loadTags(ctx context.Context, query *TagQuery, n
 	}
 	query.withFKs = true
 	query.Where(predicate.Tag(func(s *sql.Selector) {
-		s.Where(sql.InValues(userinfluencer.TagsColumn, fks...))
+		s.Where(sql.InValues(s.C(userinfluencer.TagsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -782,7 +782,7 @@ func (uiq *UserInfluencerQuery) loadTags(ctx context.Context, query *TagQuery, n
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_influencer_tags" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_influencer_tags" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

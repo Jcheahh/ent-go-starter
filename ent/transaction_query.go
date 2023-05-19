@@ -24,7 +24,7 @@ import (
 type TransactionQuery struct {
 	config
 	ctx                        *QueryContext
-	order                      []transaction.Order
+	order                      []transaction.OrderOption
 	inters                     []Interceptor
 	predicates                 []predicate.Transaction
 	withProduct                *ProductQuery
@@ -71,7 +71,7 @@ func (tq *TransactionQuery) Unique(unique bool) *TransactionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (tq *TransactionQuery) Order(o ...transaction.Order) *TransactionQuery {
+func (tq *TransactionQuery) Order(o ...transaction.OrderOption) *TransactionQuery {
 	tq.order = append(tq.order, o...)
 	return tq
 }
@@ -375,7 +375,7 @@ func (tq *TransactionQuery) Clone() *TransactionQuery {
 	return &TransactionQuery{
 		config:                tq.config,
 		ctx:                   tq.ctx.Clone(),
-		order:                 append([]transaction.Order{}, tq.order...),
+		order:                 append([]transaction.OrderOption{}, tq.order...),
 		inters:                append([]Interceptor{}, tq.inters...),
 		predicates:            append([]predicate.Transaction{}, tq.predicates...),
 		withProduct:           tq.withProduct.Clone(),
@@ -647,7 +647,7 @@ func (tq *TransactionQuery) loadProduct(ctx context.Context, query *ProductQuery
 	}
 	query.withFKs = true
 	query.Where(predicate.Product(func(s *sql.Selector) {
-		s.Where(sql.InValues(transaction.ProductColumn, fks...))
+		s.Where(sql.InValues(s.C(transaction.ProductColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -660,7 +660,7 @@ func (tq *TransactionQuery) loadProduct(ctx context.Context, query *ProductQuery
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "transaction_product" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "transaction_product" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -678,7 +678,7 @@ func (tq *TransactionQuery) loadOriginLink(ctx context.Context, query *LinkVisit
 	}
 	query.withFKs = true
 	query.Where(predicate.LinkVisit(func(s *sql.Selector) {
-		s.Where(sql.InValues(transaction.OriginLinkColumn, fks...))
+		s.Where(sql.InValues(s.C(transaction.OriginLinkColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -691,7 +691,7 @@ func (tq *TransactionQuery) loadOriginLink(ctx context.Context, query *LinkVisit
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "transaction_origin_link" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "transaction_origin_link" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -709,7 +709,7 @@ func (tq *TransactionQuery) loadProductCustomer(ctx context.Context, query *User
 	}
 	query.withFKs = true
 	query.Where(predicate.UserBuyer(func(s *sql.Selector) {
-		s.Where(sql.InValues(transaction.ProductCustomerColumn, fks...))
+		s.Where(sql.InValues(s.C(transaction.ProductCustomerColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -722,7 +722,7 @@ func (tq *TransactionQuery) loadProductCustomer(ctx context.Context, query *User
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "transaction_product_customer" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "transaction_product_customer" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -740,7 +740,7 @@ func (tq *TransactionQuery) loadShop(ctx context.Context, query *ShopQuery, node
 	}
 	query.withFKs = true
 	query.Where(predicate.Shop(func(s *sql.Selector) {
-		s.Where(sql.InValues(transaction.ShopColumn, fks...))
+		s.Where(sql.InValues(s.C(transaction.ShopColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -753,7 +753,7 @@ func (tq *TransactionQuery) loadShop(ctx context.Context, query *ShopQuery, node
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "transaction_shop" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "transaction_shop" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -771,7 +771,7 @@ func (tq *TransactionQuery) loadProductInfluencer(ctx context.Context, query *Us
 	}
 	query.withFKs = true
 	query.Where(predicate.UserInfluencer(func(s *sql.Selector) {
-		s.Where(sql.InValues(transaction.ProductInfluencerColumn, fks...))
+		s.Where(sql.InValues(s.C(transaction.ProductInfluencerColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -784,7 +784,7 @@ func (tq *TransactionQuery) loadProductInfluencer(ctx context.Context, query *Us
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "transaction_product_influencer" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "transaction_product_influencer" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

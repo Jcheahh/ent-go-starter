@@ -63,43 +63,43 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the ReferralLink queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the ReferralLink queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByXid orders the results by the xid field.
-func ByXid(opts ...sql.OrderTermOption) Order {
+func ByXid(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldXid, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
-func ByDescription(opts ...sql.OrderTermOption) Order {
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
 // ByLink orders the results by the link field.
-func ByLink(opts ...sql.OrderTermOption) Order {
+func ByLink(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLink, opts...).ToFunc()
 }
 
 // ByVisitsCount orders the results by visits count.
-func ByVisitsCount(opts ...sql.OrderTermOption) Order {
+func ByVisitsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newVisitsStep(), opts...)
 	}
 }
 
 // ByVisits orders the results by visits terms.
-func ByVisits(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByVisits(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newVisitsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

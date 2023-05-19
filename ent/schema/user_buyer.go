@@ -17,7 +17,9 @@ type UserBuyer struct {
 func (UserBuyer) Fields() []ent.Field {
 	// return []ent.Field{}
 	return []ent.Field{
-		field.Int("placeholder").Optional(),
+		field.Int("placeholder").Annotations(
+			entgql.OrderField("PLACEHOLDER"),
+		).Optional(),
 	}
 }
 
@@ -34,6 +36,7 @@ func (UserBuyer) Edges() []ent.Edge {
 func (UserBuyer) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
+		entgql.MultiOrder(),
 		entgql.QueryField(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

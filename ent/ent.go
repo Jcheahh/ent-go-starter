@@ -8,7 +8,7 @@ import (
 	"entdemo/ent/blogpost"
 	"entdemo/ent/category"
 	"entdemo/ent/chat"
-	"entdemo/ent/commissionstructure"
+	"entdemo/ent/commissionstructureschema"
 	"entdemo/ent/contentblock"
 	"entdemo/ent/emailcampaign"
 	"entdemo/ent/group"
@@ -105,39 +105,39 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			bankaccount.Table:         bankaccount.ValidColumn,
-			blogpost.Table:            blogpost.ValidColumn,
-			category.Table:            category.ValidColumn,
-			chat.Table:                chat.ValidColumn,
-			commissionstructure.Table: commissionstructure.ValidColumn,
-			contentblock.Table:        contentblock.ValidColumn,
-			emailcampaign.Table:       emailcampaign.ValidColumn,
-			group.Table:               group.ValidColumn,
-			groupbuy.Table:            groupbuy.ValidColumn,
-			herocontent.Table:         herocontent.ValidColumn,
-			image.Table:               image.ValidColumn,
-			linkvisit.Table:           linkvisit.ValidColumn,
-			marketingcampaign.Table:   marketingcampaign.ValidColumn,
-			notification.Table:        notification.ValidColumn,
-			paymentmethod.Table:       paymentmethod.ValidColumn,
-			primarycontent.Table:      primarycontent.ValidColumn,
-			product.Table:             product.ValidColumn,
-			productattribute.Table:    productattribute.ValidColumn,
-			productpageview.Table:     productpageview.ValidColumn,
-			productvariation.Table:    productvariation.ValidColumn,
-			referrallink.Table:        referrallink.ValidColumn,
-			refundtransactions.Table:  refundtransactions.ValidColumn,
-			review.Table:              review.ValidColumn,
-			rewardtype.Table:          rewardtype.ValidColumn,
-			shippingaddress.Table:     shippingaddress.ValidColumn,
-			shop.Table:                shop.ValidColumn,
-			tag.Table:                 tag.ValidColumn,
-			transaction.Table:         transaction.ValidColumn,
-			user.Table:                user.ValidColumn,
-			userbuyer.Table:           userbuyer.ValidColumn,
-			userinfluencer.Table:      userinfluencer.ValidColumn,
-			userseller.Table:          userseller.ValidColumn,
-			viewanalytics.Table:       viewanalytics.ValidColumn,
+			bankaccount.Table:               bankaccount.ValidColumn,
+			blogpost.Table:                  blogpost.ValidColumn,
+			category.Table:                  category.ValidColumn,
+			chat.Table:                      chat.ValidColumn,
+			commissionstructureschema.Table: commissionstructureschema.ValidColumn,
+			contentblock.Table:              contentblock.ValidColumn,
+			emailcampaign.Table:             emailcampaign.ValidColumn,
+			group.Table:                     group.ValidColumn,
+			groupbuy.Table:                  groupbuy.ValidColumn,
+			herocontent.Table:               herocontent.ValidColumn,
+			image.Table:                     image.ValidColumn,
+			linkvisit.Table:                 linkvisit.ValidColumn,
+			marketingcampaign.Table:         marketingcampaign.ValidColumn,
+			notification.Table:              notification.ValidColumn,
+			paymentmethod.Table:             paymentmethod.ValidColumn,
+			primarycontent.Table:            primarycontent.ValidColumn,
+			product.Table:                   product.ValidColumn,
+			productattribute.Table:          productattribute.ValidColumn,
+			productpageview.Table:           productpageview.ValidColumn,
+			productvariation.Table:          productvariation.ValidColumn,
+			referrallink.Table:              referrallink.ValidColumn,
+			refundtransactions.Table:        refundtransactions.ValidColumn,
+			review.Table:                    review.ValidColumn,
+			rewardtype.Table:                rewardtype.ValidColumn,
+			shippingaddress.Table:           shippingaddress.ValidColumn,
+			shop.Table:                      shop.ValidColumn,
+			tag.Table:                       tag.ValidColumn,
+			transaction.Table:               transaction.ValidColumn,
+			user.Table:                      user.ValidColumn,
+			userbuyer.Table:                 userbuyer.ValidColumn,
+			userinfluencer.Table:            userinfluencer.ValidColumn,
+			userseller.Table:                userseller.ValidColumn,
+			viewanalytics.Table:             viewanalytics.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

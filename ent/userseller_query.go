@@ -21,7 +21,7 @@ import (
 type UserSellerQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []userseller.Order
+	order                []userseller.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.UserSeller
 	withUserProfile      *UserQuery
@@ -62,7 +62,7 @@ func (usq *UserSellerQuery) Unique(unique bool) *UserSellerQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (usq *UserSellerQuery) Order(o ...userseller.Order) *UserSellerQuery {
+func (usq *UserSellerQuery) Order(o ...userseller.OrderOption) *UserSellerQuery {
 	usq.order = append(usq.order, o...)
 	return usq
 }
@@ -300,7 +300,7 @@ func (usq *UserSellerQuery) Clone() *UserSellerQuery {
 	return &UserSellerQuery{
 		config:          usq.config,
 		ctx:             usq.ctx.Clone(),
-		order:           append([]userseller.Order{}, usq.order...),
+		order:           append([]userseller.OrderOption{}, usq.order...),
 		inters:          append([]Interceptor{}, usq.inters...),
 		predicates:      append([]predicate.UserSeller{}, usq.predicates...),
 		withUserProfile: usq.withUserProfile.Clone(),
@@ -489,7 +489,7 @@ func (usq *UserSellerQuery) loadUserProfile(ctx context.Context, query *UserQuer
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(userseller.UserProfileColumn, fks...))
+		s.Where(sql.InValues(s.C(userseller.UserProfileColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -502,7 +502,7 @@ func (usq *UserSellerQuery) loadUserProfile(ctx context.Context, query *UserQuer
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_seller_user_profile" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_seller_user_profile" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -520,7 +520,7 @@ func (usq *UserSellerQuery) loadShops(ctx context.Context, query *ShopQuery, nod
 	}
 	query.withFKs = true
 	query.Where(predicate.Shop(func(s *sql.Selector) {
-		s.Where(sql.InValues(userseller.ShopsColumn, fks...))
+		s.Where(sql.InValues(s.C(userseller.ShopsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -533,7 +533,7 @@ func (usq *UserSellerQuery) loadShops(ctx context.Context, query *ShopQuery, nod
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_seller_shops" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_seller_shops" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
