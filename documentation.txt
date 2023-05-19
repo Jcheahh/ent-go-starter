@@ -42,12 +42,14 @@ atlas migrate diff all_schema \
 
 atlas migrate apply \
 --dir "file://ent/migrate/migrations" \
---url "postgres://entgo:mysecretpassword@localhost:5432/ent_go_starter?search_path=public&sslmode=disable"
+--url "postgres://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public&sslmode=disable"
+
 
 atlas migrate status \
 --dir "file://ent/migrate/migrations" \
---url "postgres://entgo:mysecretpassword@localhost:5432/ent_go_starter?search_path=public&sslmode=disable"
+--url "postgres://entgo:mysecretpassword@serveo.net:5432/ent_go_starter?search_path=public&sslmode=disable"
 
+--url "postgres://entgo:mysecretpassword@localhost:5432/ent_go_starter?search_path=public&sslmode=disable"
 
 localhost
 ssh -R jackl:80:localhost:8080 serveo.net
